@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace TowerDefense;
 
-public class WorldMapState : GameState
+public class GameLevelState : GameState
 {
     public override void LoadContent(ContentManager contentManager)
     {
@@ -23,11 +23,7 @@ public class WorldMapState : GameState
 
         if (state.IsKeyDown(Keys.Escape))
         {
-            SwitchState(new MainMenuState());
-        }
-        if (state.IsKeyDown(Keys.Enter))
-        {
-            SwitchState(new GameLevelState());
+            SwitchState(new WorldMapState());
         }
     }
 
