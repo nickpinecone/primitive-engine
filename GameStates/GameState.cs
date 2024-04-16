@@ -18,8 +18,20 @@ public abstract class GameState
     public abstract void LoadContent(ContentManager contentManager);
     public abstract void UnloadContent(ContentManager contentManager);
 
-    public abstract void HandleInput();
-    public abstract void Update(GameTime gameTime);
+    public virtual void HandleInput()
+    {
+        foreach (var gameObject in _gameObjects)
+        {
+            gameObject.HandleInput();
+        }
+    }
+    public virtual void Update(GameTime gameTime)
+    {
+        foreach (var gameObject in _gameObjects)
+        {
+            gameObject.Update(gameTime);
+        }
+    }
 
     protected void SwitchState(GameState gameState)
     {
@@ -41,7 +53,7 @@ public abstract class GameState
         spriteBatch.Begin();
         foreach (var gameObject in _gameObjects.OrderBy((gameObject) => gameObject.WorldPosition.Y))
         {
-            spriteBatch.Draw(gameObject.Texture, gameObject.WorldPosition, gameObject.SourceRectangle, Color.White);
+            gameObject.Draw(spriteBatch);
         }
         spriteBatch.End();
     }

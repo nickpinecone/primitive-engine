@@ -29,9 +29,12 @@ public class WorldMapState : GameState
         {
             SwitchState(new GameLevelState());
         }
+
+        base.HandleInput();
     }
 
     public override void Update(GameTime gameTime)
     {
+        base.Update(gameTime);
     }
 }

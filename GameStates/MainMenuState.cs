@@ -10,6 +10,20 @@ public class MainMenuState : GameState
 {
     public override void LoadContent(ContentManager contentManager)
     {
+        var buttonSprites = contentManager.Load<Texture2D>("GUI/Buttons");
+        var font = contentManager.Load<SpriteFont>("GUI/MenuFont");
+
+        var windowMiddle = WindowSettings.WindowSize / 2f;
+        var quitButton = new Button(buttonSprites, new Rectangle(945, 200, 360, 180), "Quit", font, windowMiddle, 1f);
+
+        quitButton.OnClick += HandleQuitButton;
+
+        AddGameObject(quitButton);
+    }
+
+    private void HandleQuitButton(object sender, EventArgs args)
+    {
+        QuitGame();
     }
 
     public override void UnloadContent(ContentManager contentManager)
@@ -29,9 +43,12 @@ public class MainMenuState : GameState
         {
             SwitchState(new WorldMapState());
         }
+
+        base.HandleInput();
     }
 
     public override void Update(GameTime gameTime)
     {
+        base.Update(gameTime);
     }
 }

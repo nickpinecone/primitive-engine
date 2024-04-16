@@ -50,9 +50,9 @@ public class MainGame : Game
 
     protected override void Initialize()
     {
-        _graphics.IsFullScreen = false;
-        _graphics.PreferredBackBufferWidth = 1280;
-        _graphics.PreferredBackBufferHeight = 720;
+        _graphics.IsFullScreen = WindowSettings.IsFullScreen;
+        _graphics.PreferredBackBufferWidth = WindowSettings.Width;
+        _graphics.PreferredBackBufferHeight = WindowSettings.Height;
         _graphics.ApplyChanges();
 
         base.Initialize();
