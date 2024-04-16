@@ -14,16 +14,26 @@ public class MainMenuState : GameState
         var font = contentManager.Load<SpriteFont>("GUI/MenuFont");
 
         var windowMiddle = WindowSettings.WindowSize / 2f;
-        var quitButton = new Button(buttonSprites, new Rectangle(945, 200, 360, 180), "Quit", font, windowMiddle, 1f);
+        var offset = new Vector2(0, 120);
+
+        var playButton = new Button(buttonSprites, new Rectangle(945, 200, 360, 180), "Play", font, windowMiddle - offset, 1f);
+        var quitButton = new Button(buttonSprites, new Rectangle(945, 200, 360, 180), "Quit", font, windowMiddle + offset, 1f);
 
         quitButton.OnClick += HandleQuitButton;
+        playButton.OnClick += HandlePlayButton;
 
         AddGameObject(quitButton);
+        AddGameObject(playButton);
     }
 
     private void HandleQuitButton(object sender, EventArgs args)
     {
         QuitGame();
+    }
+
+    private void HandlePlayButton(object sender, EventArgs args)
+    {
+        SwitchState(new WorldMapState());
     }
 
     public override void UnloadContent(ContentManager contentManager)
