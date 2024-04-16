@@ -1,3 +1,0 @@
-Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Size,Build Seconds
-"/home/point/Development/Gamedev/tower-defense/Content/GUI/Buttons.png","/home/point/Development/Gamedev/tower-defense/Content/bin/DesktopGL/Content/GUI/Buttons.xnb","TextureProcessor","Texture2DContent",4466950,37192645,1.9727652
-"/home/point/Development/Gamedev/tower-defense/Content/GUI/MenuFont.spritefont","/home/point/Development/Gamedev/tower-defense/Content/bin/DesktopGL/Content/GUI/MenuFont.xnb","FontDescriptionProcessor","SpriteFontContent",2076,136223,0.5170318
