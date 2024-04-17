@@ -37,7 +37,7 @@ class Button : GameObject
     {
         var mouseState = Mouse.GetState();
 
-        if (WorldRectangle.Contains(mouseState.Position) && mouseState.LeftButton == ButtonState.Pressed)
+        if (Input.IsMouseJustPressed(MouseButton.Left) && WorldRectangle.Contains(mouseState.Position))
         {
             OnClick?.Invoke(this, null);
         }

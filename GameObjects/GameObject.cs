@@ -33,11 +33,11 @@ public abstract class GameObject
 
         if (GameSettings.IsVisibleCollisions)
         {
-            DrawDebug(spriteBatch, graphicsDevice);
+            DrawCollisionShape(spriteBatch, graphicsDevice);
         }
     }
 
-    private void DrawDebug(SpriteBatch spriteBatch, GraphicsDeviceManager graphicsDevice)
+    private void DrawCollisionShape(SpriteBatch spriteBatch, GraphicsDeviceManager graphicsDevice)
     {
         Color[] data = new Color[WorldRectangle.Width * WorldRectangle.Height];
         Texture2D rectTexture = new Texture2D(graphicsDevice.GraphicsDevice, WorldRectangle.Width, WorldRectangle.Height);
