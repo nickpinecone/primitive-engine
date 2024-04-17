@@ -13,22 +13,9 @@ public enum MouseButton
 
 public static class Input
 {
-    static Dictionary<MouseButton, ButtonState> mouseButtonStates = new() {
-        {MouseButton.Left, ButtonState.Released},
-        {MouseButton.Right, ButtonState.Released},
-        {MouseButton.Middle, ButtonState.Released},
-    };
+    static Dictionary<MouseButton, bool> mouseStates = new();
 
-    public static void UpdateMouse()
-    {
-        var mouseState = Mouse.GetState();
-
-        mouseButtonStates[MouseButton.Left] = mouseState.LeftButton;
-        mouseButtonStates[MouseButton.Right] = mouseState.RightButton;
-        mouseButtonStates[MouseButton.Middle] = mouseState.MiddleButton;
-    }
-
-    public static bool IsMouseJustPressed(MouseButton mouseButton)
+    private static bool IsMouseButtonDown(MouseButton mouseButton)
     {
         var mouseState = Mouse.GetState();
         ButtonState buttonState;
@@ -48,8 +35,56 @@ public static class Input
                 return false;
         }
 
-        var previousState = mouseButtonStates[mouseButton];
+        return buttonState == ButtonState.Pressed;
+    }
 
-        return buttonState == ButtonState.Pressed && previousState != ButtonState.Pressed;
+    private static void UpdateMouse()
+    {
+        var mouseState = Mouse.GetState();
+
+        foreach (var (button, isDown) in mouseStates)
+        {
+            mouseStates[button] = IsMouseButtonDown(button);
+        }
+    }
+
+    public static bool IsMouseJustPressed(MouseButton mouseButton)
+    {
+        if (!mouseStates.ContainsKey(mouseButton))
+        {
+            mouseStates[mouseButton] = false;
+        }
+
+        return IsMouseButtonDown(mouseButton) && mouseStates[mouseButton] == false;
+    }
+
+    static Dictionary<Keys, bool> keyStates = new();
+
+    private static void UpdateKeyboard()
+    {
+        var keyboardState = Keyboard.GetState();
+
+        foreach (var (key, isDown) in keyStates)
+        {
+            keyStates[key] = keyboardState.IsKeyDown(key);
+        }
+    }
+
+    public static bool IsKeyJustPressed(Keys key)
+    {
+        var keyboardState = Keyboard.GetState();
+
+        if (!keyStates.ContainsKey(key))
+        {
+            keyStates[key] = false;
+        }
+
+        return keyboardState.IsKeyDown(key) && keyStates[key] == false;
+    }
+
+    public static void Update()
+    {
+        UpdateMouse();
+        UpdateKeyboard();
     }
 }

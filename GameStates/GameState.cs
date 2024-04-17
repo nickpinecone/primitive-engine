@@ -25,7 +25,7 @@ public abstract class GameState
             gameObject.HandleInput();
         }
 
-        Input.UpdateMouse();
+        Input.Update();
     }
     public virtual void Update(GameTime gameTime)
     {
