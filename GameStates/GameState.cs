@@ -48,12 +48,12 @@ public abstract class GameState
         _gameObjects.Add(gameObject);
     }
 
-    public void Draw(SpriteBatch spriteBatch)
+    public void Draw(SpriteBatch spriteBatch, GraphicsDeviceManager graphicsDevice)
     {
         spriteBatch.Begin();
         foreach (var gameObject in _gameObjects.OrderBy((gameObject) => gameObject.WorldPosition.Y))
         {
-            gameObject.Draw(spriteBatch);
+            gameObject.Draw(spriteBatch, graphicsDevice);
         }
         spriteBatch.End();
     }

@@ -13,7 +13,7 @@ public class MainMenuState : GameState
         var buttonSprites = contentManager.Load<Texture2D>("GUI/Buttons");
         var font = contentManager.Load<SpriteFont>("GUI/MenuFont");
 
-        var windowMiddle = WindowSettings.WindowSize / 2f;
+        var windowMiddle = GameSettings.WindowSize / 2f;
         var offset = new Vector2(0, 120);
 
         var playButton = new Button(buttonSprites, new Rectangle(945, 200, 360, 180), "Play", font, windowMiddle - offset, 1f);

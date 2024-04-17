@@ -50,9 +50,9 @@ public class MainGame : Game
 
     protected override void Initialize()
     {
-        _graphics.IsFullScreen = WindowSettings.IsFullScreen;
-        _graphics.PreferredBackBufferWidth = WindowSettings.Width;
-        _graphics.PreferredBackBufferHeight = WindowSettings.Height;
+        _graphics.IsFullScreen = GameSettings.IsFullScreen;
+        _graphics.PreferredBackBufferWidth = GameSettings.WindowWidth;
+        _graphics.PreferredBackBufferHeight = GameSettings.WindowHeight;
         _graphics.ApplyChanges();
 
         base.Initialize();
@@ -79,7 +79,7 @@ public class MainGame : Game
     {
         GraphicsDevice.Clear(Color.White);
 
-        _gameState.Draw(_spriteBatch);
+        _gameState.Draw(_spriteBatch, _graphics);
 
         base.Draw(gameTime);
     }

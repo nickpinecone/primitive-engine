@@ -27,9 +27,9 @@ class Button : GameObject
         TextOrigin = textSize / 2f;
     }
 
-    public override void Draw(SpriteBatch spriteBatch)
+    public override void Draw(SpriteBatch spriteBatch, GraphicsDeviceManager graphicsDevice)
     {
-        base.Draw(spriteBatch);
+        base.Draw(spriteBatch, graphicsDevice);
         spriteBatch.DrawString(Font, Text, WorldPosition, Color.White, 0, TextOrigin, Scale, SpriteEffects.None, 0);
     }
 
