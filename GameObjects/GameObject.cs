@@ -11,17 +11,15 @@ public abstract class GameObject
     public float Scale { get; protected set; }
     public float Rotation { get; protected set; }
 
-    private bool _isSourceSet = false;
-    private Rectangle _sourceRectangle;
+    private Rectangle? _sourceRectangle = null;
     public Rectangle SourceRectangle
     {
-        get { return _sourceRectangle; }
+        get { return _sourceRectangle ?? Rectangle.Empty; }
         set
         {
-            if (_isSourceSet == false)
+            if (_sourceRectangle == null)
             {
                 DefaultSource = value;
-                _isSourceSet = true;
             }
             _sourceRectangle = value;
         }
