@@ -8,9 +8,26 @@ public abstract class GameObject
 {
     public Vector2 WorldPosition { get; protected set; }
     public Texture2D Texture { get; protected set; }
-    public Rectangle SourceRectangle { get; protected set; }
     public float Scale { get; protected set; }
     public float Rotation { get; protected set; }
+
+    private bool _isSourceSet = false;
+    private Rectangle _sourceRectangle;
+    public Rectangle SourceRectangle
+    {
+        get { return _sourceRectangle; }
+        set
+        {
+            if (_isSourceSet == false)
+            {
+                DefaultSource = value;
+                _isSourceSet = true;
+            }
+            _sourceRectangle = value;
+        }
+    }
+
+    public Rectangle DefaultSource { get; private set; }
 
     public Rectangle WorldRectangle
     {

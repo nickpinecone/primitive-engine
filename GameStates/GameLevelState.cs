@@ -14,14 +14,14 @@ public class GameLevelState : GameState
 
     public override void UnloadContent(ContentManager contentManager)
     {
-        contentManager.Unload();
+        AssetManager.UnloadAssets();
     }
 
     public override void HandleInput()
     {
         var state = Keyboard.GetState();
 
-        if (state.IsKeyDown(Keys.Escape))
+        if (Input.IsKeyJustPressed(Keys.Escape))
         {
             SwitchState(new WorldMapState());
         }

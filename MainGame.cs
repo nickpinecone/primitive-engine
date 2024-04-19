@@ -19,6 +19,8 @@ public class MainGame : Game
 
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
+
+        AssetManager.Initialize(Content);
     }
 
     protected void HandleQuitGame(object sender, EventArgs args)

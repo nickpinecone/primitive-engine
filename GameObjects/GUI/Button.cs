@@ -13,8 +13,35 @@ class Button : GameObject
     public string Text { get; protected set; }
     public Vector2 TextOrigin { get; protected set; }
     public SpriteFont Font { get; protected set; }
+    public Rectangle HoverSource { get; protected set; }
 
-    public Button(Texture2D texture, Rectangle source, string text, SpriteFont font, Vector2 position, float scale)
+    private Vector2 GetTextOrigin(SpriteFont font, string text)
+    {
+        var textSize = font.MeasureString(text);
+        return textSize / 2f;
+    }
+
+    // Default Button
+    public Button(string text, Vector2 position, float scale = 1f)
+    {
+        var buttonSprite = AssetManager.GetAsset<Texture2D>("GUI/Buttons");
+        var font = AssetManager.GetAsset<SpriteFont>("GUI/MenuFont");
+        var sourceRect = new Rectangle(180, 200, 360, 180);
+        var hoverRect = new Rectangle(565, 200, 360, 180);
+
+        Text = text;
+        WorldPosition = position;
+        Scale = scale;
+
+        Texture = buttonSprite;
+        Font = font;
+        SourceRectangle = sourceRect;
+        HoverSource = hoverRect;
+        TextOrigin = GetTextOrigin(font, text);
+    }
+
+    // Custom button
+    public Button(string text, Vector2 position, float scale, Texture2D texture, Rectangle source, Rectangle hoverSource, SpriteFont font)
     {
         Texture = texture;
         Text = text;
@@ -22,9 +49,8 @@ class Button : GameObject
         SourceRectangle = source;
         Font = font;
         Scale = scale;
-
-        var textSize = font.MeasureString(text);
-        TextOrigin = textSize / 2f;
+        HoverSource = hoverSource;
+        TextOrigin = GetTextOrigin(font, text);
     }
 
     public override void Draw(SpriteBatch spriteBatch, GraphicsDeviceManager graphicsDevice)
@@ -37,9 +63,18 @@ class Button : GameObject
     {
         var mouseState = Mouse.GetState();
 
-        if (Input.IsMouseJustPressed(MouseButton.Left) && WorldRectangle.Contains(mouseState.Position))
+        if (WorldRectangle.Contains(mouseState.Position))
         {
-            OnClick?.Invoke(this, null);
+            SourceRectangle = HoverSource;
+
+            if (Input.IsMouseJustPressed(MouseButton.Left))
+            {
+                OnClick?.Invoke(this, null);
+            }
+        }
+        else
+        {
+            SourceRectangle = DefaultSource;
         }
     }
 
