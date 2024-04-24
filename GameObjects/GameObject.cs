@@ -54,13 +54,13 @@ public abstract class GameObject
 
     private void DrawCollisionShape(SpriteBatch spriteBatch, GraphicsDeviceManager graphicsDevice)
     {
-        Color[] data = new Color[WorldRectangle.Width * WorldRectangle.Height];
-        Texture2D rectTexture = new Texture2D(graphicsDevice.GraphicsDevice, WorldRectangle.Width, WorldRectangle.Height);
+        Color[] color = new Color[Texture.Width * Texture.Height];
+        Texture2D rectTexture = new Texture2D(graphicsDevice.GraphicsDevice, Texture.Width, Texture.Height);
 
-        for (int i = 0; i < data.Length; ++i)
-            data[i] = Color.White;
+        for (int i = 0; i < color.Length; ++i)
+            color[i] = Color.White;
 
-        rectTexture.SetData(data);
+        rectTexture.SetData(color);
         var position = new Vector2(WorldRectangle.Left, WorldRectangle.Top);
 
         spriteBatch.Draw(rectTexture, position, Color.Blue * 0.5f);

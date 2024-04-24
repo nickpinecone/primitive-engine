@@ -41,22 +41,29 @@ class Button : GameObject
     }
 
     // Custom button
-    public Button(string text, Vector2 position, float scale, Texture2D texture, Rectangle source, Rectangle hoverSource, SpriteFont font)
+    public Button(Vector2 position, float scale, Texture2D texture, Rectangle source, Rectangle hoverSource)
     {
         Texture = texture;
-        Text = text;
         WorldPosition = position;
         SourceRectangle = source;
-        Font = font;
         Scale = scale;
         HoverSource = hoverSource;
+    }
+
+    // Custom button with text
+    public Button(string text, Vector2 position, float scale, Texture2D texture, Rectangle source, Rectangle hoverSource, SpriteFont font)
+        : this(position, scale, texture, source, hoverSource)
+    {
+        Text = text;
+        Font = font;
         TextOrigin = GetTextOrigin(font, text);
     }
 
     public override void Draw(SpriteBatch spriteBatch, GraphicsDeviceManager graphicsDevice)
     {
         base.Draw(spriteBatch, graphicsDevice);
-        spriteBatch.DrawString(Font, Text, WorldPosition, Color.White, 0, TextOrigin, Scale, SpriteEffects.None, 0);
+        if (Font != null)
+            spriteBatch.DrawString(Font, Text, WorldPosition, Color.White, 0, TextOrigin, Scale, SpriteEffects.None, 0);
     }
 
     public override void HandleInput()

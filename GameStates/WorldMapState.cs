@@ -10,6 +10,12 @@ public class WorldMapState : GameState
 {
     public override void LoadContent(ContentManager contentManager)
     {
+        var flag = AssetManager.GetAsset<Texture2D>("Sprites/LevelSheet");
+        var flagSource = new Rectangle(1120, 675, 75, 150);
+
+        var levelPoint = new Selectable(new Vector2(100, 100), 0.5f, 2, flag, flagSource, flagSource);
+
+        AddGameObject(levelPoint);
     }
 
     public override void UnloadContent(ContentManager contentManager)
