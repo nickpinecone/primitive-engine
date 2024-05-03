@@ -1,4 +1,3 @@
-
 using System;
 using System.Diagnostics;
 using Microsoft.Xna.Framework;
@@ -15,6 +14,7 @@ class Selectable : GameObject
     private Button _button;
 
     public bool IsSelected { get; protected set; }
+    public bool IsHovered { get; protected set; }
     public int OutlineSize { get; protected set; }
 
     public Selectable(Vector2 position, float scale, int outlineSize, Texture2D texture, Rectangle source, Rectangle hoverSource)
@@ -44,6 +44,15 @@ class Selectable : GameObject
 
         _button.HandleInput();
 
+        if (_button.WorldRectangle.Contains(mouseState.Position))
+        {
+            IsHovered = true;
+        }
+        else
+        {
+            IsHovered = false;
+        }
+
         if (Input.IsMouseJustPressed(MouseButton.Left) && !_button.WorldRectangle.Contains(mouseState.Position))
         {
             IsSelected = false;
@@ -66,6 +75,11 @@ class Selectable : GameObject
         }
 
         _button.Draw(spriteBatch, graphicsDevice);
+
+        if (IsHovered)
+        {
+            DrawHighlight(spriteBatch, graphicsDevice);
+        }
     }
 
     private void DrawOutline(SpriteBatch spriteBatch, GraphicsDeviceManager graphicsDevice)
@@ -78,6 +92,13 @@ class Selectable : GameObject
         spriteBatch.Draw(outlineTexture, _button.WorldPosition + new Vector2(0, OutlineSize), null, Color.Gray, 0, _button.Origin, _button.Scale, SpriteEffects.None, 0);
     }
 
+    private void DrawHighlight(SpriteBatch spriteBatch, GraphicsDeviceManager graphicsDevice)
+    {
+        var highlightTexture = GenerateTexture(graphicsDevice);
+
+        spriteBatch.Draw(highlightTexture, _button.WorldPosition, null, Color.White * 0.3f, 0, _button.Origin, _button.Scale, SpriteEffects.None, 0);
+    }
+
     private Texture2D GenerateTexture(GraphicsDeviceManager graphicsDevice)
     {
         Color[] color = new Color[_button.SourceRectangle.Width * _button.SourceRectangle.Height];
@@ -87,12 +108,16 @@ class Selectable : GameObject
         _button.Texture.GetData<Color>(0, _button.SourceRectangle, buttonColor, 0, _button.SourceRectangle.Width * _button.SourceRectangle.Height);
 
         for (int i = 0; i < color.Length; ++i)
+        {
             if (buttonColor[i].A > 0)
             {
                 color[i] = Color.White;
             }
             else
+            {
                 color[i] = Color.Transparent;
+            }
+        }
 
         outlineTexture.SetData(color);
 
