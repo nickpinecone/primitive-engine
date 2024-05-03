@@ -33,4 +33,9 @@ public class GameLevelState : GameState
     {
         base.Update(gameTime);
     }
+
+    public override void Draw(SpriteBatch spriteBatch, GraphicsDeviceManager graphicsDevice)
+    {
+        base.Draw(spriteBatch, graphicsDevice);
+    }
 }
