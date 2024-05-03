@@ -50,7 +50,12 @@ public abstract class GameState
         _gameObjects.Add(gameObject);
     }
 
-    public virtual void Draw(SpriteBatch spriteBatch, GraphicsDeviceManager graphicsDevice)
+    protected void RemoveGameObject(GameObject gameObject)
+    {
+        _gameObjects.Remove(gameObject);
+    }
+
+    public void Draw(SpriteBatch spriteBatch, GraphicsDeviceManager graphicsDevice)
     {
         spriteBatch.Begin();
         foreach (var gameObject in _gameObjects.OrderBy((gameObject) => gameObject.WorldPosition.Y))

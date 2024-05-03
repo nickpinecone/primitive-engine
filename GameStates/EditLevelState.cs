@@ -6,15 +6,10 @@ using Microsoft.Xna.Framework.Input;
 
 namespace TowerDefense;
 
-public class WorldMapState : GameState
+public class EditLevelState : GameState
 {
     public override void LoadContent(ContentManager contentManager)
     {
-        // var levelPoint = new LevelPoint(new Vector2(100, 100), 1f, new GameLevelState());
-        var levelPoint = new LevelPoint(new Vector2(100, 100), 1f, new EditLevelState());
-        levelPoint.OnLevelSelect += HandleLevelSelect;
-
-        AddGameObject(levelPoint);
     }
 
     public override void UnloadContent(ContentManager contentManager)
@@ -22,18 +17,21 @@ public class WorldMapState : GameState
         AssetManager.UnloadAssets();
     }
 
-    public void HandleLevelSelect(object sender, GameState level)
-    {
-        SwitchState(level);
-    }
-
     public override void HandleInput()
     {
-        var state = Keyboard.GetState();
+        var keyState = Keyboard.GetState();
+        var mouseState = Mouse.GetState();
 
         if (Input.IsKeyJustPressed(Keys.Escape))
         {
-            SwitchState(new MainMenuState());
+            SwitchState(new WorldMapState());
+        }
+
+        if (Input.IsMouseJustPressed(MouseButton.Left))
+        {
+            var node = new Node(mouseState.Position.ToVector2());
+            var pathNode = new PathNode(node, 20);
+            AddGameObject(pathNode);
         }
 
         base.HandleInput();

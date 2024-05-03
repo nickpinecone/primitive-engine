@@ -1,3 +1,4 @@
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -54,13 +55,8 @@ public abstract class GameObject
 
     private void DrawCollisionShape(SpriteBatch spriteBatch, GraphicsDeviceManager graphicsDevice)
     {
-        Color[] color = new Color[Texture.Width * Texture.Height];
-        Texture2D rectTexture = new Texture2D(graphicsDevice.GraphicsDevice, Texture.Width, Texture.Height);
+        var rectTexture = DebugTexture.GenerateTexture(WorldRectangle.Width, WorldRectangle.Height, Color.White);
 
-        for (int i = 0; i < color.Length; ++i)
-            color[i] = Color.White;
-
-        rectTexture.SetData(color);
         var position = new Vector2(WorldRectangle.Left, WorldRectangle.Top);
 
         spriteBatch.Draw(rectTexture, position, Color.Blue * 0.5f);

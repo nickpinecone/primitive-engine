@@ -21,6 +21,7 @@ public class MainGame : Game
         IsMouseVisible = true;
 
         AssetManager.Initialize(Content);
+        DebugTexture.Initialize(_graphics);
     }
 
     protected void HandleQuitGame(object sender, EventArgs args)

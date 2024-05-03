@@ -16,6 +16,13 @@ class Node
     public Vector2 Position { get; set; }
     public Dictionary<Node, double> PathLengths { get; set; }
 
+    public Node(Vector2 position)
+    {
+        _prevNodes = new();
+        _nextNodes = new();
+        Position = position;
+    }
+
     public List<Node> GetNextNodes()
     {
         return _nextNodes;
