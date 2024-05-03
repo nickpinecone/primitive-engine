@@ -10,10 +10,8 @@ public class WorldMapState : GameState
 {
     public override void LoadContent(ContentManager contentManager)
     {
-        var flag = AssetManager.GetAsset<Texture2D>("Sprites/LevelSheet");
-        var flagSource = new Rectangle(1120, 675, 75, 150);
-
-        var levelPoint = new Selectable(new Vector2(100, 100), 1f, 3, flag, flagSource, flagSource);
+        var levelPoint = new LevelPoint(new Vector2(100, 100), 1f, new GameLevelState());
+        levelPoint.OnLevelSelect += HandleLevelSelect;
 
         AddGameObject(levelPoint);
     }
@@ -23,6 +21,11 @@ public class WorldMapState : GameState
         AssetManager.UnloadAssets();
     }
 
+    public void HandleLevelSelect(object sender, GameState level)
+    {
+        SwitchState(level);
+    }
+
     public override void HandleInput()
     {
         var state = Keyboard.GetState();
@@ -30,10 +33,6 @@ public class WorldMapState : GameState
         if (Input.IsKeyJustPressed(Keys.Escape))
         {
             SwitchState(new MainMenuState());
-        }
-        if (Input.IsKeyJustPressed(Keys.Enter))
-        {
-            SwitchState(new GameLevelState());
         }
 
         base.HandleInput();
