@@ -5,27 +5,41 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 using TowerDefense;
 
 class Node
 {
-    private static int IDCount = -1;
-
-    private List<Node> _prevNodes;
     private List<Node> _nextNodes;
 
-    public int ID { get; protected set; }
     public Vector2 Position { get; set; }
     public Dictionary<Node, double> PathLengths { get; set; }
 
+    // Json Serialization
+    public List<Node> NextNodes
+    {
+        get { return _nextNodes; }
+        set { _nextNodes = value; }
+    }
+
+    public float X
+    {
+        get { return Position.X; }
+        set { Position = new Vector2(value, Position.Y); }
+    }
+
+    public float Y
+    {
+        get { return Position.Y; }
+        set { Position = new Vector2(Position.X, value); }
+    }
+
     public Node(Vector2 position)
     {
-        IDCount += 1;
-        ID = IDCount;
-
-        _prevNodes = new();
         _nextNodes = new();
+        PathLengths = new();
         Position = position;
     }
 
@@ -41,34 +55,9 @@ class Node
         return _nextNodes[index] ?? null;
     }
 
-    public void DeleteNode()
-    {
-        foreach (var node in _prevNodes)
-        {
-            node._nextNodes.Remove(this);
-        }
-        foreach (var node in _nextNodes)
-        {
-            node._prevNodes.Remove(this);
-        }
-    }
-
     public void LinkNode(Node otherNode)
     {
-        this._nextNodes.Add(otherNode);
-        otherNode._prevNodes.Add(this);
-    }
-}
-
-struct OriginNode
-{
-    public Node node;
-    public Node fromNode;
-
-    public OriginNode(Node node, Node fromNode)
-    {
-        this.node = node;
-        this.fromNode = fromNode;
+        _nextNodes.Add(otherNode);
     }
 }
 
@@ -85,26 +74,27 @@ class WalkPath
 
     public void CalculateLengths()
     {
-        Queue<OriginNode> queue = new();
+        Queue<(Node node, Node from)> queue = new();
+
         foreach (var node in _startNodes)
         {
-            queue.Enqueue(new OriginNode(node, null));
+            queue.Enqueue(new(node, null));
         }
 
         while (queue.Any())
         {
-            var origin = queue.Dequeue();
+            var tuple = queue.Dequeue();
 
-            if (origin.fromNode != null)
+            if (tuple.from != null)
             {
-                var distance = (origin.fromNode.Position - origin.node.Position).Length();
+                var distance = (tuple.from.Position - tuple.node.Position).Length();
 
-                origin.node.PathLengths[origin.fromNode] = distance;
+                tuple.node.PathLengths[tuple.from] = distance;
             }
 
-            foreach (var nextNode in origin.node.GetNextNodes())
+            foreach (var nextNode in tuple.node.GetNextNodes())
             {
-                queue.Enqueue(new OriginNode(nextNode, origin.node));
+                queue.Enqueue(new(nextNode, tuple.node));
             }
         }
     }
@@ -131,4 +121,11 @@ class WalkPath
     //     // return originNode.node.PickNextNode();
     //     return new Node();
     // }
+
+    public void SaveToFile(string filename)
+    {
+        var data = JsonSerializer.Serialize(_startNodes);
+        Console.WriteLine(data);
+        var des = JsonSerializer.Deserialize<List<Node>>(data);
+    }
 }

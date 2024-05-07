@@ -8,6 +8,8 @@ namespace TowerDefense;
 
 public class EditLevelState : GameState
 {
+    WalkPath walkPath = new();
+
     public override void LoadContent(ContentManager contentManager)
     {
     }
@@ -32,6 +34,11 @@ public class EditLevelState : GameState
             var node = new Node(mouseState.Position.ToVector2());
             var pathNode = new PathNode(node, 20);
             AddGameObject(pathNode);
+            if (keyState.IsKeyDown(Keys.S))
+            {
+                walkPath.AddStartNode(node);
+            }
+            walkPath.SaveToFile("");
         }
 
         base.HandleInput();

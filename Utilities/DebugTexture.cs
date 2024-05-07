@@ -33,6 +33,8 @@ public static class DebugTexture
 
     private static void DrawLine(SpriteBatch spriteBatch, Vector2 startPos, Vector2 endPos, int thickness, Color color)
     {
+        if (startPos == endPos) return;
+
         var distance = (int)Vector2.Distance(startPos, endPos);
         var texture = new Texture2D(graphicsDevice.GraphicsDevice, distance, thickness);
 
@@ -54,9 +56,10 @@ public static class DebugTexture
         DrawLine(spriteBatch, startPos, endPos, thickness, color);
 
         // Making direction arrow
-        var direction = (endPos - startPos);
-        direction = startPos + direction / 1.1f;
-        DrawLine(spriteBatch, direction + new Vector2(-10, -10), direction + new Vector2(10, 10), thickness, color);
-        DrawLine(spriteBatch, direction + new Vector2(10, -10), direction + new Vector2(-10, 10), thickness, color);
+        var direction = startPos + (endPos - startPos) / 1.1f;
+        var arrowSize = thickness * 2;
+
+        DrawLine(spriteBatch, direction + new Vector2(-arrowSize, -arrowSize), direction + new Vector2(arrowSize, arrowSize), thickness, color);
+        DrawLine(spriteBatch, direction + new Vector2(arrowSize, -arrowSize), direction + new Vector2(-arrowSize, arrowSize), thickness, color);
     }
 }
