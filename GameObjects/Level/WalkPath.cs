@@ -10,14 +10,20 @@ using TowerDefense;
 
 class Node
 {
+    private static int IDCount = -1;
+
     private List<Node> _prevNodes;
     private List<Node> _nextNodes;
 
+    public int ID { get; protected set; }
     public Vector2 Position { get; set; }
     public Dictionary<Node, double> PathLengths { get; set; }
 
     public Node(Vector2 position)
     {
+        IDCount += 1;
+        ID = IDCount;
+
         _prevNodes = new();
         _nextNodes = new();
         Position = position;

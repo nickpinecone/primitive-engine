@@ -15,6 +15,9 @@ class LevelPoint : GameObject
 
     public LevelPoint(Vector2 position, float scale, GameState level)
     {
+        WorldPosition = position;
+        Scale = scale;
+
         _level = level;
 
         var flag = AssetManager.GetAsset<Texture2D>("Sprites/LevelSheet");

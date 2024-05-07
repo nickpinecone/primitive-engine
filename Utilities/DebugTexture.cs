@@ -30,4 +30,33 @@ public static class DebugTexture
 
         return texture;
     }
+
+    private static void DrawLine(SpriteBatch spriteBatch, Vector2 startPos, Vector2 endPos, int thickness, Color color)
+    {
+        var distance = (int)Vector2.Distance(startPos, endPos);
+        var texture = new Texture2D(graphicsDevice.GraphicsDevice, distance, thickness);
+
+        var data = new Color[distance * thickness];
+        for (int i = 0; i < data.Length; i++)
+        {
+            data[i] = color;
+        }
+        texture.SetData(data);
+
+        var rotation = (float)Math.Atan2(endPos.Y - startPos.Y, endPos.X - startPos.X);
+        var origin = new Vector2(0, thickness / 2);
+
+        spriteBatch.Draw(texture, startPos, null, Color.White, rotation, origin, 1.0f, SpriteEffects.None, 1.0f);
+    }
+
+    public static void DrawLineBetween(SpriteBatch spriteBatch, Vector2 startPos, Vector2 endPos, int thickness, Color color)
+    {
+        DrawLine(spriteBatch, startPos, endPos, thickness, color);
+
+        // Making direction arrow
+        var direction = (endPos - startPos);
+        direction = startPos + direction / 1.1f;
+        DrawLine(spriteBatch, direction + new Vector2(-10, -10), direction + new Vector2(10, 10), thickness, color);
+        DrawLine(spriteBatch, direction + new Vector2(10, -10), direction + new Vector2(-10, 10), thickness, color);
+    }
 }

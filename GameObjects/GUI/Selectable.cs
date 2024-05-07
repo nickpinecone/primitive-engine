@@ -10,6 +10,7 @@ class Selectable : GameObject
 {
     public event EventHandler OnSelect;
     public event EventHandler OnDoubleSelect;
+    public event EventHandler OnClick;
 
     private Button _button;
 
@@ -19,6 +20,10 @@ class Selectable : GameObject
 
     public Selectable(Vector2 position, float scale, int outlineSize, Texture2D texture, Rectangle source, Rectangle hoverSource)
     {
+        WorldPosition = position;
+        Scale = scale;
+        SourceRectangle = source;
+
         _button = new Button(position, scale, texture, source, hoverSource);
         _button.OnClick += HandleButtonClick;
 
@@ -27,6 +32,8 @@ class Selectable : GameObject
 
     public void HandleButtonClick(object sender, EventArgs args)
     {
+        OnClick?.Invoke(this, null);
+
         if (IsSelected)
         {
             OnDoubleSelect?.Invoke(this, null);
@@ -44,7 +51,7 @@ class Selectable : GameObject
 
         _button.HandleInput();
 
-        if (_button.WorldRectangle.Contains(mouseState.Position))
+        if (WorldRectangle.Contains(mouseState.Position))
         {
             IsHovered = true;
         }
@@ -53,10 +60,15 @@ class Selectable : GameObject
             IsHovered = false;
         }
 
-        if (Input.IsMouseJustPressed(MouseButton.Left) && !_button.WorldRectangle.Contains(mouseState.Position))
+        if (Input.IsMouseJustPressed(MouseButton.Left) && !WorldRectangle.Contains(mouseState.Position))
         {
             IsSelected = false;
         }
+    }
+
+    public void Deselect()
+    {
+        IsSelected = false;
     }
 
     public override void Update(GameTime gameTime)
@@ -86,26 +98,26 @@ class Selectable : GameObject
     {
         var outlineTexture = GenerateTexture(graphicsDevice);
 
-        spriteBatch.Draw(outlineTexture, _button.WorldPosition + new Vector2(-OutlineSize, 0), null, Color.Gray, 0, _button.Origin, _button.Scale, SpriteEffects.None, 0);
-        spriteBatch.Draw(outlineTexture, _button.WorldPosition + new Vector2(OutlineSize, 0), null, Color.Gray, 0, _button.Origin, _button.Scale, SpriteEffects.None, 0);
-        spriteBatch.Draw(outlineTexture, _button.WorldPosition + new Vector2(0, -OutlineSize), null, Color.Gray, 0, _button.Origin, _button.Scale, SpriteEffects.None, 0);
-        spriteBatch.Draw(outlineTexture, _button.WorldPosition + new Vector2(0, OutlineSize), null, Color.Gray, 0, _button.Origin, _button.Scale, SpriteEffects.None, 0);
+        spriteBatch.Draw(outlineTexture, WorldPosition + new Vector2(-OutlineSize, 0), null, Color.Gray, 0, Origin, Scale, SpriteEffects.None, 0);
+        spriteBatch.Draw(outlineTexture, WorldPosition + new Vector2(OutlineSize, 0), null, Color.Gray, 0, Origin, Scale, SpriteEffects.None, 0);
+        spriteBatch.Draw(outlineTexture, WorldPosition + new Vector2(0, -OutlineSize), null, Color.Gray, 0, Origin, Scale, SpriteEffects.None, 0);
+        spriteBatch.Draw(outlineTexture, WorldPosition + new Vector2(0, OutlineSize), null, Color.Gray, 0, Origin, Scale, SpriteEffects.None, 0);
     }
 
     private void DrawHighlight(SpriteBatch spriteBatch, GraphicsDeviceManager graphicsDevice)
     {
         var highlightTexture = GenerateTexture(graphicsDevice);
 
-        spriteBatch.Draw(highlightTexture, _button.WorldPosition, null, Color.White * 0.3f, 0, _button.Origin, _button.Scale, SpriteEffects.None, 0);
+        spriteBatch.Draw(highlightTexture, WorldPosition, null, Color.White * 0.3f, 0, Origin, Scale, SpriteEffects.None, 0);
     }
 
     private Texture2D GenerateTexture(GraphicsDeviceManager graphicsDevice)
     {
-        Color[] color = new Color[_button.SourceRectangle.Width * _button.SourceRectangle.Height];
-        Texture2D outlineTexture = new Texture2D(graphicsDevice.GraphicsDevice, _button.SourceRectangle.Width, _button.SourceRectangle.Height);
-        Color[] buttonColor = new Color[_button.SourceRectangle.Width * _button.SourceRectangle.Height];
+        Color[] color = new Color[SourceRectangle.Width * SourceRectangle.Height];
+        Texture2D outlineTexture = new Texture2D(graphicsDevice.GraphicsDevice, SourceRectangle.Width, SourceRectangle.Height);
+        Color[] buttonColor = new Color[SourceRectangle.Width * SourceRectangle.Height];
 
-        _button.Texture.GetData<Color>(0, _button.SourceRectangle, buttonColor, 0, _button.SourceRectangle.Width * _button.SourceRectangle.Height);
+        _button.Texture.GetData<Color>(0, SourceRectangle, buttonColor, 0, SourceRectangle.Width * SourceRectangle.Height);
 
         for (int i = 0; i < color.Length; ++i)
         {
