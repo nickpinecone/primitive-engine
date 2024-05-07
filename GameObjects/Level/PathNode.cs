@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -17,19 +18,51 @@ class PathNode : GameObject
     public Node Node { get; protected set; }
     public int Size { get; protected set; }
 
+    private bool _isStart;
+    public bool IsStart
+    {
+        get { return _isStart; }
+        set
+        {
+            _isStart = value;
+            AccentColor = value ? Color.Green : Color.Black;
+        }
+    }
+
+    private bool _isEnd;
+    public bool IsEnd
+    {
+        get { return _isEnd; }
+        set
+        {
+            _isEnd = value;
+            AccentColor = value ? Color.Blue : Color.Black;
+        }
+    }
+
+    override public Vector2 WorldPosition { get { return _selectable.WorldPosition; } }
+    override public float Scale { get { return _selectable.Scale; } }
+    override public Rectangle SourceRectangle { get { return _selectable.SourceRectangle; } }
+
+    new public Color AccentColor
+    {
+        get { return _selectable.AccentColor; }
+        set { _selectable.AccentColor = value; }
+    }
+
     public PathNode(Node node, int size)
     {
-        WorldPosition = node.Position;
-
         Node = node;
         Size = size;
 
-        var texture = DebugTexture.GenerateTexture(size, size, Color.Black);
+        var texture = DebugTexture.GenerateTexture(size, size, Color.White);
         var source = new Rectangle(0, 0, size, size);
 
         _linked = new();
         _selectable = new Selectable(node.Position, 1f, 1, texture, source, source);
         _selectable.OnClick += (_, _) => HandleClick(this, null);
+
+        AccentColor = Color.Red;
     }
 
     public void HandleClick(object sender, EventArgs args)
@@ -42,7 +75,27 @@ class PathNode : GameObject
         }
         else if (nodeSender != SelectedNode)
         {
-            SelectedNode.LinkNode((PathNode)sender);
+            if (nodeSender.IsStart) return;
+            if (nodeSender._linked.Contains(SelectedNode)) return;
+
+            if (!SelectedNode.IsStart)
+            {
+                SelectedNode.AccentColor = Color.Black;
+            }
+
+            if (SelectedNode.IsEnd)
+            {
+                SelectedNode.IsEnd = false;
+            }
+
+            nodeSender.AccentColor = Color.Black;
+
+            if (!nodeSender._linked.Any())
+            {
+                nodeSender.IsEnd = true;
+            }
+
+            SelectedNode.LinkNode(nodeSender);
             SelectedNode = null;
         }
 
@@ -77,12 +130,12 @@ class PathNode : GameObject
         if (SelectedNode == this)
         {
             var mouseState = Mouse.GetState();
-            DebugTexture.DrawLineBetween(spriteBatch, SelectedNode.WorldPosition, mouseState.Position.ToVector2(), 3, Color.Black);
+            DebugTexture.DrawLineBetween(spriteBatch, SelectedNode.WorldPosition, mouseState.Position.ToVector2(), Size / 5, AccentColor);
         }
 
         foreach (var node in _linked)
         {
-            DebugTexture.DrawLineBetween(spriteBatch, WorldPosition, node.WorldPosition, 3, Color.Black);
+            DebugTexture.DrawLineBetween(spriteBatch, WorldPosition, node.WorldPosition, Size / 5, AccentColor);
         }
     }
 }

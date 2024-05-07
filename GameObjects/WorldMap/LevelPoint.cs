@@ -13,11 +13,18 @@ class LevelPoint : GameObject
     private Selectable _selectable;
     private GameState _level;
 
+    override public Vector2 WorldPosition { get { return _selectable.WorldPosition; } }
+    override public float Scale { get { return _selectable.Scale; } }
+    override public Rectangle SourceRectangle { get { return _selectable.SourceRectangle; } }
+
+    new public Color AccentColor
+    {
+        get { return _selectable.AccentColor; }
+        set { _selectable.AccentColor = value; }
+    }
+
     public LevelPoint(Vector2 position, float scale, GameState level)
     {
-        WorldPosition = position;
-        Scale = scale;
-
         _level = level;
 
         var flag = AssetManager.GetAsset<Texture2D>("Sprites/LevelSheet");

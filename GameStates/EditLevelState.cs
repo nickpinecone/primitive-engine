@@ -33,12 +33,24 @@ public class EditLevelState : GameState
         {
             var node = new Node(mouseState.Position.ToVector2());
             var pathNode = new PathNode(node, 20);
-            AddGameObject(pathNode);
+
             if (keyState.IsKeyDown(Keys.S))
             {
                 walkPath.AddStartNode(node);
+                pathNode.IsStart = true;
             }
-            walkPath.SaveToFile("");
+
+            AddGameObject(pathNode);
+        }
+
+        if (Input.IsKeyJustPressed(Keys.W))
+        {
+            walkPath.SaveToFile("walk_path");
+        }
+        if (Input.IsKeyJustPressed(Keys.R))
+        {
+            // Load from file
+            // walkPath.SaveToFile("walk_path");
         }
 
         base.HandleInput();

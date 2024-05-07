@@ -9,12 +9,15 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 
 using TowerDefense;
+using System.IO;
 
 class Node
 {
     private List<Node> _nextNodes;
 
+    [JsonIgnore]
     public Vector2 Position { get; set; }
+    [JsonIgnore]
     public Dictionary<Node, double> PathLengths { get; set; }
 
     // Json Serialization
@@ -125,7 +128,7 @@ class WalkPath
     public void SaveToFile(string filename)
     {
         var data = JsonSerializer.Serialize(_startNodes);
-        Console.WriteLine(data);
-        var des = JsonSerializer.Deserialize<List<Node>>(data);
+        var workDir = System.IO.Directory.GetCurrentDirectory();
+        File.WriteAllText(workDir + "/Saves/" + filename + ".json", data);
     }
 }

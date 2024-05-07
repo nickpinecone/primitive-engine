@@ -7,13 +7,14 @@ namespace TowerDefense;
 
 public abstract class GameObject
 {
-    public Vector2 WorldPosition { get; protected set; }
+    virtual public Vector2 WorldPosition { get; protected set; }
+    virtual public float Scale { get; protected set; }
+    virtual public float Rotation { get; protected set; }
+    public Color AccentColor { get; set; }
     public Texture2D Texture { get; protected set; }
-    public float Scale { get; protected set; }
-    public float Rotation { get; protected set; }
 
     private Rectangle? _sourceRectangle = null;
-    public Rectangle SourceRectangle
+    virtual public Rectangle SourceRectangle
     {
         get { return _sourceRectangle ?? Rectangle.Empty; }
         set
@@ -43,9 +44,14 @@ public abstract class GameObject
         }
     }
 
+    public GameObject()
+    {
+        AccentColor = Color.White;
+    }
+
     public virtual void Draw(SpriteBatch spriteBatch, GraphicsDeviceManager graphicsDevice)
     {
-        spriteBatch.Draw(Texture, WorldPosition, SourceRectangle, Color.White, Rotation, Origin, Scale, SpriteEffects.None, 0);
+        spriteBatch.Draw(Texture, WorldPosition, SourceRectangle, AccentColor, Rotation, Origin, Scale, SpriteEffects.None, 0);
 
         if (GameSettings.IsVisibleCollisions)
         {

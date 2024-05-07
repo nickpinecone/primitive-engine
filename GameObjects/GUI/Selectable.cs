@@ -18,12 +18,17 @@ class Selectable : GameObject
     public bool IsHovered { get; protected set; }
     public int OutlineSize { get; protected set; }
 
+    override public Vector2 WorldPosition { get { return _button.WorldPosition; } }
+    override public float Scale { get { return _button.Scale; } }
+    override public Rectangle SourceRectangle { get { return _button.SourceRectangle; } }
+    new public Color AccentColor
+    {
+        get { return _button.AccentColor; }
+        set { _button.AccentColor = value; }
+    }
+
     public Selectable(Vector2 position, float scale, int outlineSize, Texture2D texture, Rectangle source, Rectangle hoverSource)
     {
-        WorldPosition = position;
-        Scale = scale;
-        SourceRectangle = source;
-
         _button = new Button(position, scale, texture, source, hoverSource);
         _button.OnClick += HandleButtonClick;
 
