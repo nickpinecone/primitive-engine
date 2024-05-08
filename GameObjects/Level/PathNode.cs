@@ -75,26 +75,6 @@ class PathNode : GameObject
         }
         else if (nodeSender != SelectedNode)
         {
-            if (nodeSender.IsStart) return;
-            if (nodeSender._linked.Contains(SelectedNode)) return;
-
-            if (!SelectedNode.IsStart)
-            {
-                SelectedNode.AccentColor = Color.Black;
-            }
-
-            if (SelectedNode.IsEnd)
-            {
-                SelectedNode.IsEnd = false;
-            }
-
-            nodeSender.AccentColor = Color.Black;
-
-            if (!nodeSender._linked.Any())
-            {
-                nodeSender.IsEnd = true;
-            }
-
             SelectedNode.LinkNode(nodeSender);
             SelectedNode = null;
         }
@@ -104,7 +84,27 @@ class PathNode : GameObject
 
     public void LinkNode(PathNode other)
     {
-        Node.LinkNode(other.Node);
+        if (other.IsStart) return;
+        if (other._linked.Contains(this)) return;
+
+        if (!this.IsStart)
+        {
+            this.AccentColor = Color.Black;
+        }
+
+        if (this.IsEnd)
+        {
+            this.IsEnd = false;
+        }
+
+        other.AccentColor = Color.Black;
+
+        if (!other._linked.Any())
+        {
+            other.IsEnd = true;
+        }
+
+        this.Node.LinkNode(other.Node);
         _linked.Add(other);
     }
 

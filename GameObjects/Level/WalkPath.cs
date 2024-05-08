@@ -131,4 +131,15 @@ class WalkPath
         var workDir = System.IO.Directory.GetCurrentDirectory();
         File.WriteAllText(workDir + "/Saves/" + filename + ".json", data);
     }
+
+    public void LoadFromFile(string filename)
+    {
+        // This doesnt work since it doesnt create the same node object 
+        // When there are multiple nodes linked to it
+        // TODO rewrite, still using json though
+        var workDir = System.IO.Directory.GetCurrentDirectory();
+        var data = File.ReadAllText(workDir + "/Saves/" + filename + ".json");
+        _startNodes = JsonSerializer.Deserialize<List<Node>>(data);
+        CalculateLengths();
+    }
 }
