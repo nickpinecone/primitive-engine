@@ -36,14 +36,19 @@ public class EditLevelState : GameState
         if (Input.IsMouseJustPressed(MouseButton.Middle))
         {
             var node = new Node(mouseState.Position.ToVector2());
-            var pathNode = new PathNode(node, NodeSize);
+            var nodeType = NodeType.Regular;
 
             if (keyState.IsKeyDown(Keys.S))
             {
+                nodeType = NodeType.Start;
                 walkPath.AddStartNode(node);
-                pathNode.IsStart = true;
+            }
+            else if (keyState.IsKeyDown(Keys.E))
+            {
+                nodeType = NodeType.End;
             }
 
+            var pathNode = new PathNode(node, NodeSize, nodeType);
             AddGameObject(pathNode);
         }
 
@@ -74,7 +79,7 @@ public class EditLevelState : GameState
             }
             else
             {
-                pathNode = new PathNode(tuple.node, NodeSize);
+                pathNode = new PathNode(tuple.node, NodeSize, tuple.node.nodeType);
                 dict[tuple.node] = pathNode;
                 AddGameObject(pathNode);
             }
@@ -82,10 +87,6 @@ public class EditLevelState : GameState
             if (tuple.from != null)
             {
                 dict[tuple.from].LinkNode(pathNode);
-            }
-            else
-            {
-                pathNode.IsStart = true;
             }
         }
     }

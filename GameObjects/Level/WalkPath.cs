@@ -17,8 +17,10 @@ class NodeMetadata
     public float Y { get; set; }
     public int ID { get; set; }
     public List<int> NextIDs { get; set; } = new();
-    public bool IsStart { get; set; }
+    public NodeType Type { get; set; } = NodeType.Regular;
 }
+
+enum NodeType { Start, End, Regular };
 
 class Node
 {
@@ -26,6 +28,7 @@ class Node
 
     public Vector2 Position { get; set; }
     public Dictionary<Node, double> PathLengths { get; set; }
+    public NodeType nodeType { get; set; }
 
     public List<Node> NextNodes
     {
@@ -35,9 +38,11 @@ class Node
 
     public Node(Vector2 position)
     {
+        Position = position;
+
         _nextNodes = new();
         PathLengths = new();
-        Position = position;
+        nodeType = NodeType.Regular;
     }
 
     public List<Node> GetNextNodes()
@@ -147,12 +152,8 @@ class WalkPath
                     X = tuple.node.Position.X,
                     Y = tuple.node.Position.Y,
                     ID = countID,
+                    Type = tuple.node.nodeType,
                 };
-
-                if (tuple.from == null)
-                {
-                    newMeta.IsStart = true;
-                }
 
                 dict[tuple.node] = newMeta;
 
@@ -183,10 +184,10 @@ class WalkPath
         foreach (var meta in metadata)
         {
             var position = new Vector2(meta.X, meta.Y);
-            var node = new Node(position);
+            var node = new Node(position) { nodeType = meta.Type };
             dict[meta.ID] = node;
 
-            if (meta.IsStart)
+            if (meta.Type == NodeType.Start)
             {
                 _startNodes.Add(node);
             }

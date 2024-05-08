@@ -18,28 +18,6 @@ class PathNode : GameObject
     public Node Node { get; protected set; }
     public int Size { get; protected set; }
 
-    private bool _isStart;
-    public bool IsStart
-    {
-        get { return _isStart; }
-        set
-        {
-            _isStart = value;
-            AccentColor = value ? Color.Green : Color.Black;
-        }
-    }
-
-    private bool _isEnd;
-    public bool IsEnd
-    {
-        get { return _isEnd; }
-        set
-        {
-            _isEnd = value;
-            AccentColor = value ? Color.Blue : Color.Black;
-        }
-    }
-
     override public Vector2 WorldPosition { get { return _selectable.WorldPosition; } }
     override public float Scale { get { return _selectable.Scale; } }
     override public Rectangle SourceRectangle { get { return _selectable.SourceRectangle; } }
@@ -50,10 +28,11 @@ class PathNode : GameObject
         set { _selectable.AccentColor = value; }
     }
 
-    public PathNode(Node node, int size)
+    public PathNode(Node node, int size, NodeType type)
     {
         Node = node;
         Size = size;
+        Node.nodeType = type;
 
         var texture = DebugTexture.GenerateTexture(size, size, Color.White);
         var source = new Rectangle(0, 0, size, size);
@@ -62,7 +41,13 @@ class PathNode : GameObject
         _selectable = new Selectable(node.Position, 1f, 1, texture, source, source);
         _selectable.OnClick += (_, _) => HandleClick(this, null);
 
-        AccentColor = Color.Red;
+        AccentColor = type switch
+        {
+            NodeType.Start => Color.Green,
+            NodeType.End => Color.Blue,
+            NodeType.Regular => Color.Red,
+            _ => Color.Black,
+        };
     }
 
     public void HandleClick(object sender, EventArgs args)
@@ -84,24 +69,18 @@ class PathNode : GameObject
 
     public void LinkNode(PathNode other)
     {
-        if (other.IsStart) return;
+        if (other.Node.nodeType == NodeType.Start) return;
+        if (this.Node.nodeType == NodeType.End) return;
         if (other._linked.Contains(this)) return;
 
-        if (!this.IsStart)
+        if (this.Node.nodeType == NodeType.Regular)
         {
             this.AccentColor = Color.Black;
         }
 
-        if (this.IsEnd)
+        if (other.Node.nodeType == NodeType.Regular)
         {
-            this.IsEnd = false;
-        }
-
-        other.AccentColor = Color.Black;
-
-        if (!other._linked.Any())
-        {
-            other.IsEnd = true;
+            other.AccentColor = Color.Black;
         }
 
         this.Node.LinkNode(other.Node);
