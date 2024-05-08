@@ -62,19 +62,10 @@ public class EditLevelState : GameState
 
     public void GeneratePathNodes()
     {
-        var startNodes = walkPath.GetStartNodes();
-        Queue<(Node node, PathNode from)> queue = new();
         Dictionary<Node, PathNode> dict = new();
 
-        foreach (var node in startNodes)
+        foreach (var tuple in walkPath.Enumerate())
         {
-            queue.Enqueue(new(node, null));
-        }
-
-        while (queue.Any())
-        {
-            var tuple = queue.Dequeue();
-
             PathNode pathNode;
 
             if (dict.ContainsKey(tuple.node))
@@ -90,19 +81,13 @@ public class EditLevelState : GameState
 
             if (tuple.from != null)
             {
-                tuple.from.LinkNode(pathNode);
+                dict[tuple.from].LinkNode(pathNode);
             }
             else
             {
                 pathNode.IsStart = true;
             }
-
-            foreach (var nextNode in tuple.node.GetNextNodes())
-            {
-                queue.Enqueue(new(nextNode, pathNode));
-            }
         }
-
     }
 
     public override void Update(GameTime gameTime)

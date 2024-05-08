@@ -69,7 +69,7 @@ class WalkPath
         _startNodes = new();
     }
 
-    public void CalculateLengths()
+    public IEnumerable<(Node node, Node from)> Enumerate()
     {
         Queue<(Node node, Node from)> queue = new();
         HashSet<Node> visited = new();
@@ -83,12 +83,7 @@ class WalkPath
         {
             var tuple = queue.Dequeue();
 
-            if (tuple.from != null)
-            {
-                var distance = (tuple.from.Position - tuple.node.Position).Length();
-
-                tuple.node.PathLengths[tuple.from] = distance;
-            }
+            yield return tuple;
 
             if (!visited.Contains(tuple.node))
             {
@@ -97,6 +92,20 @@ class WalkPath
                     queue.Enqueue(new(nextNode, tuple.node));
                 }
                 visited.Add(tuple.node);
+            }
+        }
+
+    }
+
+    public void CalculateLengths()
+    {
+        foreach (var tuple in Enumerate())
+        {
+            if (tuple.from != null)
+            {
+                var distance = (tuple.from.Position - tuple.node.Position).Length();
+
+                tuple.node.PathLengths[tuple.from] = distance;
             }
         }
     }
@@ -126,20 +135,11 @@ class WalkPath
 
     public void SaveToFile(string filename)
     {
-        Queue<(Node node, Node from)> queue = new();
-        HashSet<Node> visited = new();
         Dictionary<Node, NodeMetadata> dict = new();
         int countID = 0;
 
-        foreach (var node in _startNodes)
+        foreach (var tuple in Enumerate())
         {
-            queue.Enqueue(new(node, null));
-        }
-
-        while (queue.Any())
-        {
-            var tuple = queue.Dequeue();
-
             if (!dict.ContainsKey(tuple.node))
             {
                 var newMeta = new NodeMetadata()
@@ -165,15 +165,6 @@ class WalkPath
             {
                 dict[tuple.from].NextIDs.Add(meta.ID);
             }
-
-            if (!visited.Contains(tuple.node))
-            {
-                foreach (var nextNode in tuple.node.GetNextNodes())
-                {
-                    queue.Enqueue(new(nextNode, tuple.node));
-                }
-                visited.Add(tuple.node);
-            }
         }
 
         var data = JsonSerializer.Serialize(dict.Values.ToArray());
@@ -183,12 +174,32 @@ class WalkPath
 
     public void LoadFromFile(string filename)
     {
-        // This doesnt work since it doesnt create the same node object 
-        // When there are multiple nodes linked to it
-        // TODO rewrite, still using json though
-        // var workDir = System.IO.Directory.GetCurrentDirectory();
-        // var data = File.ReadAllText(workDir + "/Saves/" + filename + ".json");
-        // _startNodes = JsonSerializer.Deserialize<List<Node>>(data);
-        // CalculateLengths();
+        var workDir = System.IO.Directory.GetCurrentDirectory();
+        var data = File.ReadAllText(workDir + "/Saves/" + filename + ".json");
+        var metadata = JsonSerializer.Deserialize<List<NodeMetadata>>(data);
+
+        // Initializing nodes
+        Dictionary<int, Node> dict = new();
+        foreach (var meta in metadata)
+        {
+            var position = new Vector2(meta.X, meta.Y);
+            var node = new Node(position);
+            dict[meta.ID] = node;
+
+            if (meta.IsStart)
+            {
+                _startNodes.Add(node);
+            }
+        }
+
+        // Linking nodes
+        foreach (var meta in metadata)
+        {
+            var node = dict[meta.ID];
+            foreach (var other in meta.NextIDs)
+            {
+                node.NextNodes.Add(dict[other]);
+            }
+        }
     }
 }
