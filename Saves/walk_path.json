@@ -1,48 +1,55 @@
 [
     {
-        "NextNodes": [
-            {
-                "NextNodes": [
-                    {
-                        "NextNodes": [
-                            {
-                                "NextNodes": [
-                                    {
-                                        "NextNodes": [],
-                                        "X": 1101,
-                                        "Y": 170
-                                    }
-                                ],
-                                "X": 750,
-                                "Y": 360
-                            }
-                        ],
-                        "X": 464,
-                        "Y": 242
-                    },
-                    {
-                        "NextNodes": [
-                            {
-                                "NextNodes": [
-                                    {
-                                        "NextNodes": [],
-                                        "X": 1101,
-                                        "Y": 170
-                                    }
-                                ],
-                                "X": 750,
-                                "Y": 360
-                            }
-                        ],
-                        "X": 395,
-                        "Y": 385
-                    }
-                ],
-                "X": 228,
-                "Y": 251
-            }
+        "X": 171,
+        "Y": 303,
+        "ID": 0,
+        "NextIDs": [
+            1
         ],
-        "X": 104,
-        "Y": 349
+        "IsStart": true
+    },
+    {
+        "X": 331,
+        "Y": 256,
+        "ID": 1,
+        "NextIDs": [
+            2,
+            3
+        ],
+        "IsStart": false
+    },
+    {
+        "X": 673,
+        "Y": 251,
+        "ID": 2,
+        "NextIDs": [
+            4
+        ],
+        "IsStart": false
+    },
+    {
+        "X": 343,
+        "Y": 80,
+        "ID": 3,
+        "NextIDs": [],
+        "IsStart": false
+    },
+    {
+        "X": 620,
+        "Y": 454,
+        "ID": 4,
+        "NextIDs": [
+            5
+        ],
+        "IsStart": false
+    },
+    {
+        "X": 342,
+        "Y": 487,
+        "ID": 5,
+        "NextIDs": [
+            1
+        ],
+        "IsStart": false
     }
 ]

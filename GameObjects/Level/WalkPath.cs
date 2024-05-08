@@ -11,32 +11,26 @@ using System.Text.Json.Serialization;
 using TowerDefense;
 using System.IO;
 
+class NodeMetadata
+{
+    public float X { get; set; }
+    public float Y { get; set; }
+    public int ID { get; set; }
+    public List<int> NextIDs { get; set; } = new();
+    public bool IsStart { get; set; }
+}
+
 class Node
 {
     private List<Node> _nextNodes;
 
-    [JsonIgnore]
     public Vector2 Position { get; set; }
-    [JsonIgnore]
     public Dictionary<Node, double> PathLengths { get; set; }
 
-    // Json Serialization
     public List<Node> NextNodes
     {
         get { return _nextNodes; }
         set { _nextNodes = value; }
-    }
-
-    public float X
-    {
-        get { return Position.X; }
-        set { Position = new Vector2(value, Position.Y); }
-    }
-
-    public float Y
-    {
-        get { return Position.Y; }
-        set { Position = new Vector2(Position.X, value); }
     }
 
     public Node(Vector2 position)
@@ -78,6 +72,7 @@ class WalkPath
     public void CalculateLengths()
     {
         Queue<(Node node, Node from)> queue = new();
+        HashSet<Node> visited = new();
 
         foreach (var node in _startNodes)
         {
@@ -95,9 +90,13 @@ class WalkPath
                 tuple.node.PathLengths[tuple.from] = distance;
             }
 
-            foreach (var nextNode in tuple.node.GetNextNodes())
+            if (!visited.Contains(tuple.node))
             {
-                queue.Enqueue(new(nextNode, tuple.node));
+                foreach (var nextNode in tuple.node.GetNextNodes())
+                {
+                    queue.Enqueue(new(nextNode, tuple.node));
+                }
+                visited.Add(tuple.node);
             }
         }
     }
@@ -127,7 +126,57 @@ class WalkPath
 
     public void SaveToFile(string filename)
     {
-        var data = JsonSerializer.Serialize(_startNodes);
+        Queue<(Node node, Node from)> queue = new();
+        HashSet<Node> visited = new();
+        Dictionary<Node, NodeMetadata> dict = new();
+        int countID = 0;
+
+        foreach (var node in _startNodes)
+        {
+            queue.Enqueue(new(node, null));
+        }
+
+        while (queue.Any())
+        {
+            var tuple = queue.Dequeue();
+
+            if (!dict.ContainsKey(tuple.node))
+            {
+                var newMeta = new NodeMetadata()
+                {
+                    X = tuple.node.Position.X,
+                    Y = tuple.node.Position.Y,
+                    ID = countID,
+                };
+
+                if (tuple.from == null)
+                {
+                    newMeta.IsStart = true;
+                }
+
+                dict[tuple.node] = newMeta;
+
+                countID++;
+            }
+
+            var meta = dict[tuple.node];
+
+            if (tuple.from != null)
+            {
+                dict[tuple.from].NextIDs.Add(meta.ID);
+            }
+
+            if (!visited.Contains(tuple.node))
+            {
+                foreach (var nextNode in tuple.node.GetNextNodes())
+                {
+                    queue.Enqueue(new(nextNode, tuple.node));
+                }
+                visited.Add(tuple.node);
+            }
+        }
+
+        var data = JsonSerializer.Serialize(dict.Values.ToArray());
         var workDir = System.IO.Directory.GetCurrentDirectory();
         File.WriteAllText(workDir + "/Saves/" + filename + ".json", data);
     }
@@ -137,9 +186,9 @@ class WalkPath
         // This doesnt work since it doesnt create the same node object 
         // When there are multiple nodes linked to it
         // TODO rewrite, still using json though
-        var workDir = System.IO.Directory.GetCurrentDirectory();
-        var data = File.ReadAllText(workDir + "/Saves/" + filename + ".json");
-        _startNodes = JsonSerializer.Deserialize<List<Node>>(data);
-        CalculateLengths();
+        // var workDir = System.IO.Directory.GetCurrentDirectory();
+        // var data = File.ReadAllText(workDir + "/Saves/" + filename + ".json");
+        // _startNodes = JsonSerializer.Deserialize<List<Node>>(data);
+        // CalculateLengths();
     }
 }
