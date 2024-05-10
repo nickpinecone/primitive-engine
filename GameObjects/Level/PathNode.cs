@@ -9,11 +9,13 @@ using TowerDefense;
 class PathNode : GameObject
 {
     public event EventHandler OnSelect;
+    public event EventHandler OnDelete;
 
     private static PathNode SelectedNode = null;
 
     private Selectable _selectable;
-    private List<PathNode> _linked;
+    private List<PathNode> _nextNodes;
+    private List<PathNode> _prevNodes;
 
     public Node Node { get; protected set; }
     public int Size { get; protected set; }
@@ -37,7 +39,8 @@ class PathNode : GameObject
         var texture = DebugTexture.GenerateTexture(size, size, Color.White);
         var source = new Rectangle(0, 0, size, size);
 
-        _linked = new();
+        _nextNodes = new();
+        _prevNodes = new();
         _selectable = new Selectable(node.Position, 1f, 1, texture, source, source);
         _selectable.OnClick += (_, _) => HandleClick(this, null);
 
@@ -71,8 +74,14 @@ class PathNode : GameObject
     {
         if (other.Node.nodeType == NodeType.Start) return;
         if (this.Node.nodeType == NodeType.End) return;
-        if (other._linked.Contains(this)) return;
+        if (other._nextNodes.Contains(this)) return;
 
+        this.Node.LinkNode(other.Node);
+        LinkPath(other);
+    }
+
+    public void LinkPath(PathNode other)
+    {
         if (this.Node.nodeType == NodeType.Regular)
         {
             this.AccentColor = Color.Black;
@@ -83,17 +92,38 @@ class PathNode : GameObject
             other.AccentColor = Color.Black;
         }
 
-        this.Node.LinkNode(other.Node);
-        _linked.Add(other);
+        _nextNodes.Add(other);
+        other._prevNodes.Add(this);
+    }
+
+    public void UnlinkNode()
+    {
+        foreach (var node in _nextNodes)
+        {
+            node._prevNodes.Remove(this);
+        }
+        _nextNodes = new();
+        foreach (var node in _prevNodes)
+        {
+            node.Node.UnlinkNode(Node);
+            node._nextNodes.Remove(this);
+        }
     }
 
     public override void HandleInput()
     {
+        var mouseState = Mouse.GetState();
+
         _selectable.HandleInput();
 
         if (SelectedNode != null && Input.IsMouseJustPressed(MouseButton.Right))
         {
             SelectedNode = null;
+        }
+        if (WorldRectangle.Contains(mouseState.Position) && Input.IsMouseJustPressed(MouseButton.Right))
+        {
+            UnlinkNode();
+            OnDelete?.Invoke(this, null);
         }
     }
 
@@ -112,7 +142,7 @@ class PathNode : GameObject
             DebugTexture.DrawLineBetween(spriteBatch, SelectedNode.WorldPosition, mouseState.Position.ToVector2(), Size / 5, AccentColor);
         }
 
-        foreach (var node in _linked)
+        foreach (var node in _nextNodes)
         {
             DebugTexture.DrawLineBetween(spriteBatch, WorldPosition, node.WorldPosition, Size / 5, AccentColor);
         }

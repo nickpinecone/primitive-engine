@@ -30,11 +30,11 @@ class Node
     public Dictionary<Node, double> PathLengths { get; set; }
     public NodeType nodeType { get; set; }
 
-    public List<Node> NextNodes
-    {
-        get { return _nextNodes; }
-        set { _nextNodes = value; }
-    }
+    // public List<Node> NextNodes
+    // {
+    //     get { return _nextNodes; }
+    //     set { _nextNodes = value; }
+    // }
 
     public Node(Vector2 position)
     {
@@ -60,6 +60,11 @@ class Node
     public void LinkNode(Node otherNode)
     {
         _nextNodes.Add(otherNode);
+    }
+
+    public void UnlinkNode(Node node)
+    {
+        _nextNodes.Remove(node);
     }
 }
 
@@ -199,7 +204,7 @@ class WalkPath
             var node = dict[meta.ID];
             foreach (var other in meta.NextIDs)
             {
-                node.NextNodes.Add(dict[other]);
+                node.LinkNode(dict[other]);
             }
         }
     }

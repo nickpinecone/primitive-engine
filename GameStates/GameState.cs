@@ -14,6 +14,7 @@ public abstract class GameState
     public event EventHandler<GameState> OnSwitchState;
 
     protected List<GameObject> _gameObjects = new List<GameObject>();
+    private List<GameObject> _removeQueue = new List<GameObject>();
 
     public abstract void LoadContent(ContentManager contentManager);
     public abstract void UnloadContent(ContentManager contentManager);
@@ -29,6 +30,12 @@ public abstract class GameState
     }
     public virtual void Update(GameTime gameTime)
     {
+        foreach (var gameObject in _removeQueue)
+        {
+            _gameObjects.Remove(gameObject);
+        }
+        _removeQueue.Clear();
+
         foreach (var gameObject in _gameObjects)
         {
             gameObject.Update(gameTime);
@@ -52,7 +59,7 @@ public abstract class GameState
 
     protected void RemoveGameObject(GameObject gameObject)
     {
-        _gameObjects.Remove(gameObject);
+        _removeQueue.Add(gameObject);
     }
 
     public void Draw(SpriteBatch spriteBatch, GraphicsDeviceManager graphicsDevice)

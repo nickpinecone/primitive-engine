@@ -23,6 +23,13 @@ public class EditLevelState : GameState
         AssetManager.UnloadAssets();
     }
 
+    public void HandleNodeDelete(object sender, EventArgs args)
+    {
+        var node = (PathNode)sender;
+        // node.AccentColor = Color.Transparent;
+        RemoveGameObject(node);
+    }
+
     public override void HandleInput()
     {
         var keyState = Keyboard.GetState();
@@ -49,6 +56,7 @@ public class EditLevelState : GameState
             }
 
             var pathNode = new PathNode(node, NodeSize, nodeType);
+            pathNode.OnDelete += HandleNodeDelete;
             AddGameObject(pathNode);
         }
 
@@ -80,13 +88,14 @@ public class EditLevelState : GameState
             else
             {
                 pathNode = new PathNode(tuple.node, NodeSize, tuple.node.nodeType);
+                pathNode.OnDelete += HandleNodeDelete;
                 dict[tuple.node] = pathNode;
                 AddGameObject(pathNode);
             }
 
             if (tuple.from != null)
             {
-                dict[tuple.from].LinkNode(pathNode);
+                dict[tuple.from].LinkPath(pathNode);
             }
         }
     }
