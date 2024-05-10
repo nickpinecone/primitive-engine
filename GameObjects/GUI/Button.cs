@@ -9,6 +9,7 @@ using TowerDefense;
 class Button : GameObject
 {
     public event EventHandler OnClick;
+    public event EventHandler OnRightClick;
 
     public string Text { get; protected set; }
     public Vector2 TextOrigin { get; protected set; }
@@ -77,6 +78,10 @@ class Button : GameObject
             if (Input.IsMouseJustPressed(MouseButton.Left))
             {
                 OnClick?.Invoke(this, null);
+            }
+            else if (Input.IsMouseJustPressed(MouseButton.Right))
+            {
+                OnRightClick?.Invoke(this, null);
             }
         }
         else

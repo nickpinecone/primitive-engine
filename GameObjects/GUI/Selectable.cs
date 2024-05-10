@@ -11,6 +11,7 @@ class Selectable : GameObject
     public event EventHandler OnSelect;
     public event EventHandler OnDoubleSelect;
     public event EventHandler OnClick;
+    public event EventHandler OnRightClick;
 
     private Button _button;
 
@@ -37,6 +38,7 @@ class Selectable : GameObject
     {
         _button = new Button(position, scale, texture, source, hoverSource);
         _button.OnClick += HandleButtonClick;
+        _button.OnRightClick += HandleButtonRightClick;
 
         OutlineSize = outlineSize;
     }
@@ -54,6 +56,11 @@ class Selectable : GameObject
             IsSelected = true;
             OnSelect?.Invoke(this, null);
         }
+    }
+
+    public void HandleButtonRightClick(object sender, EventArgs args)
+    {
+        OnRightClick?.Invoke(this, null);
     }
 
     public override void HandleInput()

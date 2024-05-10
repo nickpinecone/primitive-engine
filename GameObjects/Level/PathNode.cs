@@ -55,6 +55,7 @@ class PathNode : GameObject
         _prevNodes = new();
         _selectable = new Selectable(node.Position, 1f, 1, texture, source, source);
         _selectable.OnClick += (_, _) => HandleClick(this, null);
+        _selectable.OnRightClick += (_, _) => HandleRightClick(this, null);
 
         AccentColor = type switch
         {
@@ -84,6 +85,15 @@ class PathNode : GameObject
             {
                 SelectedNode.UnlinkNode(nodeSender);
             }
+        }
+    }
+
+    public void HandleRightClick(object sender, EventArgs args)
+    {
+        if (ChangeMode == PathChangeMode.Delete)
+        {
+            RemoveNode();
+            OnDelete?.Invoke(this, null);
         }
     }
 
@@ -141,34 +151,23 @@ class PathNode : GameObject
 
     public override void HandleInput()
     {
-        var mouseState = Mouse.GetState();
-        var keyState = Keyboard.GetState();
-
         _selectable.HandleInput();
 
         if (SelectedNode != null && Input.IsMouseJustPressed(MouseButton.Right))
         {
             SelectedNode = null;
         }
-        if (ChangeMode == PathChangeMode.Delete)
-        {
-            if (WorldRectangle.Contains(mouseState.Position) && Input.IsMouseJustPressed(MouseButton.Right))
-            {
-                RemoveNode();
-                OnDelete?.Invoke(this, null);
-            }
-        }
-        else if (ChangeMode == PathChangeMode.Shift)
-        {
-            if (SelectedNode != null)
-            {
-                SelectedNode.WorldPosition = mouseState.Position.ToVector2();
-            }
-        }
     }
 
     public override void Update(GameTime gameTime)
     {
+        var mouseState = Mouse.GetState();
+
+        if (ChangeMode == PathChangeMode.Shift && SelectedNode != null)
+        {
+            SelectedNode.WorldPosition = mouseState.Position.ToVector2();
+        }
+
         _selectable.Update(gameTime);
     }
 
