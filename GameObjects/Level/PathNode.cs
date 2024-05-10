@@ -1,17 +1,21 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using TowerDefense;
 
+enum PathChangeMode { Link, Delete, Shift };
+
 class PathNode : GameObject
 {
+    public static PathChangeMode ChangeMode = PathChangeMode.Link;
+    private static PathNode SelectedNode = null;
+
     public event EventHandler OnSelect;
     public event EventHandler OnDelete;
-
-    private static PathNode SelectedNode = null;
 
     private Selectable _selectable;
     private List<PathNode> _nextNodes;
@@ -20,9 +24,18 @@ class PathNode : GameObject
     public Node Node { get; protected set; }
     public int Size { get; protected set; }
 
-    override public Vector2 WorldPosition { get { return _selectable.WorldPosition; } }
     override public float Scale { get { return _selectable.Scale; } }
     override public Rectangle SourceRectangle { get { return _selectable.SourceRectangle; } }
+
+    override public Vector2 WorldPosition
+    {
+        get { return _selectable.WorldPosition; }
+        set
+        {
+            Node.Position = value;
+            _selectable.WorldPosition = value;
+        }
+    }
 
     new public Color AccentColor
     {
@@ -34,7 +47,7 @@ class PathNode : GameObject
     {
         Node = node;
         Size = size;
-        Node.nodeType = type;
+        Node.Type = type;
 
         var texture = DebugTexture.GenerateTexture(size, size, Color.White);
         var source = new Rectangle(0, 0, size, size);
@@ -55,16 +68,24 @@ class PathNode : GameObject
 
     public void HandleClick(object sender, EventArgs args)
     {
+        var keyState = Keyboard.GetState();
         var nodeSender = (PathNode)sender;
+        if (SelectedNode == nodeSender) return;
 
         if (SelectedNode == null)
         {
             SelectedNode = nodeSender;
         }
-        else if (nodeSender != SelectedNode)
+        else
         {
-            SelectedNode.LinkNode(nodeSender);
-            SelectedNode = null;
+            if (ChangeMode == PathChangeMode.Link)
+            {
+                SelectedNode.LinkNode(nodeSender);
+            }
+            else if (ChangeMode == PathChangeMode.Delete)
+            {
+                SelectedNode.UnlinkNode(nodeSender);
+            }
         }
 
         OnSelect?.Invoke(this, null);
@@ -72,22 +93,24 @@ class PathNode : GameObject
 
     public void LinkNode(PathNode other)
     {
-        if (other.Node.nodeType == NodeType.Start) return;
-        if (this.Node.nodeType == NodeType.End) return;
+        if (other.Node.Type == NodeType.Start) return;
+        if (this.Node.Type == NodeType.End) return;
         if (other._nextNodes.Contains(this)) return;
 
         this.Node.LinkNode(other.Node);
         LinkPath(other);
+
+        SelectedNode = null;
     }
 
     public void LinkPath(PathNode other)
     {
-        if (this.Node.nodeType == NodeType.Regular)
+        if (this.Node.Type == NodeType.Regular)
         {
             this.AccentColor = Color.Black;
         }
 
-        if (other.Node.nodeType == NodeType.Regular)
+        if (other.Node.Type == NodeType.Regular)
         {
             other.AccentColor = Color.Black;
         }
@@ -96,7 +119,7 @@ class PathNode : GameObject
         other._prevNodes.Add(this);
     }
 
-    public void UnlinkNode()
+    public void RemoveNode()
     {
         foreach (var node in _nextNodes)
         {
@@ -110,9 +133,19 @@ class PathNode : GameObject
         }
     }
 
+    public void UnlinkNode(PathNode other)
+    {
+        other._prevNodes.Remove(this);
+        _nextNodes.Remove(other);
+        Node.UnlinkNode(other.Node);
+
+        SelectedNode = null;
+    }
+
     public override void HandleInput()
     {
         var mouseState = Mouse.GetState();
+        var keyState = Keyboard.GetState();
 
         _selectable.HandleInput();
 
@@ -120,10 +153,20 @@ class PathNode : GameObject
         {
             SelectedNode = null;
         }
-        if (WorldRectangle.Contains(mouseState.Position) && Input.IsMouseJustPressed(MouseButton.Right))
+        if (ChangeMode == PathChangeMode.Delete)
         {
-            UnlinkNode();
-            OnDelete?.Invoke(this, null);
+            if (WorldRectangle.Contains(mouseState.Position) && Input.IsMouseJustPressed(MouseButton.Right))
+            {
+                RemoveNode();
+                OnDelete?.Invoke(this, null);
+            }
+        }
+        else if (ChangeMode == PathChangeMode.Shift)
+        {
+            if (SelectedNode != null)
+            {
+                SelectedNode.WorldPosition = mouseState.Position.ToVector2();
+            }
         }
     }
 

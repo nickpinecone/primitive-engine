@@ -18,9 +18,15 @@ class Selectable : GameObject
     public bool IsHovered { get; protected set; }
     public int OutlineSize { get; protected set; }
 
-    override public Vector2 WorldPosition { get { return _button.WorldPosition; } }
     override public float Scale { get { return _button.Scale; } }
     override public Rectangle SourceRectangle { get { return _button.SourceRectangle; } }
+
+    override public Vector2 WorldPosition
+    {
+        get { return _button.WorldPosition; }
+        set { _button.WorldPosition = value; }
+    }
+
     new public Color AccentColor
     {
         get { return _button.AccentColor; }

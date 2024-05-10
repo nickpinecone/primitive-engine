@@ -7,7 +7,7 @@ namespace TowerDefense;
 
 public abstract class GameObject
 {
-    virtual public Vector2 WorldPosition { get; protected set; }
+    virtual public Vector2 WorldPosition { get; set; }
     virtual public float Scale { get; protected set; }
     virtual public float Rotation { get; protected set; }
     public Color AccentColor { get; set; }

@@ -26,7 +26,6 @@ public class EditLevelState : GameState
     public void HandleNodeDelete(object sender, EventArgs args)
     {
         var node = (PathNode)sender;
-        // node.AccentColor = Color.Transparent;
         RemoveGameObject(node);
     }
 
@@ -38,6 +37,19 @@ public class EditLevelState : GameState
         if (Input.IsKeyJustPressed(Keys.Escape))
         {
             SwitchState(new WorldMapState());
+        }
+
+        if (Input.IsKeyJustPressed(Keys.L))
+        {
+            PathNode.ChangeMode = PathChangeMode.Link;
+        }
+        else if (Input.IsKeyJustPressed(Keys.D))
+        {
+            PathNode.ChangeMode = PathChangeMode.Delete;
+        }
+        else if (Input.IsKeyJustPressed(Keys.C))
+        {
+            PathNode.ChangeMode = PathChangeMode.Shift;
         }
 
         if (Input.IsMouseJustPressed(MouseButton.Middle))
@@ -87,7 +99,7 @@ public class EditLevelState : GameState
             }
             else
             {
-                pathNode = new PathNode(tuple.node, NodeSize, tuple.node.nodeType);
+                pathNode = new PathNode(tuple.node, NodeSize, tuple.node.Type);
                 pathNode.OnDelete += HandleNodeDelete;
                 dict[tuple.node] = pathNode;
                 AddGameObject(pathNode);

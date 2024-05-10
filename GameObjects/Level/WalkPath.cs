@@ -28,7 +28,7 @@ class Node
 
     public Vector2 Position { get; set; }
     public Dictionary<Node, double> PathLengths { get; set; }
-    public NodeType nodeType { get; set; }
+    public NodeType Type { get; set; }
 
     // public List<Node> NextNodes
     // {
@@ -42,7 +42,7 @@ class Node
 
         _nextNodes = new();
         PathLengths = new();
-        nodeType = NodeType.Regular;
+        Type = NodeType.Regular;
     }
 
     public List<Node> GetNextNodes()
@@ -157,7 +157,7 @@ class WalkPath
                     X = tuple.node.Position.X,
                     Y = tuple.node.Position.Y,
                     ID = countID,
-                    Type = tuple.node.nodeType,
+                    Type = tuple.node.Type,
                 };
 
                 dict[tuple.node] = newMeta;
@@ -189,7 +189,7 @@ class WalkPath
         foreach (var meta in metadata)
         {
             var position = new Vector2(meta.X, meta.Y);
-            var node = new Node(position) { nodeType = meta.Type };
+            var node = new Node(position) { Type = meta.Type };
             dict[meta.ID] = node;
 
             if (meta.Type == NodeType.Start)
