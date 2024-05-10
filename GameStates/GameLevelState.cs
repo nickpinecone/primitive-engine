@@ -18,9 +18,11 @@ public class GameLevelState : GameState
         var basicOrk = AssetManager.GetAsset<Texture2D>("Enemies/BasicOrk");
         var basicOrkSource = new Rectangle(0, 0, basicOrk.Width, basicOrk.Height);
 
-        var enemy = new Enemy(walkPath, 1, walkPath.GetStartNodes()[0].Position, 0.4f, basicOrk, basicOrkSource);
+        var enemy = new Enemy(walkPath, walkPath.GetStartNodes()[0], 24f, 0.4f, basicOrk, basicOrkSource);
+        var plot = new TowerPlot(new Vector2(200, 100), 0.8f);
 
         AddGameObject(enemy);
+        AddGameObject(plot);
     }
 
     public override void UnloadContent(ContentManager contentManager)

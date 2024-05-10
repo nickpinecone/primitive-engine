@@ -54,7 +54,6 @@ class Node
         }
         else
         {
-            // Damage player somehow
             return null;
         }
     }

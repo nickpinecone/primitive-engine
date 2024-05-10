@@ -8,18 +8,23 @@ using TowerDefense;
 
 class Enemy : GameObject
 {
+    public event EventHandler OnDie;
+    public event EventHandler OnReachBase;
+
     private WalkPath _walkPath;
+
+    public int Health { get; set; }
 
     public float MoveSpeed { get; protected set; }
     public float MovedDistance { get; set; }
     public Node FromNode { get; set; }
 
-    public Enemy(WalkPath walkPath, float moveSpeed, Vector2 position, float scale, Texture2D texture, Rectangle source)
+    public Enemy(WalkPath walkPath, Node startNode, float moveSpeed, float scale, Texture2D texture, Rectangle source)
     {
         _walkPath = walkPath;
-        FromNode = walkPath.GetStartNodes()[0];
+        FromNode = startNode;
 
-        WorldPosition = position;
+        WorldPosition = startNode.Position;
         Scale = scale;
         MoveSpeed = moveSpeed;
 
@@ -31,15 +36,31 @@ class Enemy : GameObject
     {
     }
 
+    public void TakeDamage(int damage)
+    {
+        Health -= damage;
+
+        if (Health <= 0)
+        {
+            OnDie?.Invoke(this, null);
+        }
+    }
+
     public override void Update(GameTime gameTime)
     {
         var toNode = _walkPath.GetNextPoint(this);
 
-        if (toNode == null) return;
+        if (toNode == null)
+        {
+            OnReachBase?.Invoke(this, null);
+            return;
+        }
+
+        var delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
         var direction = toNode.Position - WorldPosition;
         direction.Normalize();
-        var velocity = direction * MoveSpeed;
+        var velocity = direction * MoveSpeed * delta;
 
         WorldPosition += velocity;
         MovedDistance += velocity.Length();

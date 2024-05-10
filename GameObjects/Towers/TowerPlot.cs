@@ -6,31 +6,34 @@ using Microsoft.Xna.Framework.Input;
 
 using TowerDefense;
 
-class LevelPoint : GameObject
+class TowerPlot : GameObject
 {
-    public event EventHandler<GameState> OnLevelSelect;
-
     private Selectable _selectable;
-    private GameState _level;
 
-    override public Vector2 WorldPosition { get { return _selectable.WorldPosition; } }
     override public float Scale { get { return _selectable.Scale; } }
     override public Rectangle SourceRectangle { get { return _selectable.SourceRectangle; } }
 
-    public LevelPoint(Vector2 position, float scale, GameState level)
+    override public Vector2 WorldPosition
     {
-        _level = level;
+        get { return _selectable.WorldPosition; }
+        set
+        {
+            _selectable.WorldPosition = value;
+        }
+    }
 
-        var flag = AssetManager.GetAsset<Texture2D>("Sprites/LevelSheet");
-        var flagSource = new Rectangle(1120, 675, 75, 150);
+    public TowerPlot(Vector2 position, float scale)
+    {
+        var plot = AssetManager.GetAsset<Texture2D>("Sprites/LevelSheet");
+        var plotSource = new Rectangle(495, 635, 110, 50);
 
-        _selectable = new Selectable(position, scale, 2, flag, flagSource, flagSource);
+        _selectable = new Selectable(position, scale, 2, plot, plotSource, plotSource);
         _selectable.OnDoubleSelect += HandleSelection;
     }
 
     public void HandleSelection(object sender, EventArgs args)
     {
-        OnLevelSelect?.Invoke(this, _level);
+        Console.WriteLine("BUIDL TOWERKJll");
     }
 
     public override void HandleInput()
