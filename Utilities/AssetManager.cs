@@ -17,8 +17,6 @@ public static class AssetManager
 
     public static T GetAsset<T>(string name)
     {
-        if (_content == null) throw new Exception("asset manager not initialized");
-
         if (!_assets.ContainsKey(name))
         {
             _assets[name] = _content.Load<T>(name);
@@ -29,8 +27,6 @@ public static class AssetManager
 
     public static void UnloadAssets()
     {
-        if (_content == null) throw new Exception("asset manager not initialized");
-
         _content.Unload();
         _assets.Clear();
     }

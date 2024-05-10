@@ -9,7 +9,7 @@ namespace TowerDefense;
 
 public static class DebugTexture
 {
-    static GraphicsDeviceManager graphicsDevice;
+    static GraphicsDeviceManager graphicsDevice = null;
 
     static public void Initialize(GraphicsDeviceManager graphicsDevice)
     {

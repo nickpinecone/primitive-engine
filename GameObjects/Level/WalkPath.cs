@@ -30,12 +30,6 @@ class Node
     public Dictionary<Node, double> PathLengths { get; set; }
     public NodeType Type { get; set; }
 
-    // public List<Node> NextNodes
-    // {
-    //     get { return _nextNodes; }
-    //     set { _nextNodes = value; }
-    // }
-
     public Node(Vector2 position)
     {
         Position = position;

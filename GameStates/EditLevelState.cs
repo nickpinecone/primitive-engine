@@ -39,7 +39,7 @@ public class EditLevelState : GameState
             SwitchState(new WorldMapState());
         }
 
-        if (Input.IsKeyJustPressed(Keys.L))
+        if (Input.IsKeyJustPressed(Keys.A))
         {
             PathNode.ChangeMode = PathChangeMode.Link;
         }
@@ -47,7 +47,7 @@ public class EditLevelState : GameState
         {
             PathNode.ChangeMode = PathChangeMode.Delete;
         }
-        else if (Input.IsKeyJustPressed(Keys.C))
+        else if (Input.IsKeyJustPressed(Keys.F))
         {
             PathNode.ChangeMode = PathChangeMode.Shift;
         }
