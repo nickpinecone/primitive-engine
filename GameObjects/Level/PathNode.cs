@@ -14,7 +14,6 @@ class PathNode : GameObject
     public static PathChangeMode ChangeMode = PathChangeMode.Link;
     private static PathNode SelectedNode = null;
 
-    public event EventHandler OnSelect;
     public event EventHandler OnDelete;
 
     private Selectable _selectable;
@@ -68,7 +67,6 @@ class PathNode : GameObject
 
     public void HandleClick(object sender, EventArgs args)
     {
-        var keyState = Keyboard.GetState();
         var nodeSender = (PathNode)sender;
         if (SelectedNode == nodeSender) return;
 
@@ -87,8 +85,6 @@ class PathNode : GameObject
                 SelectedNode.UnlinkNode(nodeSender);
             }
         }
-
-        OnSelect?.Invoke(this, null);
     }
 
     public void LinkNode(PathNode other)
@@ -96,6 +92,7 @@ class PathNode : GameObject
         if (other.Node.Type == NodeType.Start) return;
         if (this.Node.Type == NodeType.End) return;
         if (other._nextNodes.Contains(this)) return;
+        if (_nextNodes.Contains(other)) return;
 
         this.Node.LinkNode(other.Node);
         LinkPath(other);
