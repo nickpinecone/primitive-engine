@@ -46,9 +46,17 @@ class Node
 
     public Node PickNextNode()
     {
-        var index = RandomGenerator.Rng.Next(_nextNodes.Count);
+        if (_nextNodes.Count > 0)
+        {
+            var index = RandomGenerator.Rng.Next(_nextNodes.Count);
 
-        return _nextNodes[index] ?? null;
+            return _nextNodes[index];
+        }
+        else
+        {
+            // Damage player somehow
+            return null;
+        }
     }
 
     public void LinkNode(Node otherNode)
@@ -64,12 +72,12 @@ class Node
 
 class WalkPath
 {
-    // private Dictionary<string, Node> _enemyNodes;
+    private Dictionary<Enemy, Node> _enemyNodes;
     private List<Node> _startNodes;
 
     public WalkPath()
     {
-        // _enemyNodes = new();
+        _enemyNodes = new();
         _startNodes = new();
     }
 
@@ -129,13 +137,27 @@ class WalkPath
     //     return new List<string>();
     // }
 
-    // public Node GetNextPoint(string enemy)
-    // {
-    //     // // Check if enemy has reached the point
-    //     // var originNode = _enemyNodes[enemy];
-    //     // return originNode.node.PickNextNode();
-    //     return new Node();
-    // }
+    public Node GetNextPoint(Enemy enemy)
+    {
+        if (!_enemyNodes.ContainsKey(enemy))
+        {
+            _enemyNodes[enemy] = enemy.FromNode.PickNextNode();
+        }
+
+        var toNode = _enemyNodes[enemy];
+        if (toNode == null) return null;
+
+        if (enemy.MovedDistance >= toNode.PathLengths[enemy.FromNode])
+        {
+            enemy.MovedDistance = 0;
+            enemy.FromNode = toNode;
+            var nextNode = toNode.PickNextNode();
+            _enemyNodes[enemy] = nextNode;
+            toNode = nextNode;
+        }
+
+        return toNode;
+    }
 
     public void SaveToFile(string filename)
     {
