@@ -15,6 +15,7 @@ public abstract class GameState
 
     protected List<GameObject> _gameObjects = new List<GameObject>();
     private List<GameObject> _removeQueue = new List<GameObject>();
+    private List<GameObject> _addQueue = new List<GameObject>();
 
     public abstract void LoadContent(ContentManager contentManager);
     public abstract void UnloadContent(ContentManager contentManager);
@@ -36,6 +37,12 @@ public abstract class GameState
         }
         _removeQueue.Clear();
 
+        foreach (var gameObject in _addQueue)
+        {
+            _gameObjects.Add(gameObject);
+        }
+        _addQueue.Clear();
+
         foreach (var gameObject in _gameObjects)
         {
             gameObject.Update(gameTime);
@@ -54,7 +61,7 @@ public abstract class GameState
 
     protected void AddGameObject(GameObject gameObject)
     {
-        _gameObjects.Add(gameObject);
+        _addQueue.Add(gameObject);
     }
 
     protected void RemoveGameObject(GameObject gameObject)

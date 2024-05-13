@@ -19,7 +19,7 @@ class Enemy : GameObject
     public float MovedDistance { get; set; }
     public Node FromNode { get; set; }
 
-    public Enemy(WalkPath walkPath, Node startNode, float moveSpeed, float scale, Texture2D texture, Rectangle source)
+    public Enemy(WalkPath walkPath, Node startNode, float moveSpeed, int health, float scale, Texture2D texture, Rectangle source)
     {
         _walkPath = walkPath;
         FromNode = startNode;
@@ -27,6 +27,7 @@ class Enemy : GameObject
         WorldPosition = startNode.Position;
         Scale = scale;
         MoveSpeed = moveSpeed;
+        Health = health;
 
         Texture = texture;
         SourceRectangle = source;
@@ -43,6 +44,7 @@ class Enemy : GameObject
         if (Health <= 0)
         {
             OnDie?.Invoke(this, null);
+            Console.WriteLine("DIDE");
         }
     }
 

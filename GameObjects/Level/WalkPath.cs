@@ -131,10 +131,35 @@ class WalkPath
         _startNodes.Add(node);
     }
 
-    // public List<string> GetEnemiesToPoints(List<Node> points)
-    // {
-    //     return new List<string>();
-    // }
+    public List<Node> GetNodesInRadius(Vector2 position, float radius)
+    {
+        var nodes = new List<Node>();
+
+        foreach (var tuple in Enumerate())
+        {
+            if (Vector2.Distance(position, tuple.node.Position) <= radius)
+            {
+                nodes.Add(tuple.node);
+            }
+        }
+
+        return nodes;
+    }
+
+    public List<Enemy> GetEnemiesToPoints(List<Node> points)
+    {
+        var enemies = new List<Enemy>();
+
+        foreach (var (enemy, node) in _enemyNodes)
+        {
+            if (points.Contains(node))
+            {
+                enemies.Add(enemy);
+            }
+        }
+
+        return enemies;
+    }
 
     public Node GetNextPoint(Enemy enemy)
     {

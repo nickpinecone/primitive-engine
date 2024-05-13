@@ -10,8 +10,6 @@ namespace TowerDefense;
 
 public class EditLevelState : GameState
 {
-    const int NodeSize = 20;
-
     WalkPath walkPath = new();
 
     public override void LoadContent(ContentManager contentManager)
@@ -67,7 +65,7 @@ public class EditLevelState : GameState
                 nodeType = NodeType.End;
             }
 
-            var pathNode = new PathNode(node, NodeSize, nodeType);
+            var pathNode = new PathNode(node, nodeType);
             pathNode.OnDelete += HandleNodeDelete;
             AddGameObject(pathNode);
         }
@@ -99,7 +97,7 @@ public class EditLevelState : GameState
             }
             else
             {
-                pathNode = new PathNode(tuple.node, NodeSize, tuple.node.Type);
+                pathNode = new PathNode(tuple.node, tuple.node.Type);
                 pathNode.OnDelete += HandleNodeDelete;
                 dict[tuple.node] = pathNode;
                 AddGameObject(pathNode);

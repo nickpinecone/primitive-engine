@@ -43,7 +43,7 @@ class Selectable : GameObject
         OutlineSize = outlineSize;
     }
 
-    public void HandleButtonClick(object sender, EventArgs args)
+    private void HandleButtonClick(object sender, EventArgs args)
     {
         OnClick?.Invoke(this, null);
 
@@ -58,7 +58,7 @@ class Selectable : GameObject
         }
     }
 
-    public void HandleButtonRightClick(object sender, EventArgs args)
+    private void HandleButtonRightClick(object sender, EventArgs args)
     {
         OnRightClick?.Invoke(this, null);
     }

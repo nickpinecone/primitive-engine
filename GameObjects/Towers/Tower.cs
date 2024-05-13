@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -6,16 +7,17 @@ using Microsoft.Xna.Framework.Input;
 
 using TowerDefense;
 
-class TowerPlot : GameObject
+class Tower : GameObject
 {
-    public event EventHandler OnTowerSelect;
-
     private Selectable _selectable;
+    private WalkPath _walkPath;
+    private List<Node> _nodesInRadius;
+    private TowerPlot _plot;
+
+    public float DetectRadius { get; set; }
 
     override public float Scale { get { return _selectable.Scale; } }
     override public Rectangle SourceRectangle { get { return _selectable.SourceRectangle; } }
-
-    public bool Disabled { get; set; }
 
     override public Vector2 WorldPosition
     {
@@ -26,32 +28,36 @@ class TowerPlot : GameObject
         }
     }
 
-    public TowerPlot(Vector2 position, float scale)
+    public Tower(TowerPlot plot, WalkPath walkPath, float detectRadius, Vector2 position, float scale, Texture2D texture, Rectangle source)
     {
-        var plot = AssetManager.GetAsset<Texture2D>("Sprites/LevelSheet");
-        var plotSource = new Rectangle(495, 635, 110, 50);
+        DetectRadius = detectRadius;
 
-        _selectable = new Selectable(position, scale, 2, plot, plotSource, plotSource);
-        _selectable.OnDoubleSelect += HandleSelection;
+        _plot = plot;
+        _plot.Disabled = true;
+
+        _walkPath = walkPath;
+        _selectable = new Selectable(position, scale, 2, texture, source, source);
+        _nodesInRadius = _walkPath.GetNodesInRadius(WorldPosition, DetectRadius);
     }
 
-    public void HandleSelection(object sender, EventArgs args)
+    public bool InRadius(Vector2 position)
     {
-        OnTowerSelect?.Invoke(this, null);
+        return Vector2.Distance(position, WorldPosition) <= DetectRadius;
     }
 
     public override void HandleInput()
     {
-        if (Disabled) return;
-
         _selectable.HandleInput();
     }
 
     public override void Update(GameTime gameTime)
     {
-        if (Disabled) return;
-
         _selectable.Update(gameTime);
+
+        foreach (var enemy in _walkPath.GetEnemiesToPoints(_nodesInRadius))
+        {
+            enemy.TakeDamage(1);
+        }
     }
 
     public override void Draw(SpriteBatch spriteBatch, GraphicsDeviceManager graphicsDevice)

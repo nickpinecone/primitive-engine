@@ -42,14 +42,14 @@ class PathNode : GameObject
         set { _selectable.AccentColor = value; }
     }
 
-    public PathNode(Node node, int size, NodeType type)
+    public PathNode(Node node, NodeType type)
     {
         Node = node;
-        Size = size;
+        Size = 20;
         Node.Type = type;
 
-        var texture = DebugTexture.GenerateTexture(size, size, Color.White);
-        var source = new Rectangle(0, 0, size, size);
+        var texture = DebugTexture.GenerateTexture(Size, Size, Color.White);
+        var source = new Rectangle(0, 0, Size, Size);
 
         _nextNodes = new();
         _prevNodes = new();

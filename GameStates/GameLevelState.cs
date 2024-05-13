@@ -18,8 +18,9 @@ public class GameLevelState : GameState
         var basicOrk = AssetManager.GetAsset<Texture2D>("Enemies/BasicOrk");
         var basicOrkSource = new Rectangle(0, 0, basicOrk.Width, basicOrk.Height);
 
-        var enemy = new Enemy(walkPath, walkPath.GetStartNodes()[0], 24f, 0.4f, basicOrk, basicOrkSource);
+        var enemy = new Enemy(walkPath, walkPath.GetStartNodes()[0], 24f, 100, 0.4f, basicOrk, basicOrkSource);
         var plot = new TowerPlot(new Vector2(200, 100), 0.8f);
+        plot.OnTowerSelect += HandleTowerSelect;
 
         AddGameObject(enemy);
         AddGameObject(plot);
@@ -28,6 +29,17 @@ public class GameLevelState : GameState
     public override void UnloadContent(ContentManager contentManager)
     {
         AssetManager.UnloadAssets();
+    }
+
+    public void HandleTowerSelect(object sender, EventArgs args)
+    {
+        var archerTower = AssetManager.GetAsset<Texture2D>("Towers/ArcherTower");
+        var archerTowerSource = new Rectangle(65, 180, 150, 190);
+
+        var plot = (TowerPlot)sender;
+        var tower = new Tower(plot, walkPath, 400, plot.WorldPosition, 0.1f, archerTower, archerTowerSource);
+
+        AddGameObject(tower);
     }
 
     public override void HandleInput()
