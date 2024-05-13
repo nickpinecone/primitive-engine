@@ -11,16 +11,9 @@ class Button : GameObject
     public event EventHandler OnClick;
     public event EventHandler OnRightClick;
 
-    public string Text { get; protected set; }
-    public Vector2 TextOrigin { get; protected set; }
-    public SpriteFont Font { get; protected set; }
-    public Rectangle HoverSource { get; protected set; }
+    private Label _label;
 
-    private Vector2 GetTextOrigin(SpriteFont font, string text)
-    {
-        var textSize = font.MeasureString(text);
-        return textSize / 2f;
-    }
+    public Rectangle HoverSource { get; protected set; }
 
     // Default Button
     public Button(string text, Vector2 position, float scale = 1f)
@@ -30,15 +23,14 @@ class Button : GameObject
         var sourceRect = new Rectangle(180, 200, 360, 180);
         var hoverRect = new Rectangle(565, 200, 360, 180);
 
-        Text = text;
+        _label = new Label(position, scale, text, font);
+
         WorldPosition = position;
         Scale = scale;
 
         Texture = buttonSprite;
-        Font = font;
         SourceRectangle = sourceRect;
         HoverSource = hoverRect;
-        TextOrigin = GetTextOrigin(font, text);
     }
 
     // Custom button
@@ -55,16 +47,13 @@ class Button : GameObject
     public Button(string text, Vector2 position, float scale, Texture2D texture, Rectangle source, Rectangle hoverSource, SpriteFont font)
         : this(position, scale, texture, source, hoverSource)
     {
-        Text = text;
-        Font = font;
-        TextOrigin = GetTextOrigin(font, text);
+        _label = new Label(position, scale, text, font);
     }
 
     public override void Draw(SpriteBatch spriteBatch, GraphicsDeviceManager graphicsDevice)
     {
         base.Draw(spriteBatch, graphicsDevice);
-        if (Font != null)
-            spriteBatch.DrawString(Font, Text, WorldPosition, Color.White, 0, TextOrigin, Scale, SpriteEffects.None, 0);
+        _label?.Draw(spriteBatch, graphicsDevice);
     }
 
     public override void HandleInput()

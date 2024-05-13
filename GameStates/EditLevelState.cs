@@ -10,6 +10,7 @@ namespace TowerDefense;
 
 public class EditLevelState : GameState
 {
+    bool _isWalkPathEdit = false;
     WalkPath walkPath = new();
 
     public override void LoadContent(ContentManager contentManager)
