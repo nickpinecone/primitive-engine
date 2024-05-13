@@ -13,6 +13,7 @@ class PathNode : GameObject
 {
     public static PathChangeMode ChangeMode = PathChangeMode.Link;
     private static PathNode SelectedNode = null;
+    public static bool Disabled = false;
 
     public event EventHandler OnDelete;
 
@@ -151,6 +152,8 @@ class PathNode : GameObject
 
     public override void HandleInput()
     {
+        if (PathNode.Disabled) return;
+
         _selectable.HandleInput();
 
         if (SelectedNode != null && Input.IsMouseJustPressed(MouseButton.Right))

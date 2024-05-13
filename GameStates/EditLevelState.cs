@@ -10,22 +10,38 @@ namespace TowerDefense;
 
 public class EditLevelState : GameState
 {
-    bool _isWalkPathEdit = false;
+    Label walkPathInfo;
+    bool isWalkPathEdit = false;
     WalkPath walkPath = new();
+
+    public void UpdateWalkPathInfo()
+    {
+        var text = "Walk Path Edit: " + (isWalkPathEdit ? "On" : "Off");
+        var editMode = PathNode.ChangeMode switch
+        {
+            PathChangeMode.Link => "Link",
+            PathChangeMode.Delete => "Delete",
+            PathChangeMode.Shift => "Shift",
+            _ => "None"
+        };
+        text += "\nEdit Mode: " + editMode;
+        walkPathInfo.Text = text;
+    }
 
     public override void LoadContent(ContentManager contentManager)
     {
+        // Walk Path Debug Info
+        walkPathInfo = new Label(Vector2.Zero, 0.5f, "");
+        walkPathInfo.AccentColor = Color.Black;
+        walkPathInfo.WorldPosition += walkPathInfo.TextSize / 2f;
+
+        UpdateWalkPathInfo();
+        AddGameObject(walkPathInfo);
     }
 
     public override void UnloadContent(ContentManager contentManager)
     {
         AssetManager.UnloadAssets();
-    }
-
-    public void HandleNodeDelete(object sender, EventArgs args)
-    {
-        var node = (PathNode)sender;
-        RemoveGameObject(node);
     }
 
     public override void HandleInput()
@@ -38,6 +54,22 @@ public class EditLevelState : GameState
             SwitchState(new WorldMapState());
         }
 
+        if (Input.IsKeyJustPressed(Keys.W))
+        {
+            isWalkPathEdit = !isWalkPathEdit;
+            PathNode.Disabled = !isWalkPathEdit;
+        }
+
+        if (isWalkPathEdit)
+        {
+            HandleWalkPathInput(mouseState, keyState);
+        }
+
+        base.HandleInput();
+    }
+
+    public void HandleWalkPathInput(MouseState mouseState, KeyboardState keyState)
+    {
         if (Input.IsKeyJustPressed(Keys.A))
         {
             PathNode.ChangeMode = PathChangeMode.Link;
@@ -71,7 +103,7 @@ public class EditLevelState : GameState
             AddGameObject(pathNode);
         }
 
-        if (Input.IsKeyJustPressed(Keys.W))
+        if (Input.IsKeyJustPressed(Keys.Q))
         {
             walkPath.SaveToFile("walk_path");
         }
@@ -80,8 +112,12 @@ public class EditLevelState : GameState
             walkPath.LoadFromFile("walk_path");
             GeneratePathNodes();
         }
+    }
 
-        base.HandleInput();
+    public void HandleNodeDelete(object sender, EventArgs args)
+    {
+        var node = (PathNode)sender;
+        RemoveGameObject(node);
     }
 
     public void GeneratePathNodes()
@@ -114,5 +150,6 @@ public class EditLevelState : GameState
     public override void Update(GameTime gameTime)
     {
         base.Update(gameTime);
+        UpdateWalkPathInfo();
     }
 }

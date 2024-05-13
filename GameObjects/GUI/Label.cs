@@ -11,21 +11,21 @@ class Label : GameObject
     public string Text { get; set; }
     public Vector2 TextOrigin { get; protected set; }
     public SpriteFont Font { get; protected set; }
+    public Vector2 TextSize { get; protected set; }
 
-    private Vector2 GetTextOrigin(SpriteFont font, string text)
+    public Label(Vector2 position, float scale, string text, SpriteFont font = null)
     {
-        var textSize = font.MeasureString(text);
-        return textSize / 2f;
-    }
+        font ??= AssetManager.GetAsset<SpriteFont>("GUI/MenuFont");
 
-    public Label(Vector2 position, float scale, string text, SpriteFont font)
-    {
         WorldPosition = position;
         Scale = scale;
 
         Text = text;
         Font = font;
-        TextOrigin = GetTextOrigin(font, text);
+
+        TextSize = Font.MeasureString(Text);
+        TextOrigin = TextSize / 2f;
+        TextSize *= scale;
     }
 
     public override void HandleInput()

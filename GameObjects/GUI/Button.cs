@@ -19,11 +19,10 @@ class Button : GameObject
     public Button(string text, Vector2 position, float scale = 1f)
     {
         var buttonSprite = AssetManager.GetAsset<Texture2D>("GUI/Buttons");
-        var font = AssetManager.GetAsset<SpriteFont>("GUI/MenuFont");
         var sourceRect = new Rectangle(180, 200, 360, 180);
         var hoverRect = new Rectangle(565, 200, 360, 180);
 
-        _label = new Label(position, scale, text, font);
+        _label = new Label(position, scale, text);
 
         WorldPosition = position;
         Scale = scale;
