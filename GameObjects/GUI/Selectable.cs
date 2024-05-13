@@ -21,6 +21,7 @@ class Selectable : GameObject
 
     override public float Scale { get { return _button.Scale; } }
     override public Rectangle SourceRectangle { get { return _button.SourceRectangle; } }
+    override public Texture2D Texture { get { return _button.Texture; } }
 
     override public Vector2 WorldPosition
     {

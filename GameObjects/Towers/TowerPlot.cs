@@ -14,6 +14,7 @@ class TowerPlot : GameObject
 
     override public float Scale { get { return _selectable.Scale; } }
     override public Rectangle SourceRectangle { get { return _selectable.SourceRectangle; } }
+    override public Texture2D Texture { get { return _selectable.Texture; } }
 
     public bool Disabled { get; set; }
 

@@ -28,6 +28,8 @@ public class EditLevelState : GameState
         walkPathInfo.Text = text;
     }
 
+    Grid grid = new(GameSettings.WindowSize, 7, 8f);
+
     public override void LoadContent(ContentManager contentManager)
     {
         // Walk Path Debug Info
@@ -35,7 +37,19 @@ public class EditLevelState : GameState
         walkPathInfo.AccentColor = Color.Black;
         walkPathInfo.WorldPosition += walkPathInfo.TextSize / 2f;
 
+        var plot = new TowerPlot(new Vector2(200, 100), 0.8f);
+
+        grid.AddItem(plot);
+        grid.AddItem(plot);
+        grid.AddItem(plot);
+        grid.AddItem(plot);
+        grid.AddItem(plot);
+        grid.AddItem(plot);
+        grid.AddItem(plot);
+        grid.AddItem(plot);
+
         UpdateWalkPathInfo();
+        AddGameObject(grid);
         AddGameObject(walkPathInfo);
     }
 

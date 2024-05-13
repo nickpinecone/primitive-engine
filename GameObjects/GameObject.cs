@@ -10,8 +10,9 @@ public abstract class GameObject
     virtual public Vector2 WorldPosition { get; set; }
     virtual public float Scale { get; protected set; }
     virtual public float Rotation { get; protected set; }
+    virtual public Texture2D Texture { get; protected set; }
+
     public Color AccentColor { get; set; }
-    public Texture2D Texture { get; protected set; }
 
     private Rectangle? _sourceRectangle = null;
     virtual public Rectangle SourceRectangle
