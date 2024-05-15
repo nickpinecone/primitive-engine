@@ -19,9 +19,14 @@ class Selectable : GameObject
     public bool IsHovered { get; protected set; }
     public int OutlineSize { get; protected set; }
 
-    override public float Scale { get { return _button.Scale; } }
     override public Rectangle SourceRectangle { get { return _button.SourceRectangle; } }
     override public Texture2D Texture { get { return _button.Texture; } }
+
+    override public float Scale
+    {
+        get { return _button.Scale; }
+        set { _button.Scale = value; }
+    }
 
     override public Vector2 WorldPosition
     {

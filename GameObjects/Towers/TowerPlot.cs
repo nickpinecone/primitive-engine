@@ -12,11 +12,16 @@ class TowerPlot : GameObject
 
     private Selectable _selectable;
 
-    override public float Scale { get { return _selectable.Scale; } }
     override public Rectangle SourceRectangle { get { return _selectable.SourceRectangle; } }
     override public Texture2D Texture { get { return _selectable.Texture; } }
 
     public bool Disabled { get; set; }
+
+    override public float Scale
+    {
+        get { return _selectable.Scale; }
+        set { _selectable.Scale = value; }
+    }
 
     override public Vector2 WorldPosition
     {

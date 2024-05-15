@@ -58,12 +58,20 @@ class LevelEditor : GameObject
 
         if (Hidden)
         {
-            if (_selectedItem != null && Input.IsMouseJustPressed(MouseButton.Left))
+            var mouseState = Mouse.GetState();
+
+            if (_selectedItem != null)
             {
-                var mouseState = Mouse.GetState();
-                var position = mouseState.Position.ToVector2();
-                OnItemPlace?.Invoke(this, (_selectedItem.GetType(), position, 1f));
+                if (Input.IsMouseJustPressed(MouseButton.Left))
+                {
+                    var position = mouseState.Position.ToVector2();
+                    OnItemPlace?.Invoke(this, (_selectedItem.GetType(), position, _selectedItem.Scale));
+                }
+
+                var scale = MathHelper.Clamp(mouseState.ScrollWheelValue / 1000f + 1, 0.1f, 10f);
+                _selectedItem.Scale = scale;
             }
+
         }
         else
         {
