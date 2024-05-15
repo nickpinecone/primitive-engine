@@ -19,7 +19,7 @@ class GridItem : GameObject
     {
         _type = gameObject.GetType();
         _selectable = new Selectable(position, scale, 2, gameObject.Texture, gameObject.SourceRectangle, gameObject.SourceRectangle);
-        _selectable.OnSelect += HandleSelect;
+        _selectable.OnClick += HandleSelect;
     }
 
     public void HandleSelect(object sender, EventArgs args)

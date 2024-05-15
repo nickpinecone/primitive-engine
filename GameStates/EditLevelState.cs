@@ -14,6 +14,7 @@ public class EditLevelState : GameState
     bool isWalkPathEdit;
     WalkPath walkPath;
     LevelEditor levelEditor;
+    List<GameObject> saveObjects;
 
     public void UpdateWalkPathInfo()
     {
@@ -32,6 +33,7 @@ public class EditLevelState : GameState
     public override void LoadContent(ContentManager contentManager)
     {
         // Level Editor Setup
+        saveObjects = new();
         levelEditor = new();
         levelEditor.OnItemPlace += HandleItemPlace;
 
@@ -57,6 +59,19 @@ public class EditLevelState : GameState
     {
         var keyState = Keyboard.GetState();
         var mouseState = Mouse.GetState();
+
+        if (Input.IsMouseJustPressed(MouseButton.Right))
+        {
+            foreach (var gameObject in saveObjects)
+            {
+                if (gameObject.WorldRectangle.Contains(mouseState.Position))
+                {
+                    RemoveGameObject(gameObject);
+                    saveObjects.Remove(gameObject);
+                    break;
+                }
+            }
+        }
 
         if (Input.IsKeyJustPressed(Keys.Escape))
         {
@@ -164,6 +179,7 @@ public class EditLevelState : GameState
         var gameObject = (GameObject)ctor.Invoke(new object[] { data.position, data.scale });
 
         AddGameObject(gameObject);
+        saveObjects.Add(gameObject);
     }
 
     public override void Update(GameTime gameTime)
