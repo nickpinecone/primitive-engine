@@ -6,6 +6,14 @@ using Microsoft.Xna.Framework.Input;
 
 using TowerDefense;
 
+class ObjectMetadata
+{
+    public string TypeName { get; set; }
+    public float X { get; set; }
+    public float Y { get; set; }
+    public float Scale { get; set; }
+}
+
 class LevelEditor : GameObject
 {
     public event EventHandler<(Type type, Vector2 position, float scale)> OnItemPlace;
@@ -19,6 +27,8 @@ class LevelEditor : GameObject
 
     public LevelEditor()
     {
+        Hidden = true;
+
         ZIndex = 1;
 
         _panel = DebugTexture.GenerateTexture((int)GameSettings.WindowSize.X, (int)GameSettings.WindowSize.Y, Color.White);

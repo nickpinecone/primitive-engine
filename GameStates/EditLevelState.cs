@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text.Json;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -71,6 +73,14 @@ public class EditLevelState : GameState
                     break;
                 }
             }
+        }
+        if (Input.IsKeyJustPressed(Keys.Q))
+        {
+            SaveLevelEditor("level_editor");
+        }
+        if (Input.IsKeyJustPressed(Keys.R))
+        {
+            LoadLevelEditor("level_editor");
         }
 
         if (Input.IsKeyJustPressed(Keys.Escape))
@@ -180,6 +190,49 @@ public class EditLevelState : GameState
 
         AddGameObject(gameObject);
         saveObjects.Add(gameObject);
+    }
+
+    public void SaveLevelEditor(string filename)
+    {
+        var metadata = new List<ObjectMetadata>();
+
+        foreach (var gameObject in saveObjects)
+        {
+            var meta = new ObjectMetadata()
+            {
+                TypeName = gameObject.GetType().FullName,
+                X = gameObject.WorldPosition.X,
+                Y = gameObject.WorldPosition.Y,
+                Scale = gameObject.Scale,
+            };
+
+            metadata.Add(meta);
+        }
+
+        var data = JsonSerializer.Serialize(metadata);
+        var workDir = System.IO.Directory.GetCurrentDirectory();
+        File.WriteAllText(workDir + "/Saves/" + filename + ".json", data);
+    }
+
+    public void LoadLevelEditor(string filename)
+    {
+        var workDir = System.IO.Directory.GetCurrentDirectory();
+        var data = File.ReadAllText(workDir + "/Saves/" + filename + ".json");
+        var metadata = JsonSerializer.Deserialize<List<ObjectMetadata>>(data);
+
+        foreach (var meta in metadata)
+        {
+            Type type = Type.GetType(meta.TypeName);
+            var position = new Vector2(meta.X, meta.Y);
+
+            var ctor =
+                type.GetConstructor(new Type[] { typeof(Vector2), typeof(float) })
+                ?? throw new Exception("Game object does not have an appropriate constructor");
+            var gameObject = (GameObject)ctor.Invoke(new object[] { position, meta.Scale });
+
+            AddGameObject(gameObject);
+            saveObjects.Add(gameObject);
+        }
     }
 
     public override void Update(GameTime gameTime)
