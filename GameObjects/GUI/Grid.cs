@@ -34,6 +34,7 @@ class GridItem : GameObject
 
     public override void Update(GameTime gameTime)
     {
+        _selectable.Update(gameTime);
     }
 
     public override void Draw(SpriteBatch spriteBatch, GraphicsDeviceManager graphicsDevice)
@@ -44,6 +45,8 @@ class GridItem : GameObject
 
 class Grid : GameObject
 {
+    public event EventHandler<Type> OnItemSelect;
+
     private List<GridItem> _items;
 
     public Vector2 Size { get; protected set; }
@@ -80,16 +83,30 @@ class Grid : GameObject
 
         var scale = SizePerItem / (float)wideSide / fraction;
         var gridItem = new GridItem(gameObject, GetPosition(), scale);
+        gridItem.OnSelect += HandleItemSelect;
 
         _items.Add(gridItem);
     }
 
+    public void HandleItemSelect(object sender, Type type)
+    {
+        OnItemSelect?.Invoke(this, type);
+    }
+
     public override void HandleInput()
     {
+        foreach (var item in _items)
+        {
+            item.HandleInput();
+        }
     }
 
     public override void Update(GameTime gameTime)
     {
+        foreach (var item in _items)
+        {
+            item.Update(gameTime);
+        }
     }
 
     public override void Draw(SpriteBatch spriteBatch, GraphicsDeviceManager graphicsDevice)

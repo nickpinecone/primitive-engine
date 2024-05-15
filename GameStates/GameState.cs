@@ -72,7 +72,7 @@ public abstract class GameState
     public void Draw(SpriteBatch spriteBatch, GraphicsDeviceManager graphicsDevice)
     {
         spriteBatch.Begin();
-        foreach (var gameObject in _gameObjects.OrderBy((gameObject) => gameObject.WorldPosition.Y))
+        foreach (var gameObject in _gameObjects.OrderBy((gameObject) => gameObject.ZIndex).ThenBy((gameObject) => gameObject.WorldPosition.Y))
         {
             gameObject.Draw(spriteBatch, graphicsDevice);
         }

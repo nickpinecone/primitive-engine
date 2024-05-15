@@ -11,8 +11,9 @@ namespace TowerDefense;
 public class EditLevelState : GameState
 {
     Label walkPathInfo;
-    bool isWalkPathEdit = false;
-    WalkPath walkPath = new();
+    bool isWalkPathEdit;
+    WalkPath walkPath;
+    LevelEditor levelEditor;
 
     public void UpdateWalkPathInfo()
     {
@@ -28,28 +29,22 @@ public class EditLevelState : GameState
         walkPathInfo.Text = text;
     }
 
-    Grid grid = new(GameSettings.WindowSize, 7, 8f);
-
     public override void LoadContent(ContentManager contentManager)
     {
+        // Level Editor Setup
+        levelEditor = new();
+        levelEditor.OnItemPlace += HandleItemPlace;
+
+        AddGameObject(levelEditor);
+
         // Walk Path Debug Info
+        walkPath = new();
+        isWalkPathEdit = false;
         walkPathInfo = new Label(Vector2.Zero, 0.5f, "");
         walkPathInfo.AccentColor = Color.Black;
         walkPathInfo.WorldPosition += walkPathInfo.TextSize / 2f;
 
-        var plot = new TowerPlot(new Vector2(200, 100), 0.8f);
-
-        grid.AddItem(plot);
-        grid.AddItem(plot);
-        grid.AddItem(plot);
-        grid.AddItem(plot);
-        grid.AddItem(plot);
-        grid.AddItem(plot);
-        grid.AddItem(plot);
-        grid.AddItem(plot);
-
         UpdateWalkPathInfo();
-        AddGameObject(grid);
         AddGameObject(walkPathInfo);
     }
 
@@ -159,6 +154,16 @@ public class EditLevelState : GameState
                 dict[tuple.from].LinkPath(pathNode);
             }
         }
+    }
+
+    public void HandleItemPlace(object sender, (Type type, Vector2 position, float scale) data)
+    {
+        var ctor =
+            data.type.GetConstructor(new Type[] { typeof(Vector2), typeof(float) })
+            ?? throw new Exception("Game object does not have an appropriate constructor");
+        var gameObject = (GameObject)ctor.Invoke(new object[] { data.position, data.scale });
+
+        AddGameObject(gameObject);
     }
 
     public override void Update(GameTime gameTime)

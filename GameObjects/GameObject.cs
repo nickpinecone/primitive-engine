@@ -11,6 +11,7 @@ public abstract class GameObject
     virtual public float Scale { get; protected set; }
     virtual public float Rotation { get; protected set; }
     virtual public Texture2D Texture { get; protected set; }
+    public int ZIndex { get; set; }
 
     public Color AccentColor { get; set; }
 
@@ -48,6 +49,7 @@ public abstract class GameObject
     public GameObject()
     {
         AccentColor = Color.White;
+        ZIndex = 0;
     }
 
     public virtual void Draw(SpriteBatch spriteBatch, GraphicsDeviceManager graphicsDevice)
