@@ -21,8 +21,9 @@ class LevelEditor : GameObject
 {
     public event EventHandler<(Type type, Vector2 position, float scale)> OnItemPlace;
 
-    private GameObject _selectedItem = null;
-    private List<GameObject> _placedObjects = new();
+    private Placeable _selectedItem;
+    private List<Placeable> _placedObjects;
+    private List<Placeable> _removeQueue;
 
     private Grid _grid;
     private Texture2D _panel;
@@ -31,6 +32,10 @@ class LevelEditor : GameObject
 
     public LevelEditor()
     {
+        _placedObjects = new();
+        _removeQueue = new();
+        _selectedItem = null;
+
         Hidden = true;
 
         ZIndex = 1;
@@ -44,42 +49,20 @@ class LevelEditor : GameObject
         _grid.AddItem(towerPlot);
     }
 
-    public void HandleItemSelect(object sender, Type type)
+    public void HandleItemSelect(object sender, Placeable placeable)
     {
-        var mouseState = Mouse.GetState();
-        var position = mouseState.Position.ToVector2();
-
-        var ctor =
-            type.GetConstructor(new Type[] { typeof(Vector2), typeof(float) })
-            ?? throw new Exception("Game object does not have an appropriate constructor");
-        var gameObject = (GameObject)ctor.Invoke(new object[] { position, 1f });
-
-        _selectedItem = gameObject;
+        var copy = placeable.Clone();
+        _selectedItem = copy;
         _selectedItem.AccentColor = Color.White * 0.5f;
     }
 
     public override void HandleInput()
     {
         var mouseState = Mouse.GetState();
-        foreach (var gameObject in _placedObjects)
+
+        foreach (var placeable in _placedObjects)
         {
-            if (Input.IsMouseJustPressed(MouseButton.Right))
-            {
-                if (gameObject.WorldRectangle.Contains(mouseState.Position))
-                {
-                    _placedObjects.Remove(gameObject);
-                    break;
-                }
-            }
-            else if (Input.IsMouseJustPressed(MouseButton.Left))
-            {
-                if (_selectedItem == null && gameObject.WorldRectangle.Contains(mouseState.Position))
-                {
-                    _selectedItem = gameObject;
-                    _placedObjects.Remove(gameObject);
-                    return;
-                }
-            }
+            placeable.HandleInput();
         }
 
         if (Input.IsKeyJustPressed(Keys.Z))
@@ -98,14 +81,12 @@ class LevelEditor : GameObject
             {
                 if (Input.IsMouseJustPressed(MouseButton.Left))
                 {
-                    var position = mouseState.Position.ToVector2();
-                    PlaceItem((_selectedItem.GetType(), position, _selectedItem.Scale));
+                    PlaceItem(_selectedItem);
                 }
 
                 var scale = MathHelper.Clamp(mouseState.ScrollWheelValue / 1000f + 1, 0.1f, 10f);
                 _selectedItem.Scale = scale;
             }
-
         }
         else
         {
@@ -113,19 +94,41 @@ class LevelEditor : GameObject
         }
     }
 
-    public void PlaceItem((Type type, Vector2 position, float scale) data)
+    public void PlaceItem(Placeable placeable)
     {
-        var ctor =
-            data.type.GetConstructor(new Type[] { typeof(Vector2), typeof(float) })
-            ?? throw new Exception("Game object does not have an appropriate constructor");
-        var gameObject = (GameObject)ctor.Invoke(new object[] { data.position, data.scale });
+        var copy = placeable.Clone();
+        copy.OnDelete += HandlePlaceableDelete;
+        copy.OnMove += HandlePlaceableMove;
+        _placedObjects.Add(copy);
+    }
 
-        _placedObjects.Add(gameObject);
+    private void HandlePlaceableMove(object sender, EventArgs args)
+    {
+        var placeable = (Placeable)sender;
+
+        _removeQueue.Add(placeable);
+        _selectedItem = placeable;
+    }
+
+    private void HandlePlaceableDelete(object sender, EventArgs args)
+    {
+        _removeQueue.Add((Placeable)sender);
     }
 
     public override void Update(GameTime gameTime)
     {
         var mouseState = Mouse.GetState();
+
+        foreach (var placeable in _removeQueue)
+        {
+            _placedObjects.Remove(placeable);
+        }
+        _removeQueue.Clear();
+
+        foreach (var placeable in _placedObjects)
+        {
+            placeable.Update(gameTime);
+        }
 
         if (_selectedItem != null)
         {
@@ -137,9 +140,9 @@ class LevelEditor : GameObject
 
     public override void Draw(SpriteBatch spriteBatch, GraphicsDeviceManager graphicsDevice)
     {
-        foreach (var gameObject in _placedObjects)
+        foreach (var placeable in _placedObjects)
         {
-            gameObject.Draw(spriteBatch, graphicsDevice);
+            placeable.Draw(spriteBatch, graphicsDevice);
         }
 
         if (Hidden)
@@ -157,14 +160,14 @@ class LevelEditor : GameObject
     {
         var metadata = new List<ObjectMetadata>();
 
-        foreach (var gameObject in _placedObjects)
+        foreach (var placeable in _placedObjects)
         {
             var meta = new ObjectMetadata()
             {
-                TypeName = gameObject.GetType().FullName,
-                X = gameObject.WorldPosition.X,
-                Y = gameObject.WorldPosition.Y,
-                Scale = gameObject.Scale,
+                TypeName = placeable.Type.FullName,
+                X = placeable.WorldPosition.X,
+                Y = placeable.WorldPosition.Y,
+                Scale = placeable.Scale,
             };
 
             metadata.Add(meta);
@@ -190,8 +193,11 @@ class LevelEditor : GameObject
                 type.GetConstructor(new Type[] { typeof(Vector2), typeof(float) })
                 ?? throw new Exception("Game object does not have an appropriate constructor");
             var gameObject = (GameObject)ctor.Invoke(new object[] { position, meta.Scale });
+            var placeable = new Placeable(gameObject, position, meta.Scale);
+            placeable.OnDelete += HandlePlaceableDelete;
+            placeable.OnMove += HandlePlaceableMove;
 
-            _placedObjects.Add(gameObject);
+            _placedObjects.Add(placeable);
         }
     }
 }

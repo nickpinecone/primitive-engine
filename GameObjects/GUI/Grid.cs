@@ -10,21 +10,22 @@ using TowerDefense;
 
 class GridItem : GameObject
 {
-    public event EventHandler<Type> OnSelect;
+    public event EventHandler<Placeable> OnSelect;
 
     private Selectable _selectable;
-    private Type _type;
+    private Placeable _placeable;
 
     public GridItem(GameObject gameObject, Vector2 position, float scale)
     {
-        _type = gameObject.GetType();
+        _placeable = new Placeable(gameObject, Vector2.Zero, 1f);
+
         _selectable = new Selectable(position, scale, 2, gameObject.Texture, gameObject.SourceRectangle, gameObject.SourceRectangle);
         _selectable.OnClick += HandleSelect;
     }
 
     public void HandleSelect(object sender, EventArgs args)
     {
-        OnSelect?.Invoke(this, _type);
+        OnSelect?.Invoke(this, _placeable);
     }
 
     public override void HandleInput()
@@ -45,7 +46,7 @@ class GridItem : GameObject
 
 class Grid : GameObject
 {
-    public event EventHandler<Type> OnItemSelect;
+    public event EventHandler<Placeable> OnItemSelect;
 
     private List<GridItem> _items;
 
@@ -88,9 +89,9 @@ class Grid : GameObject
         _items.Add(gridItem);
     }
 
-    public void HandleItemSelect(object sender, Type type)
+    public void HandleItemSelect(object sender, Placeable placeable)
     {
-        OnItemSelect?.Invoke(this, type);
+        OnItemSelect?.Invoke(this, placeable);
     }
 
     public override void HandleInput()
