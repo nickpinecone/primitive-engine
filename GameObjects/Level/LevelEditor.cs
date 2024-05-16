@@ -29,6 +29,7 @@ class LevelEditor : GameObject
     private Texture2D _panel;
 
     public bool Hidden { get; set; }
+    public bool Disabled { get; set; }
 
     public LevelEditor()
     {
@@ -58,6 +59,8 @@ class LevelEditor : GameObject
 
     public override void HandleInput()
     {
+        if (Disabled) return;
+
         var mouseState = Mouse.GetState();
 
         foreach (var placeable in _placedObjects)
@@ -117,6 +120,8 @@ class LevelEditor : GameObject
 
     public override void Update(GameTime gameTime)
     {
+        if (Disabled) return;
+
         var mouseState = Mouse.GetState();
 
         foreach (var placeable in _removeQueue)

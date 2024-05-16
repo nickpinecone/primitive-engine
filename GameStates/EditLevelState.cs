@@ -12,15 +12,16 @@ namespace TowerDefense;
 
 public class EditLevelState : GameState
 {
-    Label walkPathInfo;
+    Label editInfo;
     bool isWalkPathEdit;
+
     WalkPath walkPath;
     LevelEditor levelEditor;
 
     public void UpdateWalkPathInfo()
     {
-        var text = "Walk Path Edit: " + (isWalkPathEdit ? "On" : "Off");
-        walkPathInfo.Text = text;
+        var text = "Edit Info: " + (isWalkPathEdit ? "Walk Path" : "Level Editor");
+        editInfo.Text = text;
     }
 
     public override void LoadContent(ContentManager contentManager)
@@ -33,12 +34,12 @@ public class EditLevelState : GameState
         // Walk Path Debug Info
         walkPath = new();
         isWalkPathEdit = false;
-        walkPathInfo = new Label(Vector2.Zero, 0.5f, "");
-        walkPathInfo.AccentColor = Color.Black;
-        walkPathInfo.WorldPosition += walkPathInfo.TextSize / 2f;
+        editInfo = new Label(Vector2.Zero, 0.5f, "");
+        editInfo.AccentColor = Color.Black;
+        editInfo.WorldPosition += editInfo.TextSize / 2f;
 
         UpdateWalkPathInfo();
-        AddGameObject(walkPathInfo);
+        AddGameObject(editInfo);
     }
 
     public override void UnloadContent(ContentManager contentManager)
@@ -51,15 +52,6 @@ public class EditLevelState : GameState
         var keyState = Keyboard.GetState();
         var mouseState = Mouse.GetState();
 
-        if (Input.IsKeyJustPressed(Keys.Q))
-        {
-            levelEditor.SaveLevelEditor("level_editor");
-        }
-        if (Input.IsKeyJustPressed(Keys.R))
-        {
-            levelEditor.LoadLevelEditor("level_editor");
-        }
-
         if (Input.IsKeyJustPressed(Keys.Escape))
         {
             SwitchState(new WorldMapState());
@@ -69,14 +61,31 @@ public class EditLevelState : GameState
         {
             isWalkPathEdit = !isWalkPathEdit;
             PathNode.Disabled = !isWalkPathEdit;
+            levelEditor.Disabled = isWalkPathEdit;
         }
 
         if (isWalkPathEdit)
         {
             HandleWalkPathInput(mouseState, keyState);
         }
+        else
+        {
+            HandleLevelEditorInput();
+        }
 
         base.HandleInput();
+    }
+
+    public void HandleLevelEditorInput()
+    {
+        if (Input.IsKeyJustPressed(Keys.Q))
+        {
+            levelEditor.SaveLevelEditor("level_editor");
+        }
+        if (Input.IsKeyJustPressed(Keys.R))
+        {
+            levelEditor.LoadLevelEditor("level_editor");
+        }
     }
 
     public void HandleWalkPathInput(MouseState mouseState, KeyboardState keyState)
