@@ -20,14 +20,6 @@ public class EditLevelState : GameState
     public void UpdateWalkPathInfo()
     {
         var text = "Walk Path Edit: " + (isWalkPathEdit ? "On" : "Off");
-        var editMode = PathNode.ChangeMode switch
-        {
-            PathChangeMode.Link => "Link",
-            PathChangeMode.Delete => "Delete",
-            PathChangeMode.Shift => "Shift",
-            _ => "None"
-        };
-        text += "\nEdit Mode: " + editMode;
         walkPathInfo.Text = text;
     }
 
@@ -89,19 +81,6 @@ public class EditLevelState : GameState
 
     public void HandleWalkPathInput(MouseState mouseState, KeyboardState keyState)
     {
-        if (Input.IsKeyJustPressed(Keys.A))
-        {
-            PathNode.ChangeMode = PathChangeMode.Link;
-        }
-        else if (Input.IsKeyJustPressed(Keys.D))
-        {
-            PathNode.ChangeMode = PathChangeMode.Delete;
-        }
-        else if (Input.IsKeyJustPressed(Keys.F))
-        {
-            PathNode.ChangeMode = PathChangeMode.Shift;
-        }
-
         if (Input.IsMouseJustPressed(MouseButton.Middle))
         {
             var node = new Node(mouseState.Position.ToVector2());

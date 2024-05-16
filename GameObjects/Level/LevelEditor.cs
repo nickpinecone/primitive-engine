@@ -70,7 +70,7 @@ class LevelEditor : GameObject
             Hidden = !Hidden;
         }
 
-        if (Input.IsMouseJustPressed(MouseButton.Right))
+        if (Input.IsKeyJustPressed(Keys.X))
         {
             _selectedItem = null;
         }

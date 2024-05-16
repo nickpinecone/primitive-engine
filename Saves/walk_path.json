@@ -1,1 +1,1 @@
-[{"X":71,"Y":269,"ID":0,"NextIDs":[1,2],"Type":0},{"X":244,"Y":194,"ID":1,"NextIDs":[3],"Type":2},{"X":232,"Y":336,"ID":2,"NextIDs":[3],"Type":2},{"X":588,"Y":280,"ID":3,"NextIDs":[4],"Type":2},{"X":1071,"Y":212,"ID":4,"NextIDs":[],"Type":1}]
+[{"X":109,"Y":286,"ID":0,"NextIDs":[1,2],"Type":0},{"X":201,"Y":214,"ID":1,"NextIDs":[3],"Type":2},{"X":212,"Y":356,"ID":2,"NextIDs":[],"Type":2},{"X":411,"Y":270,"ID":3,"NextIDs":[4],"Type":2},{"X":757,"Y":230,"ID":4,"NextIDs":[],"Type":1}]

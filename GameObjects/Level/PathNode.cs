@@ -11,9 +11,9 @@ enum PathChangeMode { Link, Delete, Shift };
 
 class PathNode : GameObject
 {
-    public static PathChangeMode ChangeMode = PathChangeMode.Link;
     private static PathNode SelectedNode = null;
     public static bool Disabled = false;
+    public bool FollowMouse { get; set; }
 
     public event EventHandler OnDelete;
 
@@ -78,23 +78,17 @@ class PathNode : GameObject
         }
         else
         {
-            if (ChangeMode == PathChangeMode.Link)
-            {
-                SelectedNode.LinkNode(nodeSender);
-            }
-            else if (ChangeMode == PathChangeMode.Delete)
-            {
-                SelectedNode.UnlinkNode(nodeSender);
-            }
+            SelectedNode.LinkNode(nodeSender);
         }
     }
 
     public void HandleRightClick(object sender, EventArgs args)
     {
-        if (ChangeMode == PathChangeMode.Delete)
+        var nodeSender = (PathNode)sender;
+
+        if (SelectedNode != null)
         {
-            RemoveNode();
-            OnDelete?.Invoke(this, null);
+            SelectedNode.UnlinkNode(nodeSender);
         }
     }
 
@@ -139,6 +133,8 @@ class PathNode : GameObject
             node.Node.UnlinkNode(Node);
             node._nextNodes.Remove(this);
         }
+
+        SelectedNode = null;
     }
 
     public void UnlinkNode(PathNode other)
@@ -156,7 +152,25 @@ class PathNode : GameObject
 
         _selectable.HandleInput();
 
-        if (SelectedNode != null && Input.IsMouseJustPressed(MouseButton.Right))
+        if (_selectable.IsSelected)
+        {
+            if (Input.IsKeyJustPressed(Keys.D))
+            {
+                RemoveNode();
+                OnDelete?.Invoke(this, null);
+            }
+            if (Input.IsKeyJustPressed(Keys.F))
+            {
+                FollowMouse = true;
+            }
+        }
+
+        if (FollowMouse && Input.IsMouseJustPressed(MouseButton.Left))
+        {
+            FollowMouse = false;
+        }
+
+        if (SelectedNode != null && Input.IsKeyJustPressed(Keys.X))
         {
             SelectedNode = null;
         }
@@ -166,9 +180,9 @@ class PathNode : GameObject
     {
         var mouseState = Mouse.GetState();
 
-        if (ChangeMode == PathChangeMode.Shift && SelectedNode != null)
+        if (FollowMouse)
         {
-            SelectedNode.WorldPosition = mouseState.Position.ToVector2();
+            WorldPosition = mouseState.Position.ToVector2();
         }
 
         _selectable.Update(gameTime);
