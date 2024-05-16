@@ -34,10 +34,10 @@ class TowerPlot : GameObject
 
     public TowerPlot(Vector2 position, float scale)
     {
-        var plot = AssetManager.GetAsset<Texture2D>("Sprites/LevelSheet");
-        var plotSource = new Rectangle(495, 635, 110, 50);
+        var sprite = AssetManager.GetAsset<Texture2D>("Sprites/LevelSheet");
+        var source = new Rectangle(495, 635, 110, 50);
 
-        _selectable = new Selectable(position, scale, 2, plot, plotSource, plotSource);
+        _selectable = new Selectable(position, scale, 2, sprite, source, source);
         _selectable.OnDoubleSelect += HandleSelection;
     }
 

@@ -13,6 +13,7 @@ class PathNode : GameObject
 {
     private static PathNode SelectedNode = null;
     public static bool Disabled = false;
+    public static bool Hidden = false;
     public bool FollowMouse { get; set; }
 
     public event EventHandler OnDelete;
@@ -45,6 +46,7 @@ class PathNode : GameObject
 
     public PathNode(Node node, NodeType type)
     {
+        ZIndex = 2;
         Node = node;
         Size = 20;
         Node.Type = type;
@@ -190,6 +192,8 @@ class PathNode : GameObject
 
     public override void Draw(SpriteBatch spriteBatch, GraphicsDeviceManager graphicsDevice)
     {
+        if (Hidden) return;
+
         _selectable.Draw(spriteBatch, graphicsDevice);
 
         if (SelectedNode == this)

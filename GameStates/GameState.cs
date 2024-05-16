@@ -22,6 +22,15 @@ public abstract class GameState
 
     public virtual void HandleInput()
     {
+        if (Input.IsKeyJustPressed(Keys.F1))
+        {
+            GameSettings.IsVisibleCollisions = !GameSettings.IsVisibleCollisions;
+        }
+        else if (Input.IsKeyJustPressed(Keys.F2))
+        {
+            GameSettings.CreatorMode = !GameSettings.CreatorMode;
+        }
+
         foreach (var gameObject in _gameObjects)
         {
             gameObject.HandleInput();

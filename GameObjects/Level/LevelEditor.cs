@@ -19,6 +19,7 @@ class ObjectMetadata
 
 class LevelEditor : GameObject
 {
+    public event EventHandler<bool> OnOverlay;
     public event EventHandler<(Type type, Vector2 position, float scale)> OnItemPlace;
 
     private Placeable _selectedItem;
@@ -30,6 +31,7 @@ class LevelEditor : GameObject
 
     public bool Hidden { get; set; }
     public bool Disabled { get; set; }
+    public int SnapAmount { get; set; }
 
     public LevelEditor()
     {
@@ -38,6 +40,7 @@ class LevelEditor : GameObject
         _selectedItem = null;
 
         Hidden = true;
+        SnapAmount = 5;
 
         ZIndex = 1;
 
@@ -48,6 +51,12 @@ class LevelEditor : GameObject
 
         var towerPlot = new TowerPlot(Vector2.Zero, 1f);
         _grid.AddItem(towerPlot);
+
+        var pathHorizontal = new PathHorizontal(Vector2.Zero, 1f);
+        _grid.AddItem(pathHorizontal);
+
+        var pathVertical = new PathVertical(Vector2.Zero, 1f);
+        _grid.AddItem(pathVertical);
     }
 
     public void HandleItemSelect(object sender, Placeable placeable)
@@ -63,14 +72,10 @@ class LevelEditor : GameObject
 
         var mouseState = Mouse.GetState();
 
-        foreach (var placeable in _placedObjects)
-        {
-            placeable.HandleInput();
-        }
-
         if (Input.IsKeyJustPressed(Keys.Z))
         {
             Hidden = !Hidden;
+            OnOverlay?.Invoke(this, !Hidden);
         }
 
         if (Input.IsKeyJustPressed(Keys.X))
@@ -80,6 +85,11 @@ class LevelEditor : GameObject
 
         if (Hidden)
         {
+            foreach (var placeable in _placedObjects)
+            {
+                placeable.HandleInput();
+            }
+
             if (_selectedItem != null)
             {
                 if (Input.IsMouseJustPressed(MouseButton.Left))
@@ -137,7 +147,8 @@ class LevelEditor : GameObject
 
         if (_selectedItem != null)
         {
-            _selectedItem.WorldPosition = mouseState.Position.ToVector2();
+            var position = new Vector2((mouseState.Position.X / SnapAmount) * SnapAmount, (mouseState.Position.Y / SnapAmount) * SnapAmount);
+            _selectedItem.WorldPosition = position;
         }
 
         _grid.Update(gameTime);

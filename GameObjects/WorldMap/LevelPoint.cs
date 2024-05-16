@@ -21,10 +21,10 @@ class LevelPoint : GameObject
     {
         _level = level;
 
-        var flag = AssetManager.GetAsset<Texture2D>("Sprites/LevelSheet");
-        var flagSource = new Rectangle(1120, 675, 75, 150);
+        var sprite = AssetManager.GetAsset<Texture2D>("Sprites/LevelSheet");
+        var source = new Rectangle(1120, 675, 75, 150);
 
-        _selectable = new Selectable(position, scale, 2, flag, flagSource, flagSource);
+        _selectable = new Selectable(position, scale, 2, sprite, source, source);
         _selectable.OnDoubleSelect += HandleSelection;
     }
 

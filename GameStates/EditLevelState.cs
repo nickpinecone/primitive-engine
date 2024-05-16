@@ -28,6 +28,7 @@ public class EditLevelState : GameState
     {
         // Level Editor Setup
         levelEditor = new();
+        levelEditor.OnOverlay += HandleOverlay;
 
         AddGameObject(levelEditor);
 
@@ -40,6 +41,11 @@ public class EditLevelState : GameState
 
         UpdateWalkPathInfo();
         AddGameObject(editInfo);
+    }
+
+    private void HandleOverlay(object sender, bool isOpen)
+    {
+        PathNode.Hidden = isOpen;
     }
 
     public override void UnloadContent(ContentManager contentManager)
