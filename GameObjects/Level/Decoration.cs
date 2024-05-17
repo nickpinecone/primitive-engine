@@ -8,6 +8,17 @@ using TowerDefense;
 
 class Decoration : GameObject
 {
+    public Decoration(Vector2 position, float scale)
+    {
+        var sprite = AssetManager.GetAsset<Texture2D>("Sprites/LevelSheet");
+        var source = new Rectangle();
+
+        Texture = sprite;
+        SourceRectangle = source;
+        WorldPosition = position;
+        Scale = scale;
+    }
+
     public override void HandleInput()
     {
     }

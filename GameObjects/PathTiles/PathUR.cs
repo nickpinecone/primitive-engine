@@ -6,10 +6,10 @@ using Microsoft.Xna.Framework.Input;
 
 using TowerDefense;
 
-class PathHorizontal : PathTile
+class PathUR : PathTile
 {
-    public PathHorizontal(Vector2 position, float scale) : base(position, scale)
+    public PathUR(Vector2 position, float scale) : base(position, scale)
     {
-        SourceRectangle = new Rectangle(615, 515, 160, 105);
+        SourceRectangle = new Rectangle(55, 235, 160, 160);
     }
 }

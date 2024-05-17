@@ -15,6 +15,8 @@ class Label : GameObject
 
     public Label(Vector2 position, float scale, string text, SpriteFont font = null)
     {
+        ZIndex = 1;
+
         font ??= AssetManager.GetAsset<SpriteFont>("GUI/MenuFont");
 
         WorldPosition = position;

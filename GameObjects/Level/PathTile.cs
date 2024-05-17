@@ -10,6 +10,8 @@ class PathTile : GameObject
 {
     public PathTile(Vector2 position, float scale)
     {
+        ZIndex = -1;
+
         var sprite = AssetManager.GetAsset<Texture2D>("Sprites/LevelSheet");
         var source = new Rectangle();
 

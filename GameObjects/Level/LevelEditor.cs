@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -40,7 +41,7 @@ class LevelEditor : GameObject
         _selectedItem = null;
 
         Hidden = true;
-        SnapAmount = 5;
+        SnapAmount = 1;
 
         ZIndex = 1;
 
@@ -57,6 +58,27 @@ class LevelEditor : GameObject
 
         var pathVertical = new PathVertical(Vector2.Zero, 1f);
         _grid.AddItem(pathVertical);
+
+        var pathLU = new PathLU(Vector2.Zero, 1f);
+        _grid.AddItem(pathLU);
+
+        var pathDR = new PathDR(Vector2.Zero, 1f);
+        _grid.AddItem(pathDR);
+
+        var pathLD = new PathLD(Vector2.Zero, 1f);
+        _grid.AddItem(pathLD);
+
+        var pathUR = new PathUR(Vector2.Zero, 1f);
+        _grid.AddItem(pathUR);
+
+        var pathTurn = new PathTurn(Vector2.Zero, 1f);
+        _grid.AddItem(pathTurn);
+
+        var pathCross = new PathCross(Vector2.Zero, 1f);
+        _grid.AddItem(pathCross);
+
+        var tree = new Tree(Vector2.Zero, 1f);
+        _grid.AddItem(tree);
     }
 
     public void HandleItemSelect(object sender, Placeable placeable)
@@ -156,7 +178,7 @@ class LevelEditor : GameObject
 
     public override void Draw(SpriteBatch spriteBatch, GraphicsDeviceManager graphicsDevice)
     {
-        foreach (var placeable in _placedObjects)
+        foreach (var placeable in _placedObjects.OrderBy((gameObject) => gameObject.ZIndex).ThenBy((gameObject) => gameObject.WorldPosition.Y))
         {
             placeable.Draw(spriteBatch, graphicsDevice);
         }

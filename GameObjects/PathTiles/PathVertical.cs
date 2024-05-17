@@ -12,12 +12,4 @@ class PathVertical : PathTile
     {
         SourceRectangle = new Rectangle(430, 235, 105, 160);
     }
-
-    public override void HandleInput()
-    {
-    }
-
-    public override void Update(GameTime gameTime)
-    {
-    }
 }
