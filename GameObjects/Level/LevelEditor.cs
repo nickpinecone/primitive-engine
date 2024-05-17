@@ -63,10 +63,7 @@ class LevelEditor : GameObject
 
         foreach (var type in saveableTypes)
         {
-            var ctor =
-                type.GetConstructor(new Type[] { typeof(Vector2), typeof(float) })
-                ?? throw new Exception("Game object does not have an appropriate constructor");
-            var gameObject = (GameObject)ctor.Invoke(new object[] { Vector2.Zero, 1f });
+            var gameObject = MetaManager.ConstructObject(type, Vector2.Zero, 1f);
 
             _grid.AddItem(gameObject);
         }
@@ -202,26 +199,20 @@ class LevelEditor : GameObject
             metadata.Add(meta);
         }
 
-        var data = JsonSerializer.Serialize(metadata);
-        var workDir = System.IO.Directory.GetCurrentDirectory();
-        File.WriteAllText(workDir + "/Saves/" + filename + ".json", data);
+        MetaManager.SaveToFile(metadata, filename);
     }
 
     public void LoadLevelEditor(string filename)
     {
-        var workDir = System.IO.Directory.GetCurrentDirectory();
-        var data = File.ReadAllText(workDir + "/Saves/" + filename + ".json");
-        var metadata = JsonSerializer.Deserialize<List<ObjectMetadata>>(data);
+        var metadata = MetaManager.ReadFromFile<ObjectMetadata>(filename);
 
         foreach (var meta in metadata)
         {
             Type type = Type.GetType(meta.TypeName);
             var position = new Vector2(meta.X, meta.Y);
 
-            var ctor =
-                type.GetConstructor(new Type[] { typeof(Vector2), typeof(float) })
-                ?? throw new Exception("Game object does not have an appropriate constructor");
-            var gameObject = (GameObject)ctor.Invoke(new object[] { position, meta.Scale });
+            var gameObject = MetaManager.ConstructObject(type, position, meta.Scale);
+
             var placeable = new Placeable(gameObject, position, meta.Scale);
             placeable.OnDelete += HandlePlaceableDelete;
             placeable.OnMove += HandlePlaceableMove;

@@ -213,16 +213,12 @@ class WalkPath
             }
         }
 
-        var data = JsonSerializer.Serialize(dict.Values.ToArray());
-        var workDir = System.IO.Directory.GetCurrentDirectory();
-        File.WriteAllText(workDir + "/Saves/" + filename + ".json", data);
+        MetaManager.SaveToFile(dict.Values.ToList(), filename);
     }
 
     public void LoadFromFile(string filename)
     {
-        var workDir = System.IO.Directory.GetCurrentDirectory();
-        var data = File.ReadAllText(workDir + "/Saves/" + filename + ".json");
-        var metadata = JsonSerializer.Deserialize<List<NodeMetadata>>(data);
+        var metadata = MetaManager.ReadFromFile<NodeMetadata>(filename);
 
         // Initializing nodes
         Dictionary<int, Node> dict = new();
