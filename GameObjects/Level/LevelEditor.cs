@@ -21,7 +21,6 @@ class ObjectMetadata
 class LevelEditor : GameObject
 {
     public event EventHandler<bool> OnOverlay;
-    public event EventHandler<(Type type, Vector2 position, float scale)> OnItemPlace;
 
     private Placeable _selectedItem;
     private List<Placeable> _placedObjects;
@@ -41,7 +40,7 @@ class LevelEditor : GameObject
         _selectedItem = null;
 
         Hidden = true;
-        SnapAmount = 1;
+        SnapAmount = 5;
 
         ZIndex = 1;
 
@@ -50,35 +49,27 @@ class LevelEditor : GameObject
         _grid = new(GameSettings.WindowSize, 7, 8);
         _grid.OnItemSelect += HandleItemSelect;
 
-        var towerPlot = new TowerPlot(Vector2.Zero, 1f);
-        _grid.AddItem(towerPlot);
+        PopulateGrid();
+    }
 
-        var pathHorizontal = new PathHorizontal(Vector2.Zero, 1f);
-        _grid.AddItem(pathHorizontal);
+    public void PopulateGrid()
+    {
+        var saveableTypes =
+            from a in AppDomain.CurrentDomain.GetAssemblies()
+            from t in a.GetTypes()
+            let attributes = t.GetCustomAttributes(typeof(SaveableAttribute), true)
+            where attributes != null && attributes.Length > 0
+            select t;
 
-        var pathVertical = new PathVertical(Vector2.Zero, 1f);
-        _grid.AddItem(pathVertical);
+        foreach (var type in saveableTypes)
+        {
+            var ctor =
+                type.GetConstructor(new Type[] { typeof(Vector2), typeof(float) })
+                ?? throw new Exception("Game object does not have an appropriate constructor");
+            var gameObject = (GameObject)ctor.Invoke(new object[] { Vector2.Zero, 1f });
 
-        var pathLU = new PathLU(Vector2.Zero, 1f);
-        _grid.AddItem(pathLU);
-
-        var pathDR = new PathDR(Vector2.Zero, 1f);
-        _grid.AddItem(pathDR);
-
-        var pathLD = new PathLD(Vector2.Zero, 1f);
-        _grid.AddItem(pathLD);
-
-        var pathUR = new PathUR(Vector2.Zero, 1f);
-        _grid.AddItem(pathUR);
-
-        var pathTurn = new PathTurn(Vector2.Zero, 1f);
-        _grid.AddItem(pathTurn);
-
-        var pathCross = new PathCross(Vector2.Zero, 1f);
-        _grid.AddItem(pathCross);
-
-        var tree = new Tree(Vector2.Zero, 1f);
-        _grid.AddItem(tree);
+            _grid.AddItem(gameObject);
+        }
     }
 
     public void HandleItemSelect(object sender, Placeable placeable)

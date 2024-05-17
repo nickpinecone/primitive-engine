@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework.Input;
 
 using TowerDefense;
 
+[Saveable]
 class PathLU : PathTile
 {
     public PathLU(Vector2 position, float scale) : base(position, scale)

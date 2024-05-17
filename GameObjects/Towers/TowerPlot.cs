@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Input;
 
 using TowerDefense;
 
+[Saveable]
 class TowerPlot : GameObject
 {
     public event EventHandler OnTowerSelect;

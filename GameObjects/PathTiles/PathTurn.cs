@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Input;
 
 using TowerDefense;
 
+[Saveable]
 class PathTurn : PathTile
 {
     public PathTurn(Vector2 position, float scale) : base(position, scale)

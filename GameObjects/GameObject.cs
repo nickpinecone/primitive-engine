@@ -5,6 +5,8 @@ using Microsoft.Xna.Framework.Input;
 
 namespace TowerDefense;
 
+public class SaveableAttribute : Attribute { }
+
 public abstract class GameObject
 {
     virtual public Vector2 WorldPosition { get; set; }

@@ -31,6 +31,8 @@ class Tower : GameObject
     public Tower(TowerPlot plot, WalkPath walkPath, float detectRadius, Vector2 position, float scale, Texture2D texture, Rectangle source)
     {
         DetectRadius = detectRadius;
+        position = plot.WorldPosition - new Vector2(0, source.Height / 5);
+        plot.ZIndex = -1;
 
         _plot = plot;
         _plot.Disabled = true;

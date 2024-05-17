@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Input;
 
 using TowerDefense;
 
+[Saveable]
 class Tree : PathTile
 {
     public Tree(Vector2 position, float scale) : base(position, scale)
