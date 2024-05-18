@@ -112,25 +112,21 @@ public class EditLevelState : GameState
         }
         if (Input.IsKeyJustPressed(Keys.R))
         {
+            // TODO Yacky
             foreach (var gameObject in MetaManager.LoadLevelEditor("level_editor"))
             {
-                if (gameObject is TowerPlot plot)
+                foreach (var property in gameObject.GetType().GetProperties())
                 {
-                    var placeable = new Placeable(plot.Sprite, plot.GetType(), plot.WorldPosition, plot.Scale);
-                    placeable.OnDelete += HandlePlaceableDelete;
-                    AddGameObject(placeable);
-                }
-                else if (gameObject is Decoration decor)
-                {
-                    var placeable = new Placeable(decor.Sprite, decor.GetType(), decor.WorldPosition, decor.Scale);
-                    placeable.OnDelete += HandlePlaceableDelete;
-                    AddGameObject(placeable);
-                }
-                else if (gameObject is PathTile path)
-                {
-                    var placeable = new Placeable(path.Sprite, path.GetType(), path.WorldPosition, path.Scale);
-                    placeable.OnDelete += HandlePlaceableDelete;
-                    AddGameObject(placeable);
+                    var propType = property.PropertyType;
+
+                    if (propType == typeof(Sprite))
+                    {
+                        var sprite = (Sprite)property.GetValue(gameObject);
+
+                        var placeable = new Placeable(sprite, gameObject.GetType(), gameObject.WorldPosition, gameObject.Scale);
+                        placeable.OnDelete += HandlePlaceableDelete;
+                        AddGameObject(placeable);
+                    }
                 }
             }
         }

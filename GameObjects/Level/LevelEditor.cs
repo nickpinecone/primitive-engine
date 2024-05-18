@@ -48,19 +48,19 @@ class LevelEditor : GameObject
 
         foreach (var type in saveableTypes)
         {
+            // TODO Yacky
             var gameObject = MetaManager.ConstructObject(type, Vector2.Zero, 1f);
 
-            if (gameObject is TowerPlot plot)
+            foreach (var property in type.GetProperties())
             {
-                _grid.AddItem(plot.Sprite, plot.GetType());
-            }
-            else if (gameObject is Decoration decor)
-            {
-                _grid.AddItem(decor.Sprite, decor.GetType());
-            }
-            else if (gameObject is PathTile path)
-            {
-                _grid.AddItem(path.Sprite, path.GetType());
+                var propType = property.PropertyType;
+
+                if (propType == typeof(Sprite))
+                {
+                    var sprite = (Sprite)property.GetValue(gameObject);
+
+                    _grid.AddItem(sprite, type);
+                }
             }
         }
     }
