@@ -10,21 +10,12 @@ using Microsoft.Xna.Framework.Input;
 
 using TowerDefense;
 
-class ObjectMetadata
-{
-    public string TypeName { get; set; }
-    public float X { get; set; }
-    public float Y { get; set; }
-    public float Scale { get; set; }
-}
-
 class LevelEditor : GameObject
 {
     public event EventHandler<bool> OnOverlay;
+    public EventHandler<Placeable> OnItemPlace;
 
     private Placeable _selectedItem;
-    private List<Placeable> _placedObjects;
-    private List<Placeable> _removeQueue;
 
     private Grid _grid;
     private Texture2D _panel;
@@ -35,8 +26,6 @@ class LevelEditor : GameObject
 
     public LevelEditor()
     {
-        _placedObjects = new();
-        _removeQueue = new();
         _selectedItem = null;
 
         Hidden = true;
@@ -44,7 +33,7 @@ class LevelEditor : GameObject
 
         ZIndex = 1;
 
-        _panel = DebugTexture.GenerateTexture((int)GameSettings.WindowSize.X, (int)GameSettings.WindowSize.Y, Color.White);
+        _panel = DebugTexture.GenerateRectTexture((int)GameSettings.WindowSize.X, (int)GameSettings.WindowSize.Y, Color.White);
 
         _grid = new(GameSettings.WindowSize, 7, 8);
         _grid.OnItemSelect += HandleItemSelect;
@@ -95,16 +84,11 @@ class LevelEditor : GameObject
 
         if (Hidden)
         {
-            foreach (var placeable in _placedObjects)
-            {
-                placeable.HandleInput();
-            }
-
             if (_selectedItem != null)
             {
                 if (Input.IsMouseJustPressed(MouseButton.Left))
                 {
-                    PlaceItem(_selectedItem);
+                    OnItemPlace?.Invoke(this, _selectedItem);
                 }
 
                 var scale = MathHelper.Clamp(mouseState.ScrollWheelValue / 1000f + 1, 0.1f, 10f);
@@ -117,43 +101,11 @@ class LevelEditor : GameObject
         }
     }
 
-    public void PlaceItem(Placeable placeable)
-    {
-        var copy = placeable.Clone();
-        copy.OnDelete += HandlePlaceableDelete;
-        copy.OnMove += HandlePlaceableMove;
-        _placedObjects.Add(copy);
-    }
-
-    private void HandlePlaceableMove(object sender, EventArgs args)
-    {
-        var placeable = (Placeable)sender;
-
-        _removeQueue.Add(placeable);
-        _selectedItem = placeable;
-    }
-
-    private void HandlePlaceableDelete(object sender, EventArgs args)
-    {
-        _removeQueue.Add((Placeable)sender);
-    }
-
     public override void Update(GameTime gameTime)
     {
         if (Disabled) return;
 
         var mouseState = Mouse.GetState();
-
-        foreach (var placeable in _removeQueue)
-        {
-            _placedObjects.Remove(placeable);
-        }
-        _removeQueue.Clear();
-
-        foreach (var placeable in _placedObjects)
-        {
-            placeable.Update(gameTime);
-        }
 
         if (_selectedItem != null)
         {
@@ -166,11 +118,6 @@ class LevelEditor : GameObject
 
     public override void Draw(SpriteBatch spriteBatch, GraphicsDeviceManager graphicsDevice)
     {
-        foreach (var placeable in _placedObjects.OrderBy((gameObject) => gameObject.ZIndex).ThenBy((gameObject) => gameObject.WorldPosition.Y))
-        {
-            placeable.Draw(spriteBatch, graphicsDevice);
-        }
-
         if (Hidden)
         {
             _selectedItem?.Draw(spriteBatch, graphicsDevice);
@@ -182,42 +129,4 @@ class LevelEditor : GameObject
         }
     }
 
-    public void SaveLevelEditor(string filename)
-    {
-        var metadata = new List<ObjectMetadata>();
-
-        foreach (var placeable in _placedObjects)
-        {
-            var meta = new ObjectMetadata()
-            {
-                TypeName = placeable.Type.FullName,
-                X = placeable.WorldPosition.X,
-                Y = placeable.WorldPosition.Y,
-                Scale = placeable.Scale,
-            };
-
-            metadata.Add(meta);
-        }
-
-        MetaManager.SaveToFile(metadata, filename);
-    }
-
-    public void LoadLevelEditor(string filename)
-    {
-        var metadata = MetaManager.ReadFromFile<ObjectMetadata>(filename);
-
-        foreach (var meta in metadata)
-        {
-            Type type = Type.GetType(meta.TypeName);
-            var position = new Vector2(meta.X, meta.Y);
-
-            var gameObject = MetaManager.ConstructObject(type, position, meta.Scale);
-
-            var placeable = new Placeable(gameObject, position, meta.Scale);
-            placeable.OnDelete += HandlePlaceableDelete;
-            placeable.OnMove += HandlePlaceableMove;
-
-            _placedObjects.Add(placeable);
-        }
-    }
 }

@@ -6,11 +6,13 @@ using Microsoft.Xna.Framework.Input;
 
 using TowerDefense;
 
-class Placeable : GameObject
+public class Placeable : GameObject
 {
     public event EventHandler OnClick;
     public event EventHandler OnDelete;
-    public event EventHandler OnMove;
+
+    public bool FollowMouse { get; set; }
+    public static bool Disabled { get; set; }
 
     private Selectable _selectable;
 
@@ -55,6 +57,8 @@ class Placeable : GameObject
 
     public override void HandleInput()
     {
+        if (Placeable.Disabled) return;
+
         _selectable.HandleInput();
 
         if (_selectable.IsSelected)
@@ -65,14 +69,26 @@ class Placeable : GameObject
             }
             if (Input.IsKeyJustPressed(Keys.F))
             {
-                OnMove?.Invoke(this, null);
+                FollowMouse = true;
             }
+        }
+
+        if (FollowMouse && Input.IsMouseJustPressed(MouseButton.Left))
+        {
+            FollowMouse = false;
         }
     }
 
     public override void Update(GameTime gameTime)
     {
+        var mouseState = Mouse.GetState();
+
         _selectable.Update(gameTime);
+
+        if (FollowMouse)
+        {
+            WorldPosition = mouseState.Position.ToVector2();
+        }
     }
 
     public override void Draw(SpriteBatch spriteBatch, GraphicsDeviceManager graphicsDevice)

@@ -46,12 +46,12 @@ class PathNode : GameObject
 
     public PathNode(Node node, NodeType type)
     {
-        ZIndex = 2;
+        ZIndex = 1;
         Node = node;
         Size = 20;
         Node.Type = type;
 
-        var texture = DebugTexture.GenerateTexture(Size, Size, Color.White);
+        var texture = DebugTexture.GenerateRectTexture(Size, Size, Color.White);
         var source = new Rectangle(0, 0, Size, Size);
 
         _nextNodes = new();

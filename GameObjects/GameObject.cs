@@ -66,7 +66,7 @@ public abstract class GameObject
 
     private void DrawCollisionShape(SpriteBatch spriteBatch, GraphicsDeviceManager graphicsDevice)
     {
-        var rectTexture = DebugTexture.GenerateTexture(WorldRectangle.Width, WorldRectangle.Height, Color.White);
+        var rectTexture = DebugTexture.GenerateRectTexture(WorldRectangle.Width, WorldRectangle.Height, Color.White);
 
         var position = new Vector2(WorldRectangle.Left, WorldRectangle.Top);
 

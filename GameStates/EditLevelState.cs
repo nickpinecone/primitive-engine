@@ -29,6 +29,7 @@ public class EditLevelState : GameState
         // Level Editor Setup
         levelEditor = new();
         levelEditor.OnOverlay += HandleOverlay;
+        levelEditor.OnItemPlace += HandleItemPlace;
 
         AddGameObject(levelEditor);
 
@@ -43,9 +44,23 @@ public class EditLevelState : GameState
         AddGameObject(editInfo);
     }
 
+    private void HandleItemPlace(object sender, Placeable placeable)
+    {
+        var copy = placeable.Clone();
+        copy.OnDelete += HandlePlaceableDelete;
+        AddGameObject(copy);
+    }
+
+    private void HandlePlaceableDelete(object sender, EventArgs args)
+    {
+        var placeable = (Placeable)sender;
+        RemoveGameObject(placeable);
+    }
+
     private void HandleOverlay(object sender, bool isOpen)
     {
         PathNode.Hidden = isOpen;
+        Placeable.Disabled = isOpen;
     }
 
     public override void UnloadContent(ContentManager contentManager)
@@ -86,11 +101,22 @@ public class EditLevelState : GameState
     {
         if (Input.IsKeyJustPressed(Keys.Q))
         {
-            levelEditor.SaveLevelEditor("level_editor");
+            MetaManager.SaveLevelEditor(
+                "level_editor",
+                _gameObjects
+                    .Where((gameObject) => gameObject is Placeable)
+                    .Select((gameObject) => (Placeable)gameObject)
+                    .ToList()
+            );
         }
         if (Input.IsKeyJustPressed(Keys.R))
         {
-            levelEditor.LoadLevelEditor("level_editor");
+            foreach (var gameObject in MetaManager.LoadLevelEditor("level_editor"))
+            {
+                var placeable = new Placeable(gameObject, gameObject.WorldPosition, gameObject.Scale);
+                placeable.OnDelete += HandlePlaceableDelete;
+                AddGameObject(placeable);
+            }
         }
     }
 
@@ -118,11 +144,11 @@ public class EditLevelState : GameState
 
         if (Input.IsKeyJustPressed(Keys.Q))
         {
-            walkPath.SaveToFile("walk_path");
+            MetaManager.SaveWalkPath("walk_path", walkPath);
         }
         if (Input.IsKeyJustPressed(Keys.R))
         {
-            walkPath.LoadFromFile("walk_path");
+            MetaManager.LoadWalkPath("walk_path", walkPath);
             GeneratePathNodes();
         }
     }

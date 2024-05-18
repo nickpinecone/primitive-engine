@@ -16,19 +16,44 @@ public static class DebugTexture
         DebugTexture.graphicsDevice = graphicsDevice;
     }
 
-    static public Texture2D GenerateTexture(int width, int height, Color color)
+    static public Texture2D GenerateRectTexture(int width, int height, Color color)
     {
         Color[] data = new Color[width * height];
-        Texture2D texture = new Texture2D(graphicsDevice.GraphicsDevice, width, height);
+        Texture2D rectTexture = new Texture2D(graphicsDevice.GraphicsDevice, width, height);
 
         for (int i = 0; i < data.Length; ++i)
         {
             data[i] = color;
         }
 
-        texture.SetData(data);
+        rectTexture.SetData(data);
 
-        return texture;
+        return rectTexture;
+    }
+
+    public static Texture2D GenerateSpriteTexture(Texture2D texture, Rectangle source)
+    {
+        Color[] color = new Color[source.Width * source.Height];
+        Texture2D spriteTexture = new Texture2D(graphicsDevice.GraphicsDevice, source.Width, source.Height);
+        Color[] buttonColor = new Color[source.Width * source.Height];
+
+        texture.GetData<Color>(0, source, buttonColor, 0, source.Width * source.Height);
+
+        for (int i = 0; i < color.Length; ++i)
+        {
+            if (buttonColor[i].A > 0)
+            {
+                color[i] = Color.White;
+            }
+            else
+            {
+                color[i] = Color.Transparent;
+            }
+        }
+
+        spriteTexture.SetData(color);
+
+        return spriteTexture;
     }
 
     private static void DrawLine(SpriteBatch spriteBatch, Vector2 startPos, Vector2 endPos, int thickness, Color color)

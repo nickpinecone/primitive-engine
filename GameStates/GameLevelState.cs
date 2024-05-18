@@ -15,22 +15,15 @@ public class GameLevelState : GameState
 
     public override void LoadContent(ContentManager contentManager)
     {
-        walkPath.LoadFromFile("walk_path");
+        MetaManager.LoadWalkPath("walk_path", walkPath);
         walkPath.CalculateLengths();
         LoadLevel("level_editor");
     }
 
     public void LoadLevel(string filename)
     {
-        var metadata = MetaManager.ReadFromFile<ObjectMetadata>(filename);
-
-        foreach (var meta in metadata)
+        foreach (var gameObject in MetaManager.LoadLevelEditor(filename))
         {
-            Type type = Type.GetType(meta.TypeName);
-            var position = new Vector2(meta.X, meta.Y);
-
-            var gameObject = MetaManager.ConstructObject(type, position, meta.Scale);
-
             if (gameObject is TowerPlot towerPlot)
             {
                 towerPlot.OnTowerSelect += HandleTowerSelect;

@@ -11,18 +11,9 @@ using System.Text.Json.Serialization;
 using TowerDefense;
 using System.IO;
 
-class NodeMetadata
-{
-    public float X { get; set; }
-    public float Y { get; set; }
-    public int ID { get; set; }
-    public List<int> NextIDs { get; set; } = new();
-    public NodeType Type { get; set; } = NodeType.Regular;
-}
+public enum NodeType { Start, End, Regular };
 
-enum NodeType { Start, End, Regular };
-
-class Node
+public class Node
 {
     private List<Node> _nextNodes;
 
@@ -69,7 +60,7 @@ class Node
     }
 }
 
-class WalkPath
+public class WalkPath
 {
     private Dictionary<Enemy, Node> _enemyNodes;
     private List<Node> _startNodes;
@@ -181,67 +172,5 @@ class WalkPath
         }
 
         return toNode;
-    }
-
-    public void SaveToFile(string filename)
-    {
-        Dictionary<Node, NodeMetadata> dict = new();
-        int countID = 0;
-
-        foreach (var tuple in Enumerate())
-        {
-            if (!dict.ContainsKey(tuple.node))
-            {
-                var newMeta = new NodeMetadata()
-                {
-                    X = tuple.node.Position.X,
-                    Y = tuple.node.Position.Y,
-                    ID = countID,
-                    Type = tuple.node.Type,
-                };
-
-                dict[tuple.node] = newMeta;
-
-                countID++;
-            }
-
-            var meta = dict[tuple.node];
-
-            if (tuple.from != null)
-            {
-                dict[tuple.from].NextIDs.Add(meta.ID);
-            }
-        }
-
-        MetaManager.SaveToFile(dict.Values.ToList(), filename);
-    }
-
-    public void LoadFromFile(string filename)
-    {
-        var metadata = MetaManager.ReadFromFile<NodeMetadata>(filename);
-
-        // Initializing nodes
-        Dictionary<int, Node> dict = new();
-        foreach (var meta in metadata)
-        {
-            var position = new Vector2(meta.X, meta.Y);
-            var node = new Node(position) { Type = meta.Type };
-            dict[meta.ID] = node;
-
-            if (meta.Type == NodeType.Start)
-            {
-                _startNodes.Add(node);
-            }
-        }
-
-        // Linking nodes
-        foreach (var meta in metadata)
-        {
-            var node = dict[meta.ID];
-            foreach (var other in meta.NextIDs)
-            {
-                node.LinkNode(dict[other]);
-            }
-        }
     }
 }

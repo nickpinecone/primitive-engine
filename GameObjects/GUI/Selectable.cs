@@ -14,6 +14,7 @@ class Selectable : GameObject
     public event EventHandler OnRightClick;
 
     private Button _button;
+    private Texture2D _customTexture;
 
     public bool IsSelected { get; protected set; }
     public bool IsHovered { get; protected set; }
@@ -47,6 +48,8 @@ class Selectable : GameObject
         _button.OnRightClick += HandleButtonRightClick;
 
         OutlineSize = outlineSize;
+
+        _customTexture = DebugTexture.GenerateSpriteTexture(_button.Texture, source);
     }
 
     private void HandleButtonClick(object sender, EventArgs args)
@@ -120,43 +123,14 @@ class Selectable : GameObject
 
     private void DrawOutline(SpriteBatch spriteBatch, GraphicsDeviceManager graphicsDevice)
     {
-        var outlineTexture = GenerateTexture(graphicsDevice);
-
-        spriteBatch.Draw(outlineTexture, WorldPosition + new Vector2(-OutlineSize, 0), null, Color.Gray, 0, Origin, Scale, SpriteEffects.None, 0);
-        spriteBatch.Draw(outlineTexture, WorldPosition + new Vector2(OutlineSize, 0), null, Color.Gray, 0, Origin, Scale, SpriteEffects.None, 0);
-        spriteBatch.Draw(outlineTexture, WorldPosition + new Vector2(0, -OutlineSize), null, Color.Gray, 0, Origin, Scale, SpriteEffects.None, 0);
-        spriteBatch.Draw(outlineTexture, WorldPosition + new Vector2(0, OutlineSize), null, Color.Gray, 0, Origin, Scale, SpriteEffects.None, 0);
+        spriteBatch.Draw(_customTexture, WorldPosition + new Vector2(-OutlineSize, 0), null, Color.Gray, 0, Origin, Scale, SpriteEffects.None, 0);
+        spriteBatch.Draw(_customTexture, WorldPosition + new Vector2(OutlineSize, 0), null, Color.Gray, 0, Origin, Scale, SpriteEffects.None, 0);
+        spriteBatch.Draw(_customTexture, WorldPosition + new Vector2(0, -OutlineSize), null, Color.Gray, 0, Origin, Scale, SpriteEffects.None, 0);
+        spriteBatch.Draw(_customTexture, WorldPosition + new Vector2(0, OutlineSize), null, Color.Gray, 0, Origin, Scale, SpriteEffects.None, 0);
     }
 
     private void DrawHighlight(SpriteBatch spriteBatch, GraphicsDeviceManager graphicsDevice)
     {
-        var highlightTexture = GenerateTexture(graphicsDevice);
-
-        spriteBatch.Draw(highlightTexture, WorldPosition, null, Color.White * 0.3f, 0, Origin, Scale, SpriteEffects.None, 0);
-    }
-
-    private Texture2D GenerateTexture(GraphicsDeviceManager graphicsDevice)
-    {
-        Color[] color = new Color[SourceRectangle.Width * SourceRectangle.Height];
-        Texture2D outlineTexture = new Texture2D(graphicsDevice.GraphicsDevice, SourceRectangle.Width, SourceRectangle.Height);
-        Color[] buttonColor = new Color[SourceRectangle.Width * SourceRectangle.Height];
-
-        _button.Texture.GetData<Color>(0, SourceRectangle, buttonColor, 0, SourceRectangle.Width * SourceRectangle.Height);
-
-        for (int i = 0; i < color.Length; ++i)
-        {
-            if (buttonColor[i].A > 0)
-            {
-                color[i] = Color.White;
-            }
-            else
-            {
-                color[i] = Color.Transparent;
-            }
-        }
-
-        outlineTexture.SetData(color);
-
-        return outlineTexture;
+        spriteBatch.Draw(_customTexture, WorldPosition, null, Color.White * 0.3f, 0, Origin, Scale, SpriteEffects.None, 0);
     }
 }

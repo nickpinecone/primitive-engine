@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework.Input;
 
 using TowerDefense;
 
-class Enemy : GameObject
+public class Enemy : GameObject
 {
     public event EventHandler OnDie;
     public event EventHandler OnReachBase;
