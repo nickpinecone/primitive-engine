@@ -11,7 +11,9 @@ class Button : GameObject
     public event EventHandler OnClick;
     public event EventHandler OnRightClick;
 
-    private Label _label;
+    public Label Label { get; }
+    public Sprite Sprite { get; }
+    public CollisionShape Shape { get; }
 
     public Rectangle HoverSource { get; protected set; }
 
@@ -22,22 +24,21 @@ class Button : GameObject
         var sourceRect = new Rectangle(180, 200, 360, 180);
         var hoverRect = new Rectangle(565, 200, 360, 180);
 
-        _label = new Label(position, scale, text);
+        Label = new Label(Vector2.Zero, 1f, text) { Parent = this };
+        Sprite = new(buttonSprite, sourceRect) { Parent = this };
+        Shape = new(new Vector2(sourceRect.Width, sourceRect.Height)) { Parent = this };
 
         WorldPosition = position;
         Scale = scale;
-
-        Texture = buttonSprite;
-        SourceRectangle = sourceRect;
         HoverSource = hoverRect;
     }
 
     // Custom button
     public Button(Vector2 position, float scale, Texture2D texture, Rectangle source, Rectangle hoverSource)
     {
-        Texture = texture;
+        Sprite = new(texture, source) { Parent = this };
+        Shape = new(new Vector2(source.Width, source.Height)) { Parent = this };
         WorldPosition = position;
-        SourceRectangle = source;
         Scale = scale;
         HoverSource = hoverSource;
     }
@@ -46,22 +47,27 @@ class Button : GameObject
     public Button(string text, Vector2 position, float scale, Texture2D texture, Rectangle source, Rectangle hoverSource, SpriteFont font)
         : this(position, scale, texture, source, hoverSource)
     {
-        _label = new Label(position, scale, text, font);
+        Label = new Label(Vector2.Zero, 1f, text, font) { Parent = this };
     }
 
-    public override void Draw(SpriteBatch spriteBatch, GraphicsDeviceManager graphicsDevice)
+    public override void Draw(SpriteBatch spriteBatch)
     {
-        base.Draw(spriteBatch, graphicsDevice);
-        _label?.Draw(spriteBatch, graphicsDevice);
+        Sprite.Draw(spriteBatch);
+        Label?.Draw(spriteBatch);
+
+        if (GameSettings.IsVisibleCollisions)
+        {
+            Shape.Draw(spriteBatch);
+        }
     }
 
     public override void HandleInput()
     {
         var mouseState = Mouse.GetState();
 
-        if (WorldRectangle.Contains(mouseState.Position))
+        if (Shape.WorldRectangle.Contains(mouseState.Position))
         {
-            SourceRectangle = HoverSource;
+            Sprite.SourceRectangle = HoverSource;
 
             if (Input.IsMouseJustPressed(MouseButton.Left))
             {
@@ -74,7 +80,7 @@ class Button : GameObject
         }
         else
         {
-            SourceRectangle = DefaultSource;
+            Sprite.SourceRectangle = Sprite.DefaultSource;
         }
     }
 

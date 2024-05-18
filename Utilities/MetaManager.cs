@@ -8,6 +8,8 @@ using Microsoft.Xna.Framework.Content;
 
 namespace TowerDefense;
 
+public class SaveableAttribute : Attribute { }
+
 class ObjectMetadata
 {
     public string TypeName { get; set; }

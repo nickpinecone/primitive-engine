@@ -8,13 +8,15 @@ using TowerDefense;
 
 class Decoration : GameObject
 {
+    public Sprite Sprite { get; }
+
     public Decoration(Vector2 position, float scale)
     {
         var sprite = AssetManager.GetAsset<Texture2D>("Sprites/LevelSheet");
         var source = new Rectangle();
 
-        Texture = sprite;
-        SourceRectangle = source;
+        Sprite = new(sprite, source) { Parent = this };
+
         WorldPosition = position;
         Scale = scale;
     }
@@ -25,5 +27,10 @@ class Decoration : GameObject
 
     public override void Update(GameTime gameTime)
     {
+    }
+
+    public override void Draw(SpriteBatch spriteBatch)
+    {
+        Sprite.Draw(spriteBatch);
     }
 }

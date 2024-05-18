@@ -13,33 +13,21 @@ class TowerPlot : GameObject
 
     private Selectable _selectable;
 
-    override public Rectangle SourceRectangle { get { return _selectable.SourceRectangle; } }
-    override public Texture2D Texture { get { return _selectable.Texture; } }
+    public Sprite Sprite { get { return _selectable.Sprite; } }
+    public CollisionShape Shape { get { return _selectable.Shape; } }
 
     public bool Disabled { get; set; }
-
-    override public float Scale
-    {
-        get { return _selectable.Scale; }
-        set { _selectable.Scale = value; }
-    }
-
-    override public Vector2 WorldPosition
-    {
-        get { return _selectable.WorldPosition; }
-        set
-        {
-            _selectable.WorldPosition = value;
-        }
-    }
 
     public TowerPlot(Vector2 position, float scale)
     {
         var sprite = AssetManager.GetAsset<Texture2D>("Sprites/LevelSheet");
         var source = new Rectangle(495, 635, 110, 50);
 
-        _selectable = new Selectable(position, scale, 2, sprite, source, source);
+        _selectable = new Selectable(Vector2.Zero, 1f, 2, sprite, source, source) { Parent = this };
         _selectable.OnDoubleSelect += HandleSelection;
+
+        WorldPosition = position;
+        Scale = scale;
     }
 
     public void HandleSelection(object sender, EventArgs args)
@@ -61,8 +49,8 @@ class TowerPlot : GameObject
         _selectable.Update(gameTime);
     }
 
-    public override void Draw(SpriteBatch spriteBatch, GraphicsDeviceManager graphicsDevice)
+    public override void Draw(SpriteBatch spriteBatch)
     {
-        _selectable.Draw(spriteBatch, graphicsDevice);
+        _selectable.Draw(spriteBatch);
     }
 }

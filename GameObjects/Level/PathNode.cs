@@ -14,7 +14,6 @@ class PathNode : GameObject
     private static PathNode SelectedNode = null;
     public static bool Disabled = false;
     public static bool Hidden = false;
-    public bool FollowMouse { get; set; }
 
     public event EventHandler OnDelete;
 
@@ -22,27 +21,12 @@ class PathNode : GameObject
     private List<PathNode> _nextNodes;
     private List<PathNode> _prevNodes;
 
+    public Sprite Sprite { get { return _selectable.Sprite; } }
+    public CollisionShape Shape { get { return _selectable.Shape; } }
+
+    public bool FollowMouse { get; set; }
     public Node Node { get; protected set; }
     public int Size { get; protected set; }
-
-    override public float Scale { get { return _selectable.Scale; } }
-    override public Rectangle SourceRectangle { get { return _selectable.SourceRectangle; } }
-
-    override public Vector2 WorldPosition
-    {
-        get { return _selectable.WorldPosition; }
-        set
-        {
-            Node.Position = value;
-            _selectable.WorldPosition = value;
-        }
-    }
-
-    new public Color AccentColor
-    {
-        get { return _selectable.AccentColor; }
-        set { _selectable.AccentColor = value; }
-    }
 
     public PathNode(Node node, NodeType type)
     {
@@ -56,11 +40,14 @@ class PathNode : GameObject
 
         _nextNodes = new();
         _prevNodes = new();
-        _selectable = new Selectable(node.Position, 1f, 1, texture, source, source);
+        _selectable = new Selectable(Vector2.Zero, 1f, 2, texture, source, source) { Parent = this };
         _selectable.OnClick += (_, _) => HandleClick(this, null);
         _selectable.OnRightClick += (_, _) => HandleRightClick(this, null);
 
-        AccentColor = type switch
+        WorldPosition = node.Position;
+        Scale = 1f;
+
+        Sprite.AccentColor = type switch
         {
             NodeType.Start => Color.Green,
             NodeType.End => Color.Blue,
@@ -111,12 +98,12 @@ class PathNode : GameObject
     {
         if (this.Node.Type == NodeType.Regular)
         {
-            this.AccentColor = Color.Black;
+            Sprite.AccentColor = Color.Black;
         }
 
         if (other.Node.Type == NodeType.Regular)
         {
-            other.AccentColor = Color.Black;
+            other.Sprite.AccentColor = Color.Black;
         }
 
         _nextNodes.Add(other);
@@ -190,21 +177,21 @@ class PathNode : GameObject
         _selectable.Update(gameTime);
     }
 
-    public override void Draw(SpriteBatch spriteBatch, GraphicsDeviceManager graphicsDevice)
+    public override void Draw(SpriteBatch spriteBatch)
     {
         if (Hidden) return;
 
-        _selectable.Draw(spriteBatch, graphicsDevice);
+        _selectable.Draw(spriteBatch);
 
         if (SelectedNode == this)
         {
             var mouseState = Mouse.GetState();
-            DebugTexture.DrawLineBetween(spriteBatch, SelectedNode.WorldPosition, mouseState.Position.ToVector2(), Size / 5, AccentColor);
+            DebugTexture.DrawLineBetween(spriteBatch, SelectedNode.WorldPosition, mouseState.Position.ToVector2(), Size / 5, Sprite.AccentColor);
         }
 
         foreach (var node in _nextNodes)
         {
-            DebugTexture.DrawLineBetween(spriteBatch, WorldPosition, node.WorldPosition, Size / 5, AccentColor);
+            DebugTexture.DrawLineBetween(spriteBatch, WorldPosition, node.WorldPosition, Size / 5, Sprite.AccentColor);
         }
     }
 }

@@ -37,7 +37,7 @@ public class EditLevelState : GameState
         walkPath = new();
         isWalkPathEdit = false;
         editInfo = new Label(Vector2.Zero, 0.5f, "");
-        editInfo.AccentColor = Color.Black;
+        editInfo.TextColor = Color.Black;
         editInfo.WorldPosition += editInfo.TextSize / 2f;
 
         UpdateWalkPathInfo();
@@ -82,6 +82,7 @@ public class EditLevelState : GameState
         {
             isWalkPathEdit = !isWalkPathEdit;
             PathNode.Disabled = !isWalkPathEdit;
+            Placeable.Disabled = isWalkPathEdit;
             levelEditor.Disabled = isWalkPathEdit;
         }
 
@@ -113,9 +114,24 @@ public class EditLevelState : GameState
         {
             foreach (var gameObject in MetaManager.LoadLevelEditor("level_editor"))
             {
-                var placeable = new Placeable(gameObject, gameObject.WorldPosition, gameObject.Scale);
-                placeable.OnDelete += HandlePlaceableDelete;
-                AddGameObject(placeable);
+                if (gameObject is TowerPlot plot)
+                {
+                    var placeable = new Placeable(plot.Sprite, plot.GetType(), plot.WorldPosition, plot.Scale);
+                    placeable.OnDelete += HandlePlaceableDelete;
+                    AddGameObject(placeable);
+                }
+                else if (gameObject is Decoration decor)
+                {
+                    var placeable = new Placeable(decor.Sprite, decor.GetType(), decor.WorldPosition, decor.Scale);
+                    placeable.OnDelete += HandlePlaceableDelete;
+                    AddGameObject(placeable);
+                }
+                else if (gameObject is PathTile path)
+                {
+                    var placeable = new Placeable(path.Sprite, path.GetType(), path.WorldPosition, path.Scale);
+                    placeable.OnDelete += HandlePlaceableDelete;
+                    AddGameObject(placeable);
+                }
             }
         }
     }

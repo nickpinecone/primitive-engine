@@ -78,12 +78,12 @@ public abstract class GameState
         _removeQueue.Add(gameObject);
     }
 
-    public void Draw(SpriteBatch spriteBatch, GraphicsDeviceManager graphicsDevice)
+    public void Draw(SpriteBatch spriteBatch)
     {
         spriteBatch.Begin();
         foreach (var gameObject in _gameObjects.OrderBy((gameObject) => gameObject.ZIndex).ThenBy((gameObject) => gameObject.WorldPosition.Y))
         {
-            gameObject.Draw(spriteBatch, graphicsDevice);
+            gameObject.Draw(spriteBatch);
         }
         spriteBatch.End();
     }

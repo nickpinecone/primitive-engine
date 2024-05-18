@@ -8,6 +8,9 @@ using TowerDefense;
 
 class PathTile : GameObject
 {
+    public Sprite Sprite { get; }
+    public CollisionShape Shape { get; }
+
     public PathTile(Vector2 position, float scale)
     {
         ZIndex = -1;
@@ -15,8 +18,9 @@ class PathTile : GameObject
         var sprite = AssetManager.GetAsset<Texture2D>("Sprites/LevelSheet");
         var source = new Rectangle();
 
-        Texture = sprite;
-        SourceRectangle = source;
+        Sprite = new(sprite, source) { Parent = this };
+        Shape = new(new Vector2(source.Width, source.Height));
+
         WorldPosition = position;
         Scale = scale;
     }
@@ -27,5 +31,15 @@ class PathTile : GameObject
 
     public override void Update(GameTime gameTime)
     {
+    }
+
+    public override void Draw(SpriteBatch spriteBatch)
+    {
+        Sprite.Draw(spriteBatch);
+
+        if (GameSettings.IsVisibleCollisions)
+        {
+            Shape.Draw(spriteBatch);
+        }
     }
 }

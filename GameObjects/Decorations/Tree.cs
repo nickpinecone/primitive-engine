@@ -7,10 +7,10 @@ using Microsoft.Xna.Framework.Input;
 using TowerDefense;
 
 [Saveable]
-class Tree : PathTile
+class Tree : Decoration
 {
     public Tree(Vector2 position, float scale) : base(position, scale)
     {
-        SourceRectangle = new Rectangle(1165, 465, 115, 170);
+        Sprite.SourceRectangle = new Rectangle(1165, 465, 115, 170);
     }
 }

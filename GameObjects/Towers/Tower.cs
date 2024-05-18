@@ -14,23 +14,13 @@ class Tower : GameObject
     private List<Node> _nodesInRadius;
     private TowerPlot _plot;
 
+    public Sprite Sprite { get { return _selectable.Sprite; } }
+    public CollisionShape Shape { get { return _selectable.Shape; } }
+
     public float DetectRadius { get; set; }
-
-    override public float Scale { get { return _selectable.Scale; } }
-    override public Rectangle SourceRectangle { get { return _selectable.SourceRectangle; } }
-
-    override public Vector2 WorldPosition
-    {
-        get { return _selectable.WorldPosition; }
-        set
-        {
-            _selectable.WorldPosition = value;
-        }
-    }
 
     public Tower(TowerPlot plot, WalkPath walkPath, float detectRadius, Vector2 position, float scale, Texture2D texture, Rectangle source)
     {
-        DetectRadius = detectRadius;
         position = plot.WorldPosition - new Vector2(0, source.Height / 5);
         plot.ZIndex = -1;
 
@@ -38,8 +28,12 @@ class Tower : GameObject
         _plot.Disabled = true;
 
         _walkPath = walkPath;
-        _selectable = new Selectable(position, scale, 2, texture, source, source);
+        _selectable = new Selectable(Vector2.Zero, 1f, 2, texture, source, source) { Parent = this };
         _nodesInRadius = _walkPath.GetNodesInRadius(WorldPosition, DetectRadius);
+
+        DetectRadius = detectRadius;
+        WorldPosition = position;
+        Scale = scale;
     }
 
     public bool InRadius(Vector2 position)
@@ -62,8 +56,8 @@ class Tower : GameObject
         }
     }
 
-    public override void Draw(SpriteBatch spriteBatch, GraphicsDeviceManager graphicsDevice)
+    public override void Draw(SpriteBatch spriteBatch)
     {
-        _selectable.Draw(spriteBatch, graphicsDevice);
+        _selectable.Draw(spriteBatch);
     }
 }

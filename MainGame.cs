@@ -82,7 +82,7 @@ public class MainGame : Game
     {
         GraphicsDevice.Clear(Color.White);
 
-        _gameState.Draw(_spriteBatch, _graphics);
+        _gameState.Draw(_spriteBatch);
 
         base.Draw(gameTime);
     }

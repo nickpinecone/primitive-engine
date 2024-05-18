@@ -15,12 +15,18 @@ class GridItem : GameObject
     private Selectable _selectable;
     private Placeable _placeable;
 
-    public GridItem(GameObject gameObject, Vector2 position, float scale)
-    {
-        _placeable = new Placeable(gameObject, Vector2.Zero, 1f);
+    public Sprite Sprite { get { return _selectable.Sprite; } }
+    public CollisionShape Shape { get { return _selectable.Shape; } }
 
-        _selectable = new Selectable(position, scale, 2, gameObject.Texture, gameObject.SourceRectangle, gameObject.SourceRectangle);
+    public GridItem(Sprite sprite, Type type, Vector2 position, float scale)
+    {
+        _placeable = new Placeable(sprite, type, Vector2.Zero, 1f) { Parent = this };
+
+        _selectable = new Selectable(Vector2.Zero, 1f, 2, sprite.Texture, sprite.SourceRectangle, sprite.SourceRectangle) { Parent = this };
         _selectable.OnClick += HandleSelect;
+
+        WorldPosition = position;
+        Scale = scale;
     }
 
     public void HandleSelect(object sender, EventArgs args)
@@ -38,9 +44,9 @@ class GridItem : GameObject
         _selectable.Update(gameTime);
     }
 
-    public override void Draw(SpriteBatch spriteBatch, GraphicsDeviceManager graphicsDevice)
+    public override void Draw(SpriteBatch spriteBatch)
     {
-        _selectable.Draw(spriteBatch, graphicsDevice);
+        _selectable.Draw(spriteBatch);
     }
 }
 
@@ -76,14 +82,14 @@ class Grid : GameObject
         return position;
     }
 
-    public void AddItem(GameObject gameObject)
+    public void AddItem(Sprite sprite, Type type)
     {
-        var wideSide = Math.Max(gameObject.SourceRectangle.Width, gameObject.SourceRectangle.Height);
+        var wideSide = Math.Max(sprite.SourceRectangle.Width, sprite.SourceRectangle.Height);
 
         var fraction = 1 + Gap / SizePerItem;
 
         var scale = SizePerItem / (float)wideSide / fraction;
-        var gridItem = new GridItem(gameObject, GetPosition(), scale);
+        var gridItem = new GridItem(sprite, type, GetPosition(), scale);
         gridItem.OnSelect += HandleItemSelect;
 
         _items.Add(gridItem);
@@ -110,11 +116,11 @@ class Grid : GameObject
         }
     }
 
-    public override void Draw(SpriteBatch spriteBatch, GraphicsDeviceManager graphicsDevice)
+    public override void Draw(SpriteBatch spriteBatch)
     {
         foreach (var item in _items)
         {
-            item.Draw(spriteBatch, graphicsDevice);
+            item.Draw(spriteBatch);
         }
     }
 }

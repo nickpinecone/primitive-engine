@@ -13,9 +13,8 @@ class LevelPoint : GameObject
     private Selectable _selectable;
     private GameState _level;
 
-    override public Vector2 WorldPosition { get { return _selectable.WorldPosition; } }
-    override public float Scale { get { return _selectable.Scale; } }
-    override public Rectangle SourceRectangle { get { return _selectable.SourceRectangle; } }
+    public Sprite Sprite { get { return _selectable.Sprite; } }
+    public CollisionShape Shape { get { return _selectable.Shape; } }
 
     public LevelPoint(Vector2 position, float scale, GameState level)
     {
@@ -24,8 +23,11 @@ class LevelPoint : GameObject
         var sprite = AssetManager.GetAsset<Texture2D>("Sprites/LevelSheet");
         var source = new Rectangle(1120, 675, 75, 150);
 
-        _selectable = new Selectable(position, scale, 2, sprite, source, source);
+        _selectable = new Selectable(Vector2.Zero, 1f, 2, sprite, source, source) { Parent = this };
         _selectable.OnDoubleSelect += HandleSelection;
+
+        WorldPosition = position;
+        Scale = scale;
     }
 
     public void HandleSelection(object sender, EventArgs args)
@@ -43,8 +45,8 @@ class LevelPoint : GameObject
         _selectable.Update(gameTime);
     }
 
-    public override void Draw(SpriteBatch spriteBatch, GraphicsDeviceManager graphicsDevice)
+    public override void Draw(SpriteBatch spriteBatch)
     {
-        _selectable.Draw(spriteBatch, graphicsDevice);
+        _selectable.Draw(spriteBatch);
     }
 }

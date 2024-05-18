@@ -16,40 +16,24 @@ class Selectable : GameObject
     private Button _button;
     private Texture2D _customTexture;
 
+    public Sprite Sprite { get { return _button.Sprite; } }
+    public CollisionShape Shape { get { return _button.Shape; } }
+
     public bool IsSelected { get; protected set; }
     public bool IsHovered { get; protected set; }
     public int OutlineSize { get; protected set; }
 
-    override public Rectangle SourceRectangle { get { return _button.SourceRectangle; } }
-    override public Texture2D Texture { get { return _button.Texture; } }
-
-    override public float Scale
-    {
-        get { return _button.Scale; }
-        set { _button.Scale = value; }
-    }
-
-    override public Vector2 WorldPosition
-    {
-        get { return _button.WorldPosition; }
-        set { _button.WorldPosition = value; }
-    }
-
-    new public Color AccentColor
-    {
-        get { return _button.AccentColor; }
-        set { _button.AccentColor = value; }
-    }
-
     public Selectable(Vector2 position, float scale, int outlineSize, Texture2D texture, Rectangle source, Rectangle hoverSource)
     {
-        _button = new Button(position, scale, texture, source, hoverSource);
+        _button = new Button(Vector2.Zero, 1f, texture, source, hoverSource) { Parent = this };
         _button.OnClick += HandleButtonClick;
         _button.OnRightClick += HandleButtonRightClick;
 
-        OutlineSize = outlineSize;
+        _customTexture = DebugTexture.GenerateSpriteTexture(Sprite.Texture, source);
 
-        _customTexture = DebugTexture.GenerateSpriteTexture(_button.Texture, source);
+        OutlineSize = outlineSize;
+        WorldPosition = position;
+        Scale = scale;
     }
 
     private void HandleButtonClick(object sender, EventArgs args)
@@ -78,7 +62,7 @@ class Selectable : GameObject
 
         _button.HandleInput();
 
-        if (WorldRectangle.Contains(mouseState.Position))
+        if (Shape.WorldRectangle.Contains(mouseState.Position))
         {
             IsHovered = true;
         }
@@ -87,7 +71,7 @@ class Selectable : GameObject
             IsHovered = false;
         }
 
-        if (Input.IsMouseJustPressed(MouseButton.Left) && !WorldRectangle.Contains(mouseState.Position))
+        if (Input.IsMouseJustPressed(MouseButton.Left) && !Shape.WorldRectangle.Contains(mouseState.Position))
         {
             IsSelected = false;
         }
@@ -103,34 +87,31 @@ class Selectable : GameObject
         _button.HandleInput();
     }
 
-    public override void Draw(SpriteBatch spriteBatch, GraphicsDeviceManager graphicsDevice)
+    public override void Draw(SpriteBatch spriteBatch)
     {
-        // Doesnt draw itself, just a container
-        // base.Draw(spriteBatch, graphicsDevice);
-
         if (IsSelected)
         {
-            DrawOutline(spriteBatch, graphicsDevice);
+            DrawOutline(spriteBatch);
         }
 
-        _button.Draw(spriteBatch, graphicsDevice);
+        _button.Draw(spriteBatch);
 
         if (IsHovered)
         {
-            DrawHighlight(spriteBatch, graphicsDevice);
+            DrawHighlight(spriteBatch);
         }
     }
 
-    private void DrawOutline(SpriteBatch spriteBatch, GraphicsDeviceManager graphicsDevice)
+    private void DrawOutline(SpriteBatch spriteBatch)
     {
-        spriteBatch.Draw(_customTexture, WorldPosition + new Vector2(-OutlineSize, 0), null, Color.Gray, 0, Origin, Scale, SpriteEffects.None, 0);
-        spriteBatch.Draw(_customTexture, WorldPosition + new Vector2(OutlineSize, 0), null, Color.Gray, 0, Origin, Scale, SpriteEffects.None, 0);
-        spriteBatch.Draw(_customTexture, WorldPosition + new Vector2(0, -OutlineSize), null, Color.Gray, 0, Origin, Scale, SpriteEffects.None, 0);
-        spriteBatch.Draw(_customTexture, WorldPosition + new Vector2(0, OutlineSize), null, Color.Gray, 0, Origin, Scale, SpriteEffects.None, 0);
+        spriteBatch.Draw(_customTexture, WorldPosition + new Vector2(-OutlineSize, 0), null, Color.Gray, 0, Sprite.Origin, Scale, SpriteEffects.None, 0);
+        spriteBatch.Draw(_customTexture, WorldPosition + new Vector2(OutlineSize, 0), null, Color.Gray, 0, Sprite.Origin, Scale, SpriteEffects.None, 0);
+        spriteBatch.Draw(_customTexture, WorldPosition + new Vector2(0, -OutlineSize), null, Color.Gray, 0, Sprite.Origin, Scale, SpriteEffects.None, 0);
+        spriteBatch.Draw(_customTexture, WorldPosition + new Vector2(0, OutlineSize), null, Color.Gray, 0, Sprite.Origin, Scale, SpriteEffects.None, 0);
     }
 
-    private void DrawHighlight(SpriteBatch spriteBatch, GraphicsDeviceManager graphicsDevice)
+    private void DrawHighlight(SpriteBatch spriteBatch)
     {
-        spriteBatch.Draw(_customTexture, WorldPosition, null, Color.White * 0.3f, 0, Origin, Scale, SpriteEffects.None, 0);
+        spriteBatch.Draw(_customTexture, WorldPosition, null, Color.White * 0.3f, 0, Sprite.Origin, Scale, SpriteEffects.None, 0);
     }
 }

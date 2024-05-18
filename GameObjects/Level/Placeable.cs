@@ -8,46 +8,27 @@ using TowerDefense;
 
 public class Placeable : GameObject
 {
+    public static bool Disabled = false;
+
     public event EventHandler OnClick;
     public event EventHandler OnDelete;
 
-    public bool FollowMouse { get; set; }
-    public static bool Disabled { get; set; }
-
     private Selectable _selectable;
 
-    override public Rectangle SourceRectangle { get { return _selectable.SourceRectangle; } }
-    override public Texture2D Texture { get { return _selectable.Texture; } }
+    public Sprite Sprite { get { return _selectable.Sprite; } }
+    public CollisionShape Shape { get { return _selectable.Shape; } }
 
+    public bool FollowMouse { get; set; }
     public Type Type { get; protected set; }
 
-    override public float Scale
+    public Placeable(Sprite sprite, Type type, Vector2 position, float scale)
     {
-        get { return _selectable.Scale; }
-        set { _selectable.Scale = value; }
-    }
-
-    override public Vector2 WorldPosition
-    {
-        get { return _selectable.WorldPosition; }
-        set
-        {
-            _selectable.WorldPosition = value;
-        }
-    }
-
-    public Placeable(Texture2D texture, Rectangle source, Type type, Vector2 position, float scale)
-    {
-        _selectable = new Selectable(position, scale, 2, texture, source, source);
+        _selectable = new Selectable(Vector2.Zero, 1f, 2, sprite.Texture, sprite.SourceRectangle, sprite.SourceRectangle) { Parent = this };
         _selectable.OnClick += HandleClick;
+
         Type = type;
-    }
-
-    public Placeable(GameObject gameObject, Vector2 position, float scale)
-    {
-        _selectable = new Selectable(position, scale, 2, gameObject.Texture, gameObject.SourceRectangle, gameObject.SourceRectangle);
-        _selectable.OnClick += HandleClick;
-        Type = gameObject.GetType();
+        WorldPosition = position;
+        Scale = scale;
     }
 
     private void HandleClick(object sender, EventArgs args)
@@ -91,13 +72,13 @@ public class Placeable : GameObject
         }
     }
 
-    public override void Draw(SpriteBatch spriteBatch, GraphicsDeviceManager graphicsDevice)
+    public override void Draw(SpriteBatch spriteBatch)
     {
-        _selectable.Draw(spriteBatch, graphicsDevice);
+        _selectable.Draw(spriteBatch);
     }
 
     public Placeable Clone()
     {
-        return new Placeable(this.Texture, this.SourceRectangle, this.Type, this.WorldPosition, this.Scale);
+        return new Placeable(Sprite, Type, WorldPosition, Scale);
     }
 }

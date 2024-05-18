@@ -12,6 +12,7 @@ class Label : GameObject
     public Vector2 TextOrigin { get; protected set; }
     public SpriteFont Font { get; protected set; }
     public Vector2 TextSize { get; protected set; }
+    public Color TextColor { get; set; }
 
     public Label(Vector2 position, float scale, string text, SpriteFont font = null)
     {
@@ -24,6 +25,7 @@ class Label : GameObject
 
         Text = text;
         Font = font;
+        TextColor = Color.White;
 
         TextSize = Font.MeasureString(Text);
         TextOrigin = TextSize / 2f;
@@ -38,8 +40,18 @@ class Label : GameObject
     {
     }
 
-    public override void Draw(SpriteBatch spriteBatch, GraphicsDeviceManager graphicsDevice)
+    public override void Draw(SpriteBatch spriteBatch)
     {
-        spriteBatch.DrawString(Font, Text, WorldPosition, AccentColor, Rotation, TextOrigin, Scale, SpriteEffects.None, 0);
+        spriteBatch.DrawString(
+            Font,
+            Text,
+            WorldPosition,
+            TextColor,
+            Rotation,
+            TextOrigin,
+            Scale,
+            SpriteEffects.None,
+            0
+        );
     }
 }

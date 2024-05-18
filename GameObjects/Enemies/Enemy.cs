@@ -13,6 +13,8 @@ public class Enemy : GameObject
 
     private WalkPath _walkPath;
 
+    public Sprite Sprite { get; }
+
     public int Health { get; set; }
 
     public float MoveSpeed { get; protected set; }
@@ -29,8 +31,7 @@ public class Enemy : GameObject
         MoveSpeed = moveSpeed;
         Health = health;
 
-        Texture = texture;
-        SourceRectangle = source;
+        Sprite = new(texture, source) { Parent = this };
     }
 
     public override void HandleInput()
@@ -66,5 +67,10 @@ public class Enemy : GameObject
 
         WorldPosition += velocity;
         MovedDistance += velocity.Length();
+    }
+
+    public override void Draw(SpriteBatch spriteBatch)
+    {
+        Sprite.Draw(spriteBatch);
     }
 }
