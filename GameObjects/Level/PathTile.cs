@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework.Input;
 
 using TowerDefense;
 
-class PathTile : GameObject
+abstract class PathTile : GameObject, ISaveable
 {
     public Sprite Sprite { get; }
     public CollisionShape Shape { get; }

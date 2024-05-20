@@ -13,7 +13,7 @@ public class Sprite
     public Color AccentColor { get; set; }
 
     private Rectangle? _sourceRectangle = null;
-    virtual public Rectangle SourceRectangle
+    public Rectangle SourceRectangle
     {
         get { return _sourceRectangle ?? Rectangle.Empty; }
         set

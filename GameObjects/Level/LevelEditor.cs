@@ -39,28 +39,13 @@ class LevelEditor : GameObject
 
     public void PopulateGrid()
     {
-        var saveableTypes =
-            from a in AppDomain.CurrentDomain.GetAssemblies()
-            from t in a.GetTypes()
-            let attributes = t.GetCustomAttributes(typeof(SaveableAttribute), true)
-            where attributes != null && attributes.Length > 0
-            select t;
-
-        foreach (var type in saveableTypes)
+        foreach (var saveable in MetaManager.GetSaveables())
         {
-            // TODO Yacky
-            var gameObject = MetaManager.ConstructObject(type, Vector2.Zero, 1f);
-
-            foreach (var property in type.GetProperties())
+            var type = saveable.GetType();
+            var sprite = ((ISaveable)saveable).Sprite;
+            if (sprite != null)
             {
-                var propType = property.PropertyType;
-
-                if (propType == typeof(Sprite))
-                {
-                    var sprite = (Sprite)property.GetValue(gameObject);
-
-                    _grid.AddItem(sprite, type);
-                }
+                _grid.AddItem(sprite, type);
             }
         }
     }

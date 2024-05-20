@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework.Input;
 
 using TowerDefense;
 
-class Decoration : GameObject
+abstract class Decoration : GameObject, ISaveable
 {
     public Sprite Sprite { get; }
 

@@ -112,22 +112,12 @@ public class EditLevelState : GameState
         }
         if (Input.IsKeyJustPressed(Keys.R))
         {
-            // TODO Yacky
             foreach (var gameObject in MetaManager.LoadLevelEditor("level_editor"))
             {
-                foreach (var property in gameObject.GetType().GetProperties())
-                {
-                    var propType = property.PropertyType;
-
-                    if (propType == typeof(Sprite))
-                    {
-                        var sprite = (Sprite)property.GetValue(gameObject);
-
-                        var placeable = new Placeable(sprite, gameObject.GetType(), gameObject.WorldPosition, gameObject.Scale);
-                        placeable.OnDelete += HandlePlaceableDelete;
-                        AddGameObject(placeable);
-                    }
-                }
+                var sprite = ((ISaveable)gameObject).Sprite;
+                var placeable = new Placeable(sprite, gameObject.GetType(), gameObject.WorldPosition, gameObject.Scale);
+                placeable.OnDelete += HandlePlaceableDelete;
+                AddGameObject(placeable);
             }
         }
     }

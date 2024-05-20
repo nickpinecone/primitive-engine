@@ -8,7 +8,10 @@ using Microsoft.Xna.Framework.Content;
 
 namespace TowerDefense;
 
-public class SaveableAttribute : Attribute { }
+public interface ISaveable
+{
+    public Sprite Sprite { get; }
+}
 
 class ObjectMetadata
 {
@@ -49,6 +52,19 @@ public static class MetaManager
             type.GetConstructor(new Type[] { typeof(Vector2), typeof(float) })
             ?? throw new Exception("Game object does not have an appropriate constructor");
         return (GameObject)ctor.Invoke(new object[] { position, scale });
+    }
+
+    public static IEnumerable<GameObject> GetSaveables()
+    {
+        var saveables =
+            AppDomain.CurrentDomain.GetAssemblies()
+            .SelectMany((assembly) => assembly.GetTypes())
+            .Where((type) => type.GetInterface(typeof(ISaveable).Name) != null && !type.IsAbstract);
+
+        foreach (var type in saveables)
+        {
+            yield return MetaManager.ConstructObject(type, Vector2.Zero, 1f);
+        }
     }
 
     public static void SaveLevelEditor(string filename, List<Placeable> placeables)
