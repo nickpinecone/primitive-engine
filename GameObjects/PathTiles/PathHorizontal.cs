@@ -11,5 +11,6 @@ class PathHorizontal : PathTile
     public PathHorizontal(Vector2 position, float scale) : base(position, scale)
     {
         Sprite.SourceRectangle = new Rectangle(615, 515, 160, 105);
+        Shape.Size = new Vector2(Sprite.SourceRectangle.Width, Sprite.SourceRectangle.Height);
     }
 }

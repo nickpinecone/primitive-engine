@@ -11,6 +11,7 @@ class TowerPlot : GameObject, ISaveable
     public event EventHandler OnTowerSelect;
 
     private Selectable _selectable;
+    private ContextMenu _contextMenu;
 
     public Sprite Sprite { get { return _selectable.Sprite; } }
     public CollisionShape Shape { get { return _selectable.Shape; } }
@@ -23,15 +24,12 @@ class TowerPlot : GameObject, ISaveable
         var source = new Rectangle(495, 635, 110, 50);
 
         _selectable = new Selectable(Vector2.Zero, 1f, 2, sprite, source, source) { Parent = this };
-        _selectable.OnDoubleSelect += HandleSelection;
+        _contextMenu = new ContextMenu(50f) { Parent = this };
+
+        _contextMenu.AddItem(Sprite, 1);
 
         WorldPosition = position;
         Scale = scale;
-    }
-
-    public void HandleSelection(object sender, EventArgs args)
-    {
-        OnTowerSelect?.Invoke(this, null);
     }
 
     public override void HandleInput()
@@ -39,17 +37,22 @@ class TowerPlot : GameObject, ISaveable
         if (Disabled) return;
 
         _selectable.HandleInput();
+        _contextMenu.HandleInput();
     }
 
     public override void Update(GameTime gameTime)
     {
         if (Disabled) return;
 
+        _contextMenu.Hidden = !_selectable.IsSelected;
+
         _selectable.Update(gameTime);
+        _contextMenu.Update(gameTime);
     }
 
     public override void Draw(SpriteBatch spriteBatch)
     {
         _selectable.Draw(spriteBatch);
+        _contextMenu.Draw(spriteBatch);
     }
 }

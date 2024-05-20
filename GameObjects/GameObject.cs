@@ -54,6 +54,8 @@ public abstract class GameObject
 
     public GameObject()
     {
+        _scale = 1f;
+
         ZIndex = 0;
     }
 

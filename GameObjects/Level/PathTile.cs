@@ -19,7 +19,7 @@ abstract class PathTile : GameObject, ISaveable
         var source = new Rectangle();
 
         Sprite = new(sprite, source) { Parent = this };
-        Shape = new(new Vector2(source.Width, source.Height));
+        Shape = new(new Vector2(source.Width, source.Height)) { Parent = this };
 
         WorldPosition = position;
         Scale = scale;

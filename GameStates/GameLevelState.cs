@@ -24,11 +24,6 @@ public class GameLevelState : GameState
     {
         foreach (var gameObject in MetaManager.LoadLevelEditor(filename))
         {
-            if (gameObject is TowerPlot towerPlot)
-            {
-                towerPlot.OnTowerSelect += HandleTowerSelect;
-            }
-
             AddGameObject(gameObject);
         }
     }
@@ -36,17 +31,6 @@ public class GameLevelState : GameState
     public override void UnloadContent(ContentManager contentManager)
     {
         AssetManager.UnloadAssets();
-    }
-
-    public void HandleTowerSelect(object sender, EventArgs args)
-    {
-        var archerTower = AssetManager.GetAsset<Texture2D>("Towers/ArcherTower");
-        var archerTowerSource = new Rectangle(65, 180, 150, 190);
-
-        var plot = (TowerPlot)sender;
-        var tower = new Tower(plot, walkPath, 400, plot.WorldPosition, plot.Scale, archerTower, archerTowerSource);
-
-        AddGameObject(tower);
     }
 
     public override void HandleInput()

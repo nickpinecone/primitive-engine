@@ -89,7 +89,7 @@ class Grid : GameObject
         var fraction = 1 + Gap / SizePerItem;
 
         var scale = SizePerItem / (float)wideSide / fraction;
-        var gridItem = new GridItem(sprite, type, GetPosition(), scale);
+        var gridItem = new GridItem(sprite, type, GetPosition(), scale) { Parent = this };
         gridItem.OnSelect += HandleItemSelect;
 
         _items.Add(gridItem);

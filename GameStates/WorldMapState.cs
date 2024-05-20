@@ -10,8 +10,8 @@ public class WorldMapState : GameState
 {
     public override void LoadContent(ContentManager contentManager)
     {
-        // var levelPoint = new LevelPoint(new Vector2(100, 100), 1f, new GameLevelState());
-        var levelPoint = new LevelPoint(new Vector2(100, 100), 1f, new EditLevelState());
+        var levelPoint = new LevelPoint(new Vector2(100, 100), 1f, new GameLevelState());
+        // var levelPoint = new LevelPoint(new Vector2(100, 100), 1f, new EditLevelState());
         levelPoint.OnLevelSelect += HandleLevelSelect;
 
         AddGameObject(levelPoint);
