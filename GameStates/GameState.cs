@@ -70,6 +70,10 @@ public abstract class GameState
 
     protected void AddGameObject(GameObject gameObject)
     {
+        gameObject.OnQueueFree +=
+            (object sender, EventArgs _)
+            => RemoveGameObject(gameObject);
+
         _addQueue.Add(gameObject);
     }
 

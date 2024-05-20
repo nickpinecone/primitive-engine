@@ -14,6 +14,13 @@ public enum MouseButton
 public static class Input
 {
     static Dictionary<MouseButton, bool> mouseStates = new();
+    static Dictionary<Keys, bool> keyStates = new();
+    static int wheelValue = 0;
+
+    public static int GetWheelValue()
+    {
+        return Mouse.GetState().ScrollWheelValue - wheelValue;
+    }
 
     private static bool IsMouseButtonDown(MouseButton mouseButton)
     {
@@ -46,6 +53,8 @@ public static class Input
         {
             mouseStates[button] = IsMouseButtonDown(button);
         }
+
+        wheelValue = mouseState.ScrollWheelValue;
     }
 
     public static bool IsMouseJustPressed(MouseButton mouseButton)
@@ -57,8 +66,6 @@ public static class Input
 
         return IsMouseButtonDown(mouseButton) && mouseStates[mouseButton] == false;
     }
-
-    static Dictionary<Keys, bool> keyStates = new();
 
     private static void UpdateKeyboard()
     {

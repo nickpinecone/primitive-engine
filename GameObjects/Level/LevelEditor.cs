@@ -55,6 +55,7 @@ class LevelEditor : GameObject
         var copy = placeable.Clone();
         _selectedItem = copy;
         _selectedItem.Sprite.AccentColor = Color.White * 0.5f;
+        _selectedItem.Select();
     }
 
     public override void HandleInput()
@@ -78,13 +79,12 @@ class LevelEditor : GameObject
         {
             if (_selectedItem != null)
             {
+                _selectedItem.HandleInput();
+
                 if (Input.IsMouseJustPressed(MouseButton.Left))
                 {
                     OnItemPlace?.Invoke(this, _selectedItem);
                 }
-
-                var scale = MathHelper.Clamp(mouseState.ScrollWheelValue / 1000f + 1, 0.1f, 10f);
-                _selectedItem.Scale = scale;
             }
         }
         else
@@ -101,6 +101,7 @@ class LevelEditor : GameObject
 
         if (_selectedItem != null)
         {
+            _selectedItem.Update(gameTime);
             var position = new Vector2((mouseState.Position.X / SnapAmount) * SnapAmount, (mouseState.Position.Y / SnapAmount) * SnapAmount);
             _selectedItem.WorldPosition = position;
         }

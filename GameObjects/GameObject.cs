@@ -7,6 +7,8 @@ namespace TowerDefense;
 
 public abstract class GameObject
 {
+    public event EventHandler OnQueueFree;
+
     public GameObject Parent { get; set; }
 
     private Vector2 _worldPosition;
@@ -53,6 +55,11 @@ public abstract class GameObject
     public GameObject()
     {
         ZIndex = 0;
+    }
+
+    public void QueueFree()
+    {
+        OnQueueFree?.Invoke(this, null);
     }
 
     public abstract void HandleInput();

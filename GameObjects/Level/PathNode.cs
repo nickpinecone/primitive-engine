@@ -15,7 +15,7 @@ class PathNode : GameObject
     public static bool Disabled = false;
     public static bool Hidden = false;
 
-    public event EventHandler OnDelete;
+    // public event EventHandler OnDelete;
 
     private Selectable _selectable;
     private List<PathNode> _nextNodes;
@@ -146,7 +146,7 @@ class PathNode : GameObject
             if (Input.IsKeyJustPressed(Keys.D))
             {
                 RemoveNode();
-                OnDelete?.Invoke(this, null);
+                QueueFree();
             }
             if (Input.IsKeyJustPressed(Keys.F))
             {

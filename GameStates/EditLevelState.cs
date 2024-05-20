@@ -47,14 +47,7 @@ public class EditLevelState : GameState
     private void HandleItemPlace(object sender, Placeable placeable)
     {
         var copy = placeable.Clone();
-        copy.OnDelete += HandlePlaceableDelete;
         AddGameObject(copy);
-    }
-
-    private void HandlePlaceableDelete(object sender, EventArgs args)
-    {
-        var placeable = (Placeable)sender;
-        RemoveGameObject(placeable);
     }
 
     private void HandleOverlay(object sender, bool isOpen)
@@ -116,7 +109,6 @@ public class EditLevelState : GameState
             {
                 var sprite = ((ISaveable)gameObject).Sprite;
                 var placeable = new Placeable(sprite, gameObject.GetType(), gameObject.WorldPosition, gameObject.Scale);
-                placeable.OnDelete += HandlePlaceableDelete;
                 AddGameObject(placeable);
             }
         }
@@ -140,7 +132,6 @@ public class EditLevelState : GameState
             }
 
             var pathNode = new PathNode(node, nodeType);
-            pathNode.OnDelete += HandleNodeDelete;
             AddGameObject(pathNode);
         }
 
@@ -153,12 +144,6 @@ public class EditLevelState : GameState
             MetaManager.LoadWalkPath("walk_path", walkPath);
             GeneratePathNodes();
         }
-    }
-
-    public void HandleNodeDelete(object sender, EventArgs args)
-    {
-        var node = (PathNode)sender;
-        RemoveGameObject(node);
     }
 
     public void GeneratePathNodes()
@@ -176,7 +161,6 @@ public class EditLevelState : GameState
             else
             {
                 pathNode = new PathNode(tuple.node, tuple.node.Type);
-                pathNode.OnDelete += HandleNodeDelete;
                 dict[tuple.node] = pathNode;
                 AddGameObject(pathNode);
             }

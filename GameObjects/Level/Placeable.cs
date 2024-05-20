@@ -11,7 +11,6 @@ public class Placeable : GameObject
     public static bool Disabled = false;
 
     public event EventHandler OnClick;
-    public event EventHandler OnDelete;
 
     private Selectable _selectable;
 
@@ -31,6 +30,11 @@ public class Placeable : GameObject
         Scale = scale;
     }
 
+    public void Select()
+    {
+        _selectable.IsSelected = true;
+    }
+
     private void HandleClick(object sender, EventArgs args)
     {
         OnClick?.Invoke(this, null);
@@ -40,17 +44,26 @@ public class Placeable : GameObject
     {
         if (Placeable.Disabled) return;
 
+        var mouseState = Mouse.GetState();
+        var keyState = Keyboard.GetState();
+
         _selectable.HandleInput();
 
         if (_selectable.IsSelected)
         {
             if (Input.IsKeyJustPressed(Keys.D))
             {
-                OnDelete?.Invoke(this, null);
+                QueueFree();
             }
             if (Input.IsKeyJustPressed(Keys.F))
             {
                 FollowMouse = true;
+            }
+
+            if (keyState.IsKeyDown(Keys.LeftShift))
+            {
+                Scale += Input.GetWheelValue() / 1000f;
+                Scale = Math.Clamp(Scale, 0.1f, 10f);
             }
         }
 

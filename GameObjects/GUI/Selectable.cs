@@ -19,7 +19,7 @@ class Selectable : GameObject
     public Sprite Sprite { get { return _button.Sprite; } }
     public CollisionShape Shape { get { return _button.Shape; } }
 
-    public bool IsSelected { get; protected set; }
+    public bool IsSelected { get; set; }
     public bool IsHovered { get; protected set; }
     public int OutlineSize { get; protected set; }
 
@@ -75,11 +75,6 @@ class Selectable : GameObject
         {
             IsSelected = false;
         }
-    }
-
-    public void Deselect()
-    {
-        IsSelected = false;
     }
 
     public override void Update(GameTime gameTime)
