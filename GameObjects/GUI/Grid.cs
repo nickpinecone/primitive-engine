@@ -12,18 +12,25 @@ class GridItem : GameObject
 {
     public event EventHandler<Placeable> OnSelect;
 
-    private Selectable _selectable;
     private Placeable _placeable;
 
-    public Sprite Sprite { get { return _selectable.Sprite; } }
-    public CollisionShape Shape { get { return _selectable.Shape; } }
+    public Sprite Sprite { get; }
+    public CollisionShape Shape { get; }
+    public Interact Interact { get; }
 
-    public GridItem(Sprite sprite, Type type, Vector2 position, float scale)
+    public GridItem(GameObject parent, Sprite sprite, Type type, Vector2 position, float scale) : base(parent)
     {
-        _placeable = new Placeable(sprite, type, Vector2.Zero, 1f) { Parent = this };
+        _placeable = new Placeable(null, sprite, type, Vector2.Zero, 1f);
 
-        _selectable = new Selectable(Vector2.Zero, 1f, 2, sprite.Texture, sprite.SourceRectangle, sprite.SourceRectangle) { Parent = this };
-        _selectable.OnClick += HandleSelect;
+        Sprite = new Sprite(this, sprite.Texture, sprite.SourceRectangle, 2);
+        Shape = new CollisionShape(this, sprite.Size);
+        Interact = new Interact(this, Sprite, Shape);
+
+        Interact.OnSelect += HandleSelect;
+
+        AddComponent(Sprite);
+        AddComponent(Shape);
+        AddComponent(Interact);
 
         WorldPosition = position;
         Scale = scale;
@@ -36,17 +43,17 @@ class GridItem : GameObject
 
     public override void HandleInput()
     {
-        _selectable.HandleInput();
+        base.HandleInput();
     }
 
     public override void Update(GameTime gameTime)
     {
-        _selectable.Update(gameTime);
+        base.Update(gameTime);
     }
 
     public override void Draw(SpriteBatch spriteBatch)
     {
-        _selectable.Draw(spriteBatch);
+        base.Draw(spriteBatch);
     }
 }
 
@@ -61,7 +68,7 @@ class Grid : GameObject
     public float SizePerItem { get; protected set; }
     public float Gap { get; protected set; }
 
-    public Grid(Vector2 size, int columnAmount, float gap)
+    public Grid(GameObject parent, Vector2 size, int columnAmount, float gap) : base(parent)
     {
         Size = size;
         ColumnAmount = columnAmount;
@@ -89,7 +96,7 @@ class Grid : GameObject
         var fraction = 1 + Gap / SizePerItem;
 
         var scale = SizePerItem / (float)wideSide / fraction;
-        var gridItem = new GridItem(sprite, type, GetPosition(), scale) { Parent = this };
+        var gridItem = new GridItem(this, sprite, type, GetPosition(), scale);
         gridItem.OnSelect += HandleItemSelect;
 
         _items.Add(gridItem);
@@ -102,6 +109,8 @@ class Grid : GameObject
 
     public override void HandleInput()
     {
+        base.HandleInput();
+
         foreach (var item in _items)
         {
             item.HandleInput();
@@ -110,6 +119,8 @@ class Grid : GameObject
 
     public override void Update(GameTime gameTime)
     {
+        base.Update(gameTime);
+
         foreach (var item in _items)
         {
             item.Update(gameTime);
@@ -118,6 +129,8 @@ class Grid : GameObject
 
     public override void Draw(SpriteBatch spriteBatch)
     {
+        base.Draw(spriteBatch);
+
         foreach (var item in _items)
         {
             item.Draw(spriteBatch);

@@ -10,46 +10,37 @@ public class Placeable : GameObject
 {
     public static bool Disabled = false;
 
-    public event EventHandler OnClick;
-
-    private Selectable _selectable;
-
-    public Sprite Sprite { get { return _selectable.Sprite; } }
-    public CollisionShape Shape { get { return _selectable.Shape; } }
+    public Sprite Sprite { get; }
+    public CollisionShape Shape { get; }
+    public Interact Interact { get; }
 
     public bool FollowMouse { get; set; }
     public Type Type { get; protected set; }
 
-    public Placeable(Sprite sprite, Type type, Vector2 position, float scale)
+    public Placeable(GameObject parent, Sprite sprite, Type type, Vector2 position, float scale) : base(parent)
     {
-        _selectable = new Selectable(Vector2.Zero, 1f, 2, sprite.Texture, sprite.SourceRectangle, sprite.SourceRectangle) { Parent = this };
-        _selectable.OnClick += HandleClick;
+        Sprite = new Sprite(this, sprite.Texture, sprite.SourceRectangle, 2);
+        Shape = new CollisionShape(this, Sprite.Size);
+        Interact = new Interact(this, Sprite, Shape);
+
+        AddComponent(Sprite);
+        AddComponent(Shape);
+        AddComponent(Interact);
 
         Type = type;
         WorldPosition = position;
         Scale = scale;
     }
 
-    public void Select()
-    {
-        _selectable.IsSelected = true;
-    }
-
-    private void HandleClick(object sender, EventArgs args)
-    {
-        OnClick?.Invoke(this, null);
-    }
-
     public override void HandleInput()
     {
         if (Placeable.Disabled) return;
 
-        var mouseState = Mouse.GetState();
+        base.HandleInput();
+
         var keyState = Keyboard.GetState();
 
-        _selectable.HandleInput();
-
-        if (_selectable.IsSelected)
+        if (Interact.IsSelected)
         {
             if (Input.IsKeyJustPressed(Keys.D))
             {
@@ -75,9 +66,9 @@ public class Placeable : GameObject
 
     public override void Update(GameTime gameTime)
     {
-        var mouseState = Mouse.GetState();
+        base.Update(gameTime);
 
-        _selectable.Update(gameTime);
+        var mouseState = Mouse.GetState();
 
         if (FollowMouse)
         {
@@ -87,11 +78,11 @@ public class Placeable : GameObject
 
     public override void Draw(SpriteBatch spriteBatch)
     {
-        _selectable.Draw(spriteBatch);
+        base.Draw(spriteBatch);
     }
 
     public Placeable Clone()
     {
-        return new Placeable(Sprite, Type, WorldPosition, Scale);
+        return new Placeable(Parent, Sprite, Type, WorldPosition, Scale);
     }
 }

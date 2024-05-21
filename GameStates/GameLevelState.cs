@@ -38,7 +38,7 @@ public class GameLevelState : GameState
 
         if (type == TowerType.Archer)
         {
-            var tower = new ArcherTower(plot, walkPath, 400, plot.WorldPosition, plot.Scale);
+            var tower = new ArcherTower(null, plot, walkPath, 400, plot.WorldPosition, plot.Scale);
             AddGameObject(tower);
         }
     }

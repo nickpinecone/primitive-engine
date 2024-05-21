@@ -10,12 +10,14 @@ abstract class Decoration : GameObject, ISaveable
 {
     public Sprite Sprite { get; }
 
-    public Decoration(Vector2 position, float scale)
+    public Decoration(GameObject parent, Vector2 position, float scale) : base(parent)
     {
-        var sprite = AssetManager.GetAsset<Texture2D>("Sprites/LevelSheet");
-        var source = new Rectangle();
+        var texture = AssetManager.GetAsset<Texture2D>("Sprites/LevelSheet");
+        var source = new Rectangle(1165, 465, 115, 170);
 
-        Sprite = new(sprite, source) { Parent = this };
+        Sprite = new Sprite(this, texture, source);
+
+        AddComponent(Sprite);
 
         WorldPosition = position;
         Scale = scale;
@@ -23,14 +25,16 @@ abstract class Decoration : GameObject, ISaveable
 
     public override void HandleInput()
     {
+        base.HandleInput();
     }
 
     public override void Update(GameTime gameTime)
     {
+        base.Update(gameTime);
     }
 
     public override void Draw(SpriteBatch spriteBatch)
     {
-        Sprite.Draw(spriteBatch);
+        base.Draw(spriteBatch);
     }
 }

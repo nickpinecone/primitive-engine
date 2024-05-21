@@ -15,20 +15,18 @@ class PathNode : GameObject
     public static bool Disabled = false;
     public static bool Hidden = false;
 
-    // public event EventHandler OnDelete;
-
-    private Selectable _selectable;
     private List<PathNode> _nextNodes;
     private List<PathNode> _prevNodes;
 
-    public Sprite Sprite { get { return _selectable.Sprite; } }
-    public CollisionShape Shape { get { return _selectable.Shape; } }
+    public Sprite Sprite { get; }
+    public CollisionShape Shape { get; }
+    public Interact Interact { get; }
 
     public bool FollowMouse { get; set; }
     public Node Node { get; protected set; }
     public int Size { get; protected set; }
 
-    public PathNode(Node node, NodeType type)
+    public PathNode(GameObject parent, Node node, NodeType type) : base(parent)
     {
         ZIndex = 1;
         Node = node;
@@ -40,9 +38,17 @@ class PathNode : GameObject
 
         _nextNodes = new();
         _prevNodes = new();
-        _selectable = new Selectable(Vector2.Zero, 1f, 2, texture, source, source) { Parent = this };
-        _selectable.OnClick += (_, _) => HandleClick(this, null);
-        _selectable.OnRightClick += (_, _) => HandleRightClick(this, null);
+
+        Sprite = new Sprite(this, texture, source, 2);
+        Shape = new CollisionShape(this, Sprite.Size);
+        Interact = new Interact(this, Sprite, Shape);
+
+        Interact.OnClick += (_, _) => HandleClick(this, null);
+        Interact.OnRightClick += (_, _) => HandleRightClick(this, null);
+
+        AddComponent(Sprite);
+        AddComponent(Shape);
+        AddComponent(Interact);
 
         WorldPosition = node.Position;
         Scale = 1f;
@@ -139,9 +145,9 @@ class PathNode : GameObject
     {
         if (PathNode.Disabled) return;
 
-        _selectable.HandleInput();
+        base.HandleInput();
 
-        if (_selectable.IsSelected)
+        if (Interact.IsSelected)
         {
             if (Input.IsKeyJustPressed(Keys.D))
             {
@@ -167,21 +173,21 @@ class PathNode : GameObject
 
     public override void Update(GameTime gameTime)
     {
+        base.Update(gameTime);
+
         var mouseState = Mouse.GetState();
 
         if (FollowMouse)
         {
             WorldPosition = mouseState.Position.ToVector2();
         }
-
-        _selectable.Update(gameTime);
     }
 
     public override void Draw(SpriteBatch spriteBatch)
     {
         if (Hidden) return;
 
-        _selectable.Draw(spriteBatch);
+        base.Draw(spriteBatch);
 
         if (SelectedNode == this)
         {

@@ -8,9 +8,10 @@ using TowerDefense;
 
 class PathVertical : PathTile
 {
-    public PathVertical(Vector2 position, float scale) : base(position, scale)
+    public PathVertical(GameObject parent, Vector2 position, float scale) : base(parent, position, scale)
     {
         Sprite.SourceRectangle = new Rectangle(430, 235, 105, 160);
-        Shape.Size = new Vector2(Sprite.SourceRectangle.Width, Sprite.SourceRectangle.Height);
+        Sprite.DefaultSource = Sprite.SourceRectangle;
+        Shape.Size = Sprite.Size;
     }
 }

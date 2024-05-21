@@ -10,27 +10,33 @@ class TowerPlot : GameObject, ISaveable
 {
     public event EventHandler<TowerType> OnTowerSelect;
 
-    private Selectable _selectable;
-    private ContextMenu _contextMenu;
+    // private ContextMenu _contextMenu;
 
-    public Sprite Sprite { get { return _selectable.Sprite; } }
-    public CollisionShape Shape { get { return _selectable.Shape; } }
+    public Sprite Sprite { get; }
+    public CollisionShape Shape { get; }
+    public Interact Interact { get; }
 
-    public bool Disabled { get; set; }
-
-    public TowerPlot(Vector2 position, float scale)
+    public TowerPlot(GameObject parent, Vector2 position, float scale) : base(parent)
     {
-        var sprite = AssetManager.GetAsset<Texture2D>("Sprites/LevelSheet");
+        var texture = AssetManager.GetAsset<Texture2D>("Sprites/LevelSheet");
         var source = new Rectangle(495, 635, 110, 50);
 
-        _selectable = new Selectable(Vector2.Zero, 1f, 2, sprite, source, source) { Parent = this };
-        _contextMenu = new ContextMenu(80f) { Parent = this };
+        // _selectable = new Selectable(Vector2.Zero, 1f, 2, sprite, source, source) { Parent = this };
+        // _contextMenu = new ContextMenu(80f) { Parent = this };
 
-        var archerTexture = AssetManager.GetAsset<Texture2D>("Towers/ArcherTower");
-        var archerSource = new Rectangle(390, 815, 65, 65);
-        var archerSprite = new Sprite(archerTexture, archerSource);
-        _contextMenu.AddItem(archerSprite, TowerType.Archer);
-        _contextMenu.OnSelect += HandleSelectTower;
+        Sprite = new Sprite(this, texture, source, 2);
+        Shape = new CollisionShape(this, Sprite.Size);
+        Interact = new Interact(this, Sprite, Shape);
+
+        AddComponent(Sprite);
+        AddComponent(Shape);
+        AddComponent(Interact);
+
+        // var archerTexture = AssetManager.GetAsset<Texture2D>("Towers/ArcherTower");
+        // var archerSource = new Rectangle(390, 815, 65, 65);
+        // var archerSprite = new Sprite(archerTexture, archerSource);
+        // _contextMenu.AddItem(archerSprite, TowerType.Archer);
+        // _contextMenu.OnSelect += HandleSelectTower;
 
         WorldPosition = position;
         Scale = scale;
@@ -44,23 +50,26 @@ class TowerPlot : GameObject, ISaveable
 
     public override void HandleInput()
     {
-        if (Disabled) return;
+        base.HandleInput();
+        // if (Disabled) return;
 
-        _selectable.HandleInput();
-        _contextMenu.HandleInput();
+        // _selectable.HandleInput();
+        // _contextMenu.HandleInput();
     }
 
     public override void Update(GameTime gameTime)
     {
-        _contextMenu.Hidden = !_selectable.IsSelected;
+        base.Update(gameTime);
+        // _contextMenu.Hidden = !_selectable.IsSelected;
 
-        _selectable.Update(gameTime);
-        _contextMenu.Update(gameTime);
+        // _selectable.Update(gameTime);
+        // _contextMenu.Update(gameTime);
     }
 
     public override void Draw(SpriteBatch spriteBatch)
     {
-        _selectable.Draw(spriteBatch);
-        _contextMenu.Draw(spriteBatch);
+        base.Draw(spriteBatch);
+        // _selectable.Draw(spriteBatch);
+        // _contextMenu.Draw(spriteBatch);
     }
 }

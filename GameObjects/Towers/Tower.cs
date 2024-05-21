@@ -11,22 +11,23 @@ public enum TowerType { Archer };
 
 abstract class Tower : GameObject
 {
-    protected Selectable _selectable;
     protected WalkPath _walkPath;
     protected List<Node> _nodesInRadius;
     protected TowerPlot _plot;
 
-    public Sprite Sprite { get { return _selectable.Sprite; } }
-    public CollisionShape Shape { get { return _selectable.Shape; } }
+    public Sprite Sprite { get; set; }
+    public CollisionShape Shape { get; set; }
+    public Interact Interact { get; set; }
 
+    // TODO Area Component
     public float DetectRadius { get; set; }
 
-    public Tower(TowerPlot plot, WalkPath walkPath, float detectRadius, Vector2 position, float scale)
+    public Tower(GameObject parent, TowerPlot plot, WalkPath walkPath, float detectRadius, Vector2 position, float scale) : base(parent)
     {
         plot.ZIndex = -1;
 
         _plot = plot;
-        _plot.Disabled = true;
+        _plot.Interact.Disabled = true;
 
         _walkPath = walkPath;
         _nodesInRadius = _walkPath.GetNodesInRadius(WorldPosition, DetectRadius);
@@ -43,16 +44,16 @@ abstract class Tower : GameObject
 
     public override void HandleInput()
     {
-        _selectable.HandleInput();
+        base.HandleInput();
     }
 
     public override void Update(GameTime gameTime)
     {
-        _selectable.Update(gameTime);
+        base.Update(gameTime);
     }
 
     public override void Draw(SpriteBatch spriteBatch)
     {
-        _selectable.Draw(spriteBatch);
+        base.Draw(spriteBatch);
     }
 }

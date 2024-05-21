@@ -49,9 +49,9 @@ public static class MetaManager
     public static GameObject ConstructObject(Type type, Vector2 position, float scale)
     {
         var ctor =
-            type.GetConstructor(new Type[] { typeof(Vector2), typeof(float) })
+            type.GetConstructor(new Type[] { typeof(GameObject), typeof(Vector2), typeof(float) })
             ?? throw new Exception("Game object does not have an appropriate constructor");
-        return (GameObject)ctor.Invoke(new object[] { position, scale });
+        return (GameObject)ctor.Invoke(new object[] { null, position, scale });
     }
 
     public static IEnumerable<GameObject> GetSaveables()

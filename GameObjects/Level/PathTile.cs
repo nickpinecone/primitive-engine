@@ -11,15 +11,18 @@ abstract class PathTile : GameObject, ISaveable
     public Sprite Sprite { get; }
     public CollisionShape Shape { get; }
 
-    public PathTile(Vector2 position, float scale)
+    public PathTile(GameObject parent, Vector2 position, float scale) : base(parent)
     {
         ZIndex = -1;
 
-        var sprite = AssetManager.GetAsset<Texture2D>("Sprites/LevelSheet");
-        var source = new Rectangle();
+        var texture = AssetManager.GetAsset<Texture2D>("Sprites/LevelSheet");
+        var source = new Rectangle(615, 515, 160, 105);
 
-        Sprite = new(sprite, source) { Parent = this };
-        Shape = new(new Vector2(source.Width, source.Height)) { Parent = this };
+        Sprite = new Sprite(this, texture, source);
+        Shape = new CollisionShape(this, Sprite.Size);
+
+        AddComponent(Sprite);
+        AddComponent(Shape);
 
         WorldPosition = position;
         Scale = scale;
@@ -27,19 +30,16 @@ abstract class PathTile : GameObject, ISaveable
 
     public override void HandleInput()
     {
+        base.HandleInput();
     }
 
     public override void Update(GameTime gameTime)
     {
+        base.Update(gameTime);
     }
 
     public override void Draw(SpriteBatch spriteBatch)
     {
-        Sprite.Draw(spriteBatch);
-
-        if (GameSettings.IsVisibleCollisions)
-        {
-            Shape.Draw(spriteBatch);
-        }
+        base.Draw(spriteBatch);
     }
 }

@@ -10,21 +10,28 @@ class LevelPoint : GameObject
 {
     public event EventHandler<GameState> OnLevelSelect;
 
-    private Selectable _selectable;
     private GameState _level;
 
-    public Sprite Sprite { get { return _selectable.Sprite; } }
-    public CollisionShape Shape { get { return _selectable.Shape; } }
+    public Sprite Sprite { get; }
+    public CollisionShape Shape { get; }
+    public Interact Interact { get; }
 
-    public LevelPoint(Vector2 position, float scale, GameState level)
+    public LevelPoint(GameObject parent, Vector2 position, float scale, GameState level) : base(parent)
     {
         _level = level;
 
-        var sprite = AssetManager.GetAsset<Texture2D>("Sprites/LevelSheet");
+        var texture = AssetManager.GetAsset<Texture2D>("Sprites/LevelSheet");
         var source = new Rectangle(1120, 675, 75, 150);
 
-        _selectable = new Selectable(Vector2.Zero, 1f, 2, sprite, source, source) { Parent = this };
-        _selectable.OnDoubleSelect += HandleSelection;
+        Sprite = new Sprite(this, texture, source, 2);
+        Shape = new CollisionShape(this, Sprite.Size);
+        Interact = new Interact(this, Sprite, Shape);
+
+        Interact.OnDoubleSelect += HandleSelection;
+
+        AddComponent(Sprite);
+        AddComponent(Shape);
+        AddComponent(Interact);
 
         WorldPosition = position;
         Scale = scale;
@@ -37,16 +44,16 @@ class LevelPoint : GameObject
 
     public override void HandleInput()
     {
-        _selectable.HandleInput();
+        base.HandleInput();
     }
 
     public override void Update(GameTime gameTime)
     {
-        _selectable.Update(gameTime);
+        base.Update(gameTime);
     }
 
     public override void Draw(SpriteBatch spriteBatch)
     {
-        _selectable.Draw(spriteBatch);
+        base.Draw(spriteBatch);
     }
 }

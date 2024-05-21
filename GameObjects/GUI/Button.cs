@@ -8,83 +8,68 @@ using TowerDefense;
 
 class Button : GameObject
 {
-    public event EventHandler OnClick;
-    public event EventHandler OnRightClick;
-
     public Label Label { get; }
     public Sprite Sprite { get; }
     public CollisionShape Shape { get; }
-
-    public Rectangle HoverSource { get; protected set; }
+    public Interact Interact { get; }
 
     // Default Button
-    public Button(string text, Vector2 position, float scale = 1f)
+    public Button(GameObject parent, string text, Vector2 position, float scale = 1f) : base(parent)
     {
-        var buttonSprite = AssetManager.GetAsset<Texture2D>("GUI/Buttons");
-        var sourceRect = new Rectangle(180, 200, 360, 180);
-        var hoverRect = new Rectangle(565, 200, 360, 180);
+        var texture = AssetManager.GetAsset<Texture2D>("GUI/Buttons");
+        var source = new Rectangle(180, 200, 360, 180);
+        var hoverSource = new Rectangle(565, 200, 360, 180);
 
-        Label = new Label(Vector2.Zero, 1f, text) { Parent = this };
-        Sprite = new(buttonSprite, sourceRect) { Parent = this };
-        Shape = new(new Vector2(sourceRect.Width, sourceRect.Height)) { Parent = this };
+        Label = new Label(this, Vector2.Zero, 1f, text);
+
+        Sprite = new Sprite(this, texture, source, 0, hoverSource);
+        Shape = new CollisionShape(this, Sprite.Size);
+        Interact = new Interact(this, Sprite, Shape);
+
+        AddComponent(Sprite);
+        AddComponent(Shape);
+        AddComponent(Interact);
 
         WorldPosition = position;
         Scale = scale;
-        HoverSource = hoverRect;
     }
 
     // Custom button
-    public Button(Vector2 position, float scale, Texture2D texture, Rectangle source, Rectangle hoverSource)
+    public Button(GameObject parent, Vector2 position, float scale, Texture2D texture, Rectangle source, Rectangle hoverSource) : base(parent)
     {
-        Sprite = new(texture, source) { Parent = this };
-        Shape = new(new Vector2(source.Width, source.Height)) { Parent = this };
+        Sprite = new Sprite(this, texture, source, 0, hoverSource);
+        Shape = new CollisionShape(this, Sprite.Size);
+        Interact = new Interact(this, Sprite, Shape);
+
+        AddComponent(Sprite);
+        AddComponent(Shape);
+        AddComponent(Interact);
+
         WorldPosition = position;
         Scale = scale;
-        HoverSource = hoverSource;
     }
 
     // Custom button with text
-    public Button(string text, Vector2 position, float scale, Texture2D texture, Rectangle source, Rectangle hoverSource, SpriteFont font)
-        : this(position, scale, texture, source, hoverSource)
+    public Button(GameObject parent, string text, Vector2 position, float scale, Texture2D texture, Rectangle source, Rectangle hoverSource, SpriteFont font)
+        : this(parent, position, scale, texture, source, hoverSource)
     {
-        Label = new Label(Vector2.Zero, 1f, text, font) { Parent = this };
-    }
-
-    public override void Draw(SpriteBatch spriteBatch)
-    {
-        Sprite.Draw(spriteBatch);
-        Label?.Draw(spriteBatch);
-
-        if (GameSettings.IsVisibleCollisions)
-        {
-            Shape.Draw(spriteBatch);
-        }
+        Label = new Label(this, Vector2.Zero, 1f, text, font);
     }
 
     public override void HandleInput()
     {
-        var mouseState = Mouse.GetState();
-
-        if (Shape.WorldRectangle.Contains(mouseState.Position))
-        {
-            Sprite.SourceRectangle = HoverSource;
-
-            if (Input.IsMouseJustPressed(MouseButton.Left))
-            {
-                OnClick?.Invoke(this, null);
-            }
-            else if (Input.IsMouseJustPressed(MouseButton.Right))
-            {
-                OnRightClick?.Invoke(this, null);
-            }
-        }
-        else
-        {
-            Sprite.SourceRectangle = Sprite.DefaultSource;
-        }
+        base.HandleInput();
     }
 
     public override void Update(GameTime gameTime)
     {
+        base.Update(gameTime);
+    }
+
+    public override void Draw(SpriteBatch spriteBatch)
+    {
+        base.Draw(spriteBatch);
+
+        Label?.Draw(spriteBatch);
     }
 }

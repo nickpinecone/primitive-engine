@@ -27,7 +27,7 @@ public class EditLevelState : GameState
     public override void LoadContent(ContentManager contentManager)
     {
         // Level Editor Setup
-        levelEditor = new();
+        levelEditor = new LevelEditor(null);
         levelEditor.OnOverlay += HandleOverlay;
         levelEditor.OnItemPlace += HandleItemPlace;
 
@@ -36,7 +36,7 @@ public class EditLevelState : GameState
         // Walk Path Debug Info
         walkPath = new();
         isWalkPathEdit = false;
-        editInfo = new Label(Vector2.Zero, 0.5f, "");
+        editInfo = new Label(null, Vector2.Zero, 0.5f, "");
         editInfo.TextColor = Color.Black;
         editInfo.WorldPosition += editInfo.TextSize / 2f;
 
@@ -47,6 +47,7 @@ public class EditLevelState : GameState
     private void HandleItemPlace(object sender, Placeable placeable)
     {
         var copy = placeable.Clone();
+        copy.Interact.IsSelected = false;
         AddGameObject(copy);
     }
 
@@ -108,7 +109,7 @@ public class EditLevelState : GameState
             foreach (var gameObject in MetaManager.LoadLevelEditor("level_editor"))
             {
                 var sprite = ((ISaveable)gameObject).Sprite;
-                var placeable = new Placeable(sprite, gameObject.GetType(), gameObject.WorldPosition, gameObject.Scale);
+                var placeable = new Placeable(gameObject.Parent, sprite, gameObject.GetType(), gameObject.WorldPosition, gameObject.Scale);
                 AddGameObject(placeable);
             }
         }
@@ -131,7 +132,7 @@ public class EditLevelState : GameState
                 nodeType = NodeType.End;
             }
 
-            var pathNode = new PathNode(node, nodeType);
+            var pathNode = new PathNode(null, node, nodeType);
             AddGameObject(pathNode);
         }
 
@@ -160,7 +161,7 @@ public class EditLevelState : GameState
             }
             else
             {
-                pathNode = new PathNode(tuple.node, tuple.node.Type);
+                pathNode = new PathNode(null, tuple.node, tuple.node.Type);
                 dict[tuple.node] = pathNode;
                 AddGameObject(pathNode);
             }

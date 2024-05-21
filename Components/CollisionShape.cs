@@ -1,4 +1,3 @@
-
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -6,10 +5,8 @@ using Microsoft.Xna.Framework.Input;
 
 namespace TowerDefense;
 
-public class CollisionShape
+public class CollisionShape : Component
 {
-    public GameObject Parent { get; set; }
-
     public Vector2 Size { get; set; }
 
     public Rectangle WorldRectangle
@@ -25,13 +22,23 @@ public class CollisionShape
         }
     }
 
-    public CollisionShape(Vector2 size)
+    public CollisionShape(GameObject parent, Vector2 size) : base(parent)
     {
         Size = size;
     }
 
-    public void Draw(SpriteBatch spriteBatch)
+    public override void HandleInput()
     {
+    }
+
+    public override void Update(GameTime gameTime)
+    {
+    }
+
+    public override void Draw(SpriteBatch spriteBatch)
+    {
+        if (!GameSettings.IsVisibleCollisions) return;
+
         var rectTexture = DebugTexture.GenerateRectTexture(WorldRectangle.Width, WorldRectangle.Height, Color.White);
         var position = new Vector2(WorldRectangle.Left, WorldRectangle.Top);
         spriteBatch.Draw(rectTexture, position, Color.Blue * 0.5f);

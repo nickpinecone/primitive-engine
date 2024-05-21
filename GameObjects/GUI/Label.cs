@@ -14,7 +14,7 @@ class Label : GameObject
     public Vector2 TextSize { get; protected set; }
     public Color TextColor { get; set; }
 
-    public Label(Vector2 position, float scale, string text, SpriteFont font = null)
+    public Label(GameObject parent, Vector2 position, float scale, string text, SpriteFont font = null) : base(parent)
     {
         ZIndex = 1;
 
@@ -34,14 +34,18 @@ class Label : GameObject
 
     public override void HandleInput()
     {
+        base.HandleInput();
     }
 
     public override void Update(GameTime gameTime)
     {
+        base.Update(gameTime);
     }
 
     public override void Draw(SpriteBatch spriteBatch)
     {
+        base.Draw(spriteBatch);
+
         spriteBatch.DrawString(
             Font,
             Text,

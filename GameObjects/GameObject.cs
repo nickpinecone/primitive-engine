@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -10,6 +11,7 @@ public abstract class GameObject
     public event EventHandler OnQueueFree;
 
     public GameObject Parent { get; set; }
+    private List<Component> _components;
 
     private Vector2 _worldPosition;
     public Vector2 WorldPosition
@@ -52,11 +54,12 @@ public abstract class GameObject
 
     public int ZIndex { get; set; }
 
-    public GameObject()
+    public GameObject(GameObject parent)
     {
+        _components = new();
         _scale = 1f;
-
         ZIndex = 0;
+        Parent = parent;
     }
 
     public void QueueFree()
@@ -64,7 +67,32 @@ public abstract class GameObject
         OnQueueFree?.Invoke(this, null);
     }
 
-    public abstract void HandleInput();
-    public abstract void Update(GameTime gameTime);
-    public abstract void Draw(SpriteBatch spriteBatch);
+    protected void AddComponent(Component component)
+    {
+        _components.Add(component);
+    }
+
+    public virtual void HandleInput()
+    {
+        foreach (var component in _components)
+        {
+            component.HandleInput();
+        }
+    }
+
+    public virtual void Update(GameTime gameTime)
+    {
+        foreach (var component in _components)
+        {
+            component.Update(gameTime);
+        }
+    }
+
+    public virtual void Draw(SpriteBatch spriteBatch)
+    {
+        foreach (var component in _components)
+        {
+            component.Draw(spriteBatch);
+        }
+    }
 }

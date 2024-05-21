@@ -8,9 +8,10 @@ using TowerDefense;
 
 class PathCross : PathTile
 {
-    public PathCross(Vector2 position, float scale) : base(position, scale)
+    public PathCross(GameObject parent, Vector2 position, float scale) : base(parent, position, scale)
     {
         Sprite.SourceRectangle = new Rectangle(320, 425, 210, 210);
-        Shape.Size = new Vector2(Sprite.SourceRectangle.Width, Sprite.SourceRectangle.Height);
+        Sprite.DefaultSource = Sprite.SourceRectangle;
+        Shape.Size = Sprite.Size;
     }
 }

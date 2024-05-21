@@ -5,9 +5,9 @@ using Microsoft.Xna.Framework.Input;
 
 namespace TowerDefense;
 
-public class Sprite
+public class Sprite : Component
 {
-    public GameObject Parent { get; set; }
+    private Texture2D _customTexture;
 
     public Texture2D Texture { get; protected set; }
     public Color AccentColor { get; set; }
@@ -26,7 +26,8 @@ public class Sprite
         }
     }
 
-    public Rectangle DefaultSource { get; private set; }
+    public Rectangle DefaultSource { get; set; }
+    public Rectangle HoverSource { get; set; }
 
     public Vector2 Origin
     {
@@ -36,18 +37,54 @@ public class Sprite
         }
     }
 
-    public float Scale { get; set; }
-
-    public Sprite(Texture2D texture, Rectangle source)
+    public Vector2 Size
     {
+        get
+        {
+            return new Vector2(SourceRectangle.Width, SourceRectangle.Height);
+        }
+    }
+
+    public float Scale { get; set; }
+    public int OutlineSize { get; set; }
+
+    public bool IsHovered { get; set; }
+    public bool IsSelected { get; set; }
+    public bool Hidden { get; set; }
+
+    public Sprite(GameObject parent, Texture2D texture, Rectangle source, int outlineSize = 0, Rectangle? hoverSource = null) : base(parent)
+    {
+        _customTexture = DebugTexture.GenerateSpriteTexture(texture, source);
+
+        IsHovered = false;
+        IsSelected = false;
+        Hidden = false;
+
         Scale = 1f;
         AccentColor = Color.White;
         Texture = texture;
         SourceRectangle = source;
+        HoverSource = hoverSource ?? Rectangle.Empty;
+        OutlineSize = outlineSize;
     }
 
-    public void Draw(SpriteBatch spriteBatch)
+    public override void HandleInput()
     {
+    }
+
+    public override void Update(GameTime gameTime)
+    {
+    }
+
+    public override void Draw(SpriteBatch spriteBatch)
+    {
+        if (Hidden) return;
+
+        if (IsSelected)
+        {
+            DrawOutline(spriteBatch);
+        }
+
         spriteBatch.Draw(
             Texture,
             Parent.WorldPosition,
@@ -59,5 +96,64 @@ public class Sprite
             SpriteEffects.None,
             0
         );
+
+        if (IsHovered)
+        {
+            if (HoverSource != Rectangle.Empty)
+            {
+                SourceRectangle = HoverSource;
+            }
+            else
+            {
+                DrawHighlight(spriteBatch);
+            }
+        }
+        else
+        {
+            SourceRectangle = DefaultSource;
+        }
+    }
+
+    public void DrawHighlight(SpriteBatch spriteBatch)
+    {
+        spriteBatch.Draw(
+            _customTexture,
+            Parent.WorldPosition,
+            null,
+            Color.White * 0.3f,
+            Parent.Rotation,
+            Origin,
+            Parent.Scale * Scale,
+            SpriteEffects.None,
+            0
+        );
+    }
+
+    private void DrawOutline(SpriteBatch spriteBatch)
+    {
+        if (OutlineSize > 0)
+        {
+            var positions = new Vector2[4] {
+                new Vector2(-OutlineSize, 0),
+                new Vector2(OutlineSize, 0),
+                new Vector2(0, -OutlineSize),
+                new Vector2(0, -OutlineSize)
+            };
+
+            foreach (var position in positions)
+            {
+                spriteBatch.Draw(
+                    _customTexture,
+                    Parent.WorldPosition + position,
+                    null,
+                    Color.Gray,
+                    Parent.Rotation,
+                    Origin,
+                    Parent.Scale * Scale,
+                    SpriteEffects.None,
+                    0
+                );
+            }
+        }
     }
 }

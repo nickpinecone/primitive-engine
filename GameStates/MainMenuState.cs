@@ -13,11 +13,11 @@ public class MainMenuState : GameState
         var windowMiddle = GameSettings.WindowSize / 2f;
         var offset = new Vector2(0, 120);
 
-        var playButton = new Button("Play", windowMiddle - offset);
-        var quitButton = new Button("Quit", windowMiddle + offset);
+        var playButton = new Button(null, "Play", windowMiddle - offset);
+        var quitButton = new Button(null, "Quit", windowMiddle + offset);
 
-        quitButton.OnClick += HandleQuitButton;
-        playButton.OnClick += HandlePlayButton;
+        quitButton.Interact.OnClick += HandleQuitButton;
+        playButton.Interact.OnClick += HandlePlayButton;
 
         AddGameObject(quitButton);
         AddGameObject(playButton);

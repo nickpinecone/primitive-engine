@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework.Input;
 
 using TowerDefense;
 
-public class Enemy : GameObject
+abstract public class Enemy : GameObject
 {
     public event EventHandler OnDie;
     public event EventHandler OnReachBase;
@@ -14,14 +14,17 @@ public class Enemy : GameObject
     private WalkPath _walkPath;
 
     public Sprite Sprite { get; }
+    public CollisionShape Shape { get; }
+    public Interact Interact { get; }
 
+    // TODO Health Component
     public int Health { get; set; }
 
     public float MoveSpeed { get; protected set; }
     public float MovedDistance { get; set; }
     public Node FromNode { get; set; }
 
-    public Enemy(WalkPath walkPath, Node startNode, float moveSpeed, int health, float scale, Texture2D texture, Rectangle source)
+    public Enemy(GameObject parent, WalkPath walkPath, Node startNode, float moveSpeed, int health, float scale, Texture2D texture, Rectangle source) : base(parent)
     {
         _walkPath = walkPath;
         FromNode = startNode;
@@ -31,11 +34,18 @@ public class Enemy : GameObject
         MoveSpeed = moveSpeed;
         Health = health;
 
-        Sprite = new(texture, source) { Parent = this };
+        Sprite = new Sprite(this, texture, source);
+        Shape = new CollisionShape(this, Sprite.Size);
+        Interact = new Interact(this, Sprite, Shape);
+
+        AddComponent(Sprite);
+        AddComponent(Shape);
+        AddComponent(Interact);
     }
 
     public override void HandleInput()
     {
+        base.HandleInput();
     }
 
     public void TakeDamage(int damage)
@@ -45,12 +55,13 @@ public class Enemy : GameObject
         if (Health <= 0)
         {
             OnDie?.Invoke(this, null);
-            Console.WriteLine("DIDE");
         }
     }
 
     public override void Update(GameTime gameTime)
     {
+        base.Update(gameTime);
+
         var toNode = _walkPath.GetNextPoint(this);
 
         if (toNode == null)
@@ -71,6 +82,6 @@ public class Enemy : GameObject
 
     public override void Draw(SpriteBatch spriteBatch)
     {
-        Sprite.Draw(spriteBatch);
+        base.Draw(spriteBatch);
     }
 }

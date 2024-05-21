@@ -10,12 +10,18 @@ using TowerDefense;
 
 class ArcherTower : Tower
 {
-    public ArcherTower(TowerPlot plot, WalkPath walkPath, float detectRadius, Vector2 position, float scale) : base(plot, walkPath, detectRadius, position, scale)
+    public ArcherTower(GameObject parent, TowerPlot plot, WalkPath walkPath, float detectRadius, Vector2 position, float scale) : base(parent, plot, walkPath, detectRadius, position, scale)
     {
-        var sprite = AssetManager.GetAsset<Texture2D>("Towers/ArcherTower");
+        var texture = AssetManager.GetAsset<Texture2D>("Towers/ArcherTower");
         var source = new Rectangle(65, 180, 160, 185);
 
-        _selectable = new Selectable(Vector2.Zero, 1f, 3, sprite, source, source) { Parent = this };
+        Sprite = new Sprite(this, texture, source, 2);
+        Shape = new CollisionShape(this, Sprite.Size);
+        Interact = new Interact(this, Sprite, Shape);
+
+        AddComponent(Sprite);
+        AddComponent(Shape);
+        AddComponent(Interact);
     }
 
     public override void Update(GameTime gameTime)

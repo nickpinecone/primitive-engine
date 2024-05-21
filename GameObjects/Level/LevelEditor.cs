@@ -23,11 +23,11 @@ class LevelEditor : GameObject
     public bool Disabled { get; set; }
     public int SnapAmount { get; set; }
 
-    public LevelEditor()
+    public LevelEditor(GameObject parent) : base(parent)
     {
         _selectedItem = null;
         _panel = DebugTexture.GenerateRectTexture((int)GameSettings.WindowSize.X, (int)GameSettings.WindowSize.Y, Color.White);
-        _grid = new(GameSettings.WindowSize, 7, 8);
+        _grid = new Grid(this, GameSettings.WindowSize, 7, 8);
         _grid.OnItemSelect += HandleItemSelect;
 
         Hidden = true;
@@ -55,12 +55,14 @@ class LevelEditor : GameObject
         var copy = placeable.Clone();
         _selectedItem = copy;
         _selectedItem.Sprite.AccentColor = Color.White * 0.5f;
-        _selectedItem.Select();
+        _selectedItem.Interact.IsSelected = true;
     }
 
     public override void HandleInput()
     {
         if (Disabled) return;
+
+        base.HandleInput();
 
         var mouseState = Mouse.GetState();
 
@@ -97,6 +99,8 @@ class LevelEditor : GameObject
     {
         if (Disabled) return;
 
+        base.Update(gameTime);
+
         var mouseState = Mouse.GetState();
 
         if (_selectedItem != null)
@@ -117,6 +121,7 @@ class LevelEditor : GameObject
         }
         else
         {
+            base.Draw(spriteBatch);
             spriteBatch.Draw(_panel, Vector2.Zero, Color.DarkGray * 0.8f);
             _grid.Draw(spriteBatch);
         }
