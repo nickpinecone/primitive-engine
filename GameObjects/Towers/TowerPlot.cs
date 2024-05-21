@@ -23,7 +23,7 @@ class TowerPlot : GameObject, ISaveable
         var texture = AssetManager.GetAsset<Texture2D>("Sprites/LevelSheet");
         var source = new Rectangle(495, 635, 110, 50);
 
-        _contextMenu = new ContextMenu(this, 80f);
+        _contextMenu = new ContextMenu(this, (source.Height + source.Width) / 2f * scale);
 
         Sprite = new Sprite(this, texture, source, 2);
         Shape = new CollisionShape(this, Sprite.Size);

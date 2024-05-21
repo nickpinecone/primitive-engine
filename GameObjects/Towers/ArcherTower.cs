@@ -7,7 +7,6 @@ using Microsoft.Xna.Framework.Input;
 
 using TowerDefense;
 
-
 class ArcherTower : Tower
 {
     public ArcherTower(GameObject parent, TowerPlot plot, WalkPath walkPath, float detectRadius, Vector2 position, float scale) : base(parent, plot, walkPath, detectRadius, position, scale)
@@ -28,9 +27,9 @@ class ArcherTower : Tower
     {
         base.Update(gameTime);
 
-        foreach (var enemy in _walkPath.GetEnemiesToPoints(_nodesInRadius))
-        {
-            enemy.TakeDamage(1);
-        }
+        // foreach (var enemy in _walkPath.GetEnemiesToPoints(_nodesInRadius))
+        // {
+        //     enemy.TakeDamage(1);
+        // }
     }
 }

@@ -10,8 +10,7 @@ public class WorldMapState : GameState
 {
     public override void LoadContent(ContentManager contentManager)
     {
-        var levelPoint = new LevelPoint(null, new Vector2(100, 100), 1f, new GameLevelState());
-        // var levelPoint = new LevelPoint(null, new Vector2(100, 100), 1f, new EditLevelState());
+        var levelPoint = new LevelPoint(null, new Vector2(100, 100), 1f, null);
         levelPoint.OnLevelSelect += HandleLevelSelect;
 
         AddGameObject(levelPoint);
@@ -24,7 +23,14 @@ public class WorldMapState : GameState
 
     public void HandleLevelSelect(object sender, GameState level)
     {
-        SwitchState(level);
+        if (GameSettings.CreatorMode)
+        {
+            SwitchState(new EditLevelState());
+        }
+        else
+        {
+            SwitchState(new GameLevelState());
+        }
     }
 
     public override void HandleInput()

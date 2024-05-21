@@ -8,12 +8,14 @@ using Microsoft.Xna.Framework.Input;
 using TowerDefense;
 
 public enum TowerType { Archer };
+public enum ActionType { Sell };
 
 abstract class Tower : GameObject
 {
     protected WalkPath _walkPath;
     protected List<Node> _nodesInRadius;
     protected TowerPlot _plot;
+    protected ContextMenu _contextMenu;
 
     public Sprite Sprite { get; set; }
     public CollisionShape Shape { get; set; }
@@ -27,14 +29,28 @@ abstract class Tower : GameObject
         plot.ZIndex = -1;
 
         _plot = plot;
-        _plot.Interact.Disabled = true;
+        _plot.Disabled = true;
 
         _walkPath = walkPath;
         _nodesInRadius = _walkPath.GetNodesInRadius(WorldPosition, DetectRadius);
+        _contextMenu = new ContextMenu(this, (plot.Sprite.SourceRectangle.Width + plot.Sprite.SourceRectangle.Height));
+
+        _contextMenu.AddItem(plot.Sprite, ActionType.Sell);
+        _contextMenu.OnSelect += HandleActionSelect;
 
         DetectRadius = detectRadius;
         WorldPosition = position;
         Scale = scale;
+    }
+
+    private void HandleActionSelect(object sender, object action)
+    {
+        var actionType = (ActionType)action;
+        if (actionType == ActionType.Sell)
+        {
+            _plot.Disabled = false;
+            QueueFree();
+        }
     }
 
     public bool InRadius(Vector2 position)
@@ -45,15 +61,22 @@ abstract class Tower : GameObject
     public override void HandleInput()
     {
         base.HandleInput();
+
+        _contextMenu.HandleInput();
     }
 
     public override void Update(GameTime gameTime)
     {
         base.Update(gameTime);
+
+        _contextMenu.Hidden = !Interact.IsSelected;
+        _contextMenu.Update(gameTime);
     }
 
     public override void Draw(SpriteBatch spriteBatch)
     {
         base.Draw(spriteBatch);
+
+        _contextMenu.Draw(spriteBatch);
     }
 }

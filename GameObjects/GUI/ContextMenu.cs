@@ -36,11 +36,10 @@ class ContextMenuItem : GameObject
         AddComponent(Interact);
 
         _value = value;
-        _itemSprite = itemSprite;
-        _itemSprite.Parent = this;
+        _itemSprite = new Sprite(this, itemSprite.Texture, itemSprite.SourceRectangle);
 
         var wideSide = Math.Max(itemSprite.SourceRectangle.Width, itemSprite.SourceRectangle.Height);
-        var scaleItem = source.Width * scale / (float)wideSide / 1.5f;
+        var scaleItem = source.Width / (float)wideSide / 1.2f;
         _itemSprite.Scale = scaleItem;
 
         PriceLabel = new Label(this, new Vector2(0, 18) * scale, 0.4f, "100");
