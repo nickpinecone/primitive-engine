@@ -36,8 +36,11 @@ public class Sprite
         }
     }
 
+    public float Scale { get; set; }
+
     public Sprite(Texture2D texture, Rectangle source)
     {
+        Scale = 1f;
         AccentColor = Color.White;
         Texture = texture;
         SourceRectangle = source;
@@ -52,7 +55,7 @@ public class Sprite
             AccentColor,
             Parent.Rotation,
             Origin,
-            Parent.Scale,
+            Parent.Scale * Scale,
             SpriteEffects.None,
             0
         );

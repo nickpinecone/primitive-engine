@@ -7,28 +7,28 @@ using Microsoft.Xna.Framework.Input;
 
 using TowerDefense;
 
-class Tower : GameObject
+public enum TowerType { Archer };
+
+abstract class Tower : GameObject
 {
-    private Selectable _selectable;
-    private WalkPath _walkPath;
-    private List<Node> _nodesInRadius;
-    private TowerPlot _plot;
+    protected Selectable _selectable;
+    protected WalkPath _walkPath;
+    protected List<Node> _nodesInRadius;
+    protected TowerPlot _plot;
 
     public Sprite Sprite { get { return _selectable.Sprite; } }
     public CollisionShape Shape { get { return _selectable.Shape; } }
 
     public float DetectRadius { get; set; }
 
-    public Tower(TowerPlot plot, WalkPath walkPath, float detectRadius, Vector2 position, float scale, Texture2D texture, Rectangle source)
+    public Tower(TowerPlot plot, WalkPath walkPath, float detectRadius, Vector2 position, float scale)
     {
-        position = plot.WorldPosition - new Vector2(0, source.Height / 5);
         plot.ZIndex = -1;
 
         _plot = plot;
         _plot.Disabled = true;
 
         _walkPath = walkPath;
-        _selectable = new Selectable(Vector2.Zero, 1f, 2, texture, source, source) { Parent = this };
         _nodesInRadius = _walkPath.GetNodesInRadius(WorldPosition, DetectRadius);
 
         DetectRadius = detectRadius;
@@ -49,11 +49,6 @@ class Tower : GameObject
     public override void Update(GameTime gameTime)
     {
         _selectable.Update(gameTime);
-
-        foreach (var enemy in _walkPath.GetEnemiesToPoints(_nodesInRadius))
-        {
-            enemy.TakeDamage(1);
-        }
     }
 
     public override void Draw(SpriteBatch spriteBatch)

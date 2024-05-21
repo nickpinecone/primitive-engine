@@ -25,6 +25,21 @@ public class GameLevelState : GameState
         foreach (var gameObject in MetaManager.LoadLevelEditor(filename))
         {
             AddGameObject(gameObject);
+            if (gameObject is TowerPlot plot)
+            {
+                plot.OnTowerSelect += HandleTowerSelect;
+            }
+        }
+    }
+
+    private void HandleTowerSelect(object sender, TowerType type)
+    {
+        var plot = (TowerPlot)sender;
+
+        if (type == TowerType.Archer)
+        {
+            var tower = new ArcherTower(plot, walkPath, 400, plot.WorldPosition, plot.Scale);
+            AddGameObject(tower);
         }
     }
 
