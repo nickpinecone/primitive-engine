@@ -20,25 +20,25 @@ abstract class Tower : GameObject
     public Sprite Sprite { get; set; }
     public CollisionShape Shape { get; set; }
     public Interact Interact { get; set; }
+    public Area Area { get; set; }
 
-    // TODO Area Component
-    public float DetectRadius { get; set; }
-
-    public Tower(GameObject parent, TowerPlot plot, WalkPath walkPath, float detectRadius, Vector2 position, float scale) : base(parent)
+    public Tower(GameObject parent, TowerPlot plot, WalkPath walkPath, int detectRadius, Vector2 position, float scale) : base(parent)
     {
         plot.ZIndex = -1;
+
+        Area = new Area(this, detectRadius);
 
         _plot = plot;
         _plot.Disabled = true;
 
         _walkPath = walkPath;
-        _nodesInRadius = _walkPath.GetNodesInRadius(WorldPosition, DetectRadius);
+        _nodesInRadius = _walkPath.GetNodesInRadius(WorldPosition, detectRadius);
         _contextMenu = new ContextMenu(this, (plot.Sprite.SourceRectangle.Width + plot.Sprite.SourceRectangle.Height));
+        _contextMenu.DistanceAway /= 1.5f;
 
         _contextMenu.AddItem(plot.Sprite, ActionType.Sell);
         _contextMenu.OnSelect += HandleActionSelect;
 
-        DetectRadius = detectRadius;
         WorldPosition = position;
         Scale = scale;
     }
@@ -53,14 +53,10 @@ abstract class Tower : GameObject
         }
     }
 
-    public bool InRadius(Vector2 position)
-    {
-        return Vector2.Distance(position, WorldPosition) <= DetectRadius;
-    }
-
     public override void Update(GameTime gameTime)
     {
         _contextMenu.Hidden = !Interact.IsSelected;
+        Area.Hidden = !Interact.IsSelected;
 
         base.Update(gameTime);
     }

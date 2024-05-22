@@ -72,6 +72,8 @@ public class Interact : GameObject
     {
         if (Disabled) return;
 
+        base.HandleInput();
+
         var mouseState = Mouse.GetState();
 
         if (_shape.WorldRectangle.Contains(mouseState.Position))
@@ -107,14 +109,5 @@ public class Interact : GameObject
                 IsSelected = false;
             }
         }
-    }
-
-    public override void Update(GameTime gameTime)
-    {
-        if (Disabled) return;
-    }
-
-    public override void Draw(SpriteBatch spriteBatch)
-    {
     }
 }

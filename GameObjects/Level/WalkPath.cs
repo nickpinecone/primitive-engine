@@ -122,7 +122,7 @@ public class WalkPath
         _startNodes.Add(node);
     }
 
-    public List<Node> GetNodesInRadius(Vector2 position, float radius)
+    public List<Node> GetNodesInRadius(Vector2 position, int radius)
     {
         var nodes = new List<Node>();
 

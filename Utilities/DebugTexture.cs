@@ -31,6 +31,35 @@ public static class DebugTexture
         return rectTexture;
     }
 
+    static public Texture2D GenerateCircleTexture(int radius)
+    {
+        Texture2D texture = new Texture2D(graphicsDevice.GraphicsDevice, radius, radius);
+        Color[] colorData = new Color[radius * radius];
+
+        float diam = radius / 2f;
+        float diamsq = diam * diam;
+
+        for (int x = 0; x < radius; x++)
+        {
+            for (int y = 0; y < radius; y++)
+            {
+                int index = x * radius + y;
+                Vector2 pos = new Vector2(x - diam, y - diam);
+                if (pos.LengthSquared() <= diamsq)
+                {
+                    colorData[index] = Color.White;
+                }
+                else
+                {
+                    colorData[index] = Color.Transparent;
+                }
+            }
+        }
+
+        texture.SetData(colorData);
+        return texture;
+    }
+
     public static Texture2D GenerateSpriteTexture(Texture2D texture, Rectangle source)
     {
         Color[] color = new Color[source.Width * source.Height];

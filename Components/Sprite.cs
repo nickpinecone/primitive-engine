@@ -67,17 +67,11 @@ public class Sprite : GameObject
         OutlineSize = outlineSize;
     }
 
-    public override void HandleInput()
-    {
-    }
-
-    public override void Update(GameTime gameTime)
-    {
-    }
-
     public override void Draw(SpriteBatch spriteBatch)
     {
         if (Hidden) return;
+
+        base.Draw(spriteBatch);
 
         if (IsSelected)
         {

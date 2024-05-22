@@ -61,6 +61,7 @@ class ContextMenu : GameObject
 
     public float SizePerItem { get; set; }
     public bool Hidden { get; set; }
+    public float DistanceAway { get; set; }
 
     public ContextMenu(GameObject parent, float size) : base(parent)
     {
@@ -68,6 +69,7 @@ class ContextMenu : GameObject
 
         Hidden = true;
         SizePerItem = size;
+        DistanceAway = SizePerItem;
     }
 
     public override void HandleInput()
@@ -79,8 +81,8 @@ class ContextMenu : GameObject
 
     private Vector2 GetPosition()
     {
-        var y = _menuItems.Count / 2 - 1 * SizePerItem;
-        var x = _menuItems.Count % 2 - 1 * SizePerItem;
+        var y = (_menuItems.Count / 2 - 1) * DistanceAway;
+        var x = (_menuItems.Count % 2 - 1) * DistanceAway;
 
         return new Vector2(x, y);
     }
