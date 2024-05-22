@@ -35,7 +35,7 @@ class ContextMenuItem : GameObject
         _itemSprite = new Sprite(this, itemSprite.Texture, itemSprite.SourceRectangle);
 
         var wideSide = Math.Max(itemSprite.SourceRectangle.Width, itemSprite.SourceRectangle.Height);
-        var scaleItem = source.Width / (float)wideSide / 1.2f;
+        var scaleItem = source.Width * scale / (float)wideSide / 1.5f;
         _itemSprite.Scale = scaleItem;
 
         PriceLabel = new Label(this, new Vector2(0, 18) * scale, 0.4f, "100");
@@ -59,17 +59,16 @@ class ContextMenu : GameObject
 
     private List<ContextMenuItem> _menuItems;
 
-    public float SizePerItem { get; set; }
     public bool Hidden { get; set; }
     public float DistanceAway { get; set; }
 
-    public ContextMenu(GameObject parent, float size) : base(parent)
+    public ContextMenu(GameObject parent, float scale, float distanceAway) : base(parent)
     {
         _menuItems = new();
 
         Hidden = true;
-        SizePerItem = size;
-        DistanceAway = SizePerItem;
+        Scale = scale;
+        DistanceAway = distanceAway;
     }
 
     public override void HandleInput()
@@ -81,18 +80,15 @@ class ContextMenu : GameObject
 
     private Vector2 GetPosition()
     {
-        var y = (_menuItems.Count / 2 - 1) * DistanceAway;
-        var x = (_menuItems.Count % 2 - 1) * DistanceAway;
+        var y = (_menuItems.Count / 2 - 1) * DistanceAway * Scale;
+        var x = (_menuItems.Count % 2 - 1) * DistanceAway * Scale;
 
         return new Vector2(x, y);
     }
 
     public void AddItem(Sprite sprite, object value)
     {
-        var wideSide = Math.Max(sprite.SourceRectangle.Width, sprite.SourceRectangle.Height);
-
-        var scale = SizePerItem / (float)wideSide;
-        var gridItem = new ContextMenuItem(this, sprite, value, GetPosition(), scale);
+        var gridItem = new ContextMenuItem(this, sprite, value, GetPosition(), Scale);
         gridItem.OnSelect += HandleItemSelect;
 
         _menuItems.Add(gridItem);
