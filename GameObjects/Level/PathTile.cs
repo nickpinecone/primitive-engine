@@ -21,25 +21,7 @@ abstract class PathTile : GameObject, ISaveable
         Sprite = new Sprite(this, texture, source);
         Shape = new CollisionShape(this, Sprite.Size);
 
-        AddComponent(Sprite);
-        AddComponent(Shape);
-
         WorldPosition = position;
         Scale = scale;
-    }
-
-    public override void HandleInput()
-    {
-        base.HandleInput();
-    }
-
-    public override void Update(GameTime gameTime)
-    {
-        base.Update(gameTime);
-    }
-
-    public override void Draw(SpriteBatch spriteBatch)
-    {
-        base.Draw(spriteBatch);
     }
 }

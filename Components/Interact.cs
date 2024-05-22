@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace TowerDefense;
 
-public class Interact : Component
+public class Interact : GameObject
 {
     public event EventHandler OnClick;
     public event EventHandler OnRightClick;

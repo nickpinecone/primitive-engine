@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace TowerDefense;
 
-public class CollisionShape : Component
+public class CollisionShape : GameObject
 {
     public Vector2 Size { get; set; }
 
@@ -14,10 +14,10 @@ public class CollisionShape : Component
         get
         {
             return new Rectangle(
-                (int)(Parent.WorldPosition.X - Size.X * Parent.Scale / 2f),
-                (int)(Parent.WorldPosition.Y - Size.Y * Parent.Scale / 2f),
-                (int)(Size.X * Parent.Scale),
-                (int)(Size.Y * Parent.Scale)
+                (int)(WorldPosition.X - Size.X * Scale / 2f),
+                (int)(WorldPosition.Y - Size.Y * Scale / 2f),
+                (int)(Size.X * Scale),
+                (int)(Size.Y * Scale)
             );
         }
     }

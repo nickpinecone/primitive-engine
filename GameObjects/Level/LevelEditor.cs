@@ -62,8 +62,6 @@ class LevelEditor : GameObject
     {
         if (Disabled) return;
 
-        base.HandleInput();
-
         var mouseState = Mouse.GetState();
 
         if (Input.IsKeyJustPressed(Keys.Z))
@@ -91,7 +89,7 @@ class LevelEditor : GameObject
         }
         else
         {
-            _grid.HandleInput();
+            base.HandleInput();
         }
     }
 
@@ -109,8 +107,6 @@ class LevelEditor : GameObject
             var position = new Vector2((mouseState.Position.X / SnapAmount) * SnapAmount, (mouseState.Position.Y / SnapAmount) * SnapAmount);
             _selectedItem.WorldPosition = position;
         }
-
-        _grid.Update(gameTime);
     }
 
     public override void Draw(SpriteBatch spriteBatch)
@@ -121,10 +117,8 @@ class LevelEditor : GameObject
         }
         else
         {
-            base.Draw(spriteBatch);
             spriteBatch.Draw(_panel, Vector2.Zero, Color.DarkGray * 0.8f);
-            _grid.Draw(spriteBatch);
+            base.Draw(spriteBatch);
         }
     }
-
 }

@@ -29,10 +29,6 @@ class LevelPoint : GameObject
 
         Interact.OnDoubleSelect += HandleSelection;
 
-        AddComponent(Sprite);
-        AddComponent(Shape);
-        AddComponent(Interact);
-
         WorldPosition = position;
         Scale = scale;
     }
@@ -40,20 +36,5 @@ class LevelPoint : GameObject
     public void HandleSelection(object sender, EventArgs args)
     {
         OnLevelSelect?.Invoke(this, _level);
-    }
-
-    public override void HandleInput()
-    {
-        base.HandleInput();
-    }
-
-    public override void Update(GameTime gameTime)
-    {
-        base.Update(gameTime);
-    }
-
-    public override void Draw(SpriteBatch spriteBatch)
-    {
-        base.Draw(spriteBatch);
     }
 }

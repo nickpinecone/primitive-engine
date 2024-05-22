@@ -37,15 +37,6 @@ abstract public class Enemy : GameObject
         Sprite = new Sprite(this, texture, source);
         Shape = new CollisionShape(this, Sprite.Size);
         Interact = new Interact(this, Sprite, Shape);
-
-        AddComponent(Sprite);
-        AddComponent(Shape);
-        AddComponent(Interact);
-    }
-
-    public override void HandleInput()
-    {
-        base.HandleInput();
     }
 
     public void TakeDamage(int damage)
@@ -78,10 +69,5 @@ abstract public class Enemy : GameObject
 
         WorldPosition += velocity;
         MovedDistance += velocity.Length();
-    }
-
-    public override void Draw(SpriteBatch spriteBatch)
-    {
-        base.Draw(spriteBatch);
     }
 }

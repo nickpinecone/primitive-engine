@@ -10,8 +10,9 @@ public abstract class GameObject
 {
     public event EventHandler OnQueueFree;
 
+    private List<GameObject> _children;
+
     public GameObject Parent { get; set; }
-    private List<Component> _components;
 
     private Vector2 _worldPosition;
     public Vector2 WorldPosition
@@ -56,10 +57,12 @@ public abstract class GameObject
 
     public GameObject(GameObject parent)
     {
-        _components = new();
+        _children = new();
         _scale = 1f;
         ZIndex = 0;
         Parent = parent;
+
+        Parent?.AddChild(this);
     }
 
     public void QueueFree()
@@ -67,32 +70,32 @@ public abstract class GameObject
         OnQueueFree?.Invoke(this, null);
     }
 
-    protected void AddComponent(Component component)
+    protected void AddChild(GameObject child)
     {
-        _components.Add(component);
+        _children.Add(child);
     }
 
     public virtual void HandleInput()
     {
-        foreach (var component in _components)
+        foreach (var child in _children)
         {
-            component.HandleInput();
+            child.HandleInput();
         }
     }
 
     public virtual void Update(GameTime gameTime)
     {
-        foreach (var component in _components)
+        foreach (var child in _children)
         {
-            component.Update(gameTime);
+            child.Update(gameTime);
         }
     }
 
     public virtual void Draw(SpriteBatch spriteBatch)
     {
-        foreach (var component in _components)
+        foreach (var child in _children)
         {
-            component.Draw(spriteBatch);
+            child.Draw(spriteBatch);
         }
     }
 }

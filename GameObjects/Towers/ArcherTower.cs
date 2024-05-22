@@ -17,19 +17,5 @@ class ArcherTower : Tower
         Sprite = new Sprite(this, texture, source, 2);
         Shape = new CollisionShape(this, Sprite.Size);
         Interact = new Interact(this, Sprite, Shape);
-
-        AddComponent(Sprite);
-        AddComponent(Shape);
-        AddComponent(Interact);
-    }
-
-    public override void Update(GameTime gameTime)
-    {
-        base.Update(gameTime);
-
-        // foreach (var enemy in _walkPath.GetEnemiesToPoints(_nodesInRadius))
-        // {
-        //     enemy.TakeDamage(1);
-        // }
     }
 }

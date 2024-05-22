@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace TowerDefense;
 
-public class Sprite : Component
+public class Sprite : GameObject
 {
     private Texture2D _customTexture;
 
@@ -45,7 +45,6 @@ public class Sprite : Component
         }
     }
 
-    public float Scale { get; set; }
     public int OutlineSize { get; set; }
 
     public bool IsHovered { get; set; }
@@ -87,12 +86,12 @@ public class Sprite : Component
 
         spriteBatch.Draw(
             Texture,
-            Parent.WorldPosition,
+            WorldPosition,
             SourceRectangle,
             AccentColor,
-            Parent.Rotation,
+            Rotation,
             Origin,
-            Parent.Scale * Scale,
+            Scale,
             SpriteEffects.None,
             0
         );
@@ -118,12 +117,12 @@ public class Sprite : Component
     {
         spriteBatch.Draw(
             _customTexture,
-            Parent.WorldPosition,
+            WorldPosition,
             null,
             Color.White * 0.3f,
-            Parent.Rotation,
+            Rotation,
             Origin,
-            Parent.Scale * Scale,
+            Scale,
             SpriteEffects.None,
             0
         );
@@ -144,12 +143,12 @@ public class Sprite : Component
             {
                 spriteBatch.Draw(
                     _customTexture,
-                    Parent.WorldPosition + position,
+                    WorldPosition + position,
                     null,
                     Color.Gray,
-                    Parent.Rotation,
+                    Rotation,
                     Origin,
-                    Parent.Scale * Scale,
+                    Scale,
                     SpriteEffects.None,
                     0
                 );

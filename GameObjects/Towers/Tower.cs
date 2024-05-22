@@ -58,25 +58,10 @@ abstract class Tower : GameObject
         return Vector2.Distance(position, WorldPosition) <= DetectRadius;
     }
 
-    public override void HandleInput()
-    {
-        base.HandleInput();
-
-        _contextMenu.HandleInput();
-    }
-
     public override void Update(GameTime gameTime)
     {
-        base.Update(gameTime);
-
         _contextMenu.Hidden = !Interact.IsSelected;
-        _contextMenu.Update(gameTime);
-    }
 
-    public override void Draw(SpriteBatch spriteBatch)
-    {
-        base.Draw(spriteBatch);
-
-        _contextMenu.Draw(spriteBatch);
+        base.Update(gameTime);
     }
 }

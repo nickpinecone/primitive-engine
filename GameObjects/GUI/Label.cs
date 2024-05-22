@@ -32,16 +32,6 @@ class Label : GameObject
         TextSize *= scale;
     }
 
-    public override void HandleInput()
-    {
-        base.HandleInput();
-    }
-
-    public override void Update(GameTime gameTime)
-    {
-        base.Update(gameTime);
-    }
-
     public override void Draw(SpriteBatch spriteBatch)
     {
         base.Draw(spriteBatch);

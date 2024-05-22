@@ -23,10 +23,6 @@ public class Placeable : GameObject
         Shape = new CollisionShape(this, Sprite.Size);
         Interact = new Interact(this, Sprite, Shape);
 
-        AddComponent(Sprite);
-        AddComponent(Shape);
-        AddComponent(Interact);
-
         Type = type;
         WorldPosition = position;
         Scale = scale;
@@ -74,11 +70,6 @@ public class Placeable : GameObject
         {
             WorldPosition = mouseState.Position.ToVector2();
         }
-    }
-
-    public override void Draw(SpriteBatch spriteBatch)
-    {
-        base.Draw(spriteBatch);
     }
 
     public Placeable Clone()

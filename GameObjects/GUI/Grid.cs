@@ -28,10 +28,6 @@ class GridItem : GameObject
 
         Interact.OnSelect += HandleSelect;
 
-        AddComponent(Sprite);
-        AddComponent(Shape);
-        AddComponent(Interact);
-
         WorldPosition = position;
         Scale = scale;
     }
@@ -39,21 +35,6 @@ class GridItem : GameObject
     public void HandleSelect(object sender, EventArgs args)
     {
         OnSelect?.Invoke(this, _placeable);
-    }
-
-    public override void HandleInput()
-    {
-        base.HandleInput();
-    }
-
-    public override void Update(GameTime gameTime)
-    {
-        base.Update(gameTime);
-    }
-
-    public override void Draw(SpriteBatch spriteBatch)
-    {
-        base.Draw(spriteBatch);
     }
 }
 
@@ -105,35 +86,5 @@ class Grid : GameObject
     public void HandleItemSelect(object sender, Placeable placeable)
     {
         OnItemSelect?.Invoke(this, placeable);
-    }
-
-    public override void HandleInput()
-    {
-        base.HandleInput();
-
-        foreach (var item in _items)
-        {
-            item.HandleInput();
-        }
-    }
-
-    public override void Update(GameTime gameTime)
-    {
-        base.Update(gameTime);
-
-        foreach (var item in _items)
-        {
-            item.Update(gameTime);
-        }
-    }
-
-    public override void Draw(SpriteBatch spriteBatch)
-    {
-        base.Draw(spriteBatch);
-
-        foreach (var item in _items)
-        {
-            item.Draw(spriteBatch);
-        }
     }
 }

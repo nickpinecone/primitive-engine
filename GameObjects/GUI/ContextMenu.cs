@@ -31,10 +31,6 @@ class ContextMenuItem : GameObject
 
         Interact.OnDoubleSelect += HandleDoubleSelect;
 
-        AddComponent(Sprite);
-        AddComponent(Shape);
-        AddComponent(Interact);
-
         _value = value;
         _itemSprite = new Sprite(this, itemSprite.Texture, itemSprite.SourceRectangle);
 
@@ -53,24 +49,6 @@ class ContextMenuItem : GameObject
     {
         Interact.IsSelected = false;
         OnSelect?.Invoke(this, _value);
-    }
-
-    public override void HandleInput()
-    {
-        base.HandleInput();
-    }
-
-    public override void Update(GameTime gameTime)
-    {
-        base.Update(gameTime);
-    }
-
-    public override void Draw(SpriteBatch spriteBatch)
-    {
-        base.Draw(spriteBatch);
-
-        _itemSprite.Draw(spriteBatch);
-        PriceLabel.Draw(spriteBatch);
     }
 }
 
@@ -96,10 +74,7 @@ class ContextMenu : GameObject
     {
         if (Hidden) return;
 
-        foreach (var item in _menuItems)
-        {
-            item.HandleInput();
-        }
+        base.HandleInput();
     }
 
     private Vector2 GetPosition()
@@ -138,19 +113,13 @@ class ContextMenu : GameObject
 
         if (Hidden) return;
 
-        foreach (var item in _menuItems)
-        {
-            item.Update(gameTime);
-        }
+        base.Update(gameTime);
     }
 
     public override void Draw(SpriteBatch spriteBatch)
     {
         if (Hidden) return;
 
-        foreach (var item in _menuItems)
-        {
-            item.Draw(spriteBatch);
-        }
+        base.Draw(spriteBatch);
     }
 }

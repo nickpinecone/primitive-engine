@@ -46,10 +46,6 @@ class PathNode : GameObject
         Interact.OnClick += (_, _) => HandleClick(this, null);
         Interact.OnRightClick += (_, _) => HandleRightClick(this, null);
 
-        AddComponent(Sprite);
-        AddComponent(Shape);
-        AddComponent(Interact);
-
         WorldPosition = node.Position;
         Scale = 1f;
 

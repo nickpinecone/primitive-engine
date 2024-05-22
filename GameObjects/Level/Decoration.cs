@@ -17,24 +17,7 @@ abstract class Decoration : GameObject, ISaveable
 
         Sprite = new Sprite(this, texture, source);
 
-        AddComponent(Sprite);
-
         WorldPosition = position;
         Scale = scale;
-    }
-
-    public override void HandleInput()
-    {
-        base.HandleInput();
-    }
-
-    public override void Update(GameTime gameTime)
-    {
-        base.Update(gameTime);
-    }
-
-    public override void Draw(SpriteBatch spriteBatch)
-    {
-        base.Draw(spriteBatch);
     }
 }
