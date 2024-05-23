@@ -23,7 +23,7 @@ class TowerPlot : GameObject, ISaveable
         var texture = AssetManager.GetAsset<Texture2D>("Sprites/LevelSheet");
         var source = new Rectangle(495, 635, 110, 50);
 
-        _contextMenu = new ContextMenu(this, 1f, source.Height);
+        _contextMenu = new ContextMenu(this, 1f, (source.Height) * scale);
 
         Sprite = new Sprite(this, texture, source, 2);
         Shape = new CollisionShape(this, Sprite.Size);
@@ -32,6 +32,9 @@ class TowerPlot : GameObject, ISaveable
         var archerTexture = AssetManager.GetAsset<Texture2D>("Towers/ArcherTower");
         var archerSource = new Rectangle(390, 815, 65, 65);
         var archerSprite = new Sprite(null, archerTexture, archerSource);
+        _contextMenu.AddItem(archerSprite, TowerType.Archer);
+        _contextMenu.AddItem(archerSprite, TowerType.Archer);
+        _contextMenu.AddItem(archerSprite, TowerType.Archer);
         _contextMenu.AddItem(archerSprite, TowerType.Archer);
         _contextMenu.OnSelect += HandleSelectTower;
 

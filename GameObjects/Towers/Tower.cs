@@ -33,7 +33,7 @@ abstract class Tower : GameObject
 
         _walkPath = walkPath;
         _nodesInRadius = _walkPath.GetNodesInRadius(WorldPosition, detectRadius);
-        _contextMenu = new ContextMenu(this, 1f, plot.Sprite.SourceRectangle.Height * 2f);
+        _contextMenu = new ContextMenu(this, scale, plot.Shape.Size.Y * 2f);
 
         var trashTexture = AssetManager.GetAsset<Texture2D>("GUI/Buttons");
         var trashSource = new Rectangle(1115, 1420, 175, 175);

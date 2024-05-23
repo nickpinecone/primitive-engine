@@ -80,8 +80,8 @@ class ContextMenu : GameObject
 
     private Vector2 GetPosition()
     {
-        var y = (_menuItems.Count / 2 - 1) * DistanceAway * Scale;
-        var x = (_menuItems.Count % 2 - 1) * DistanceAway * Scale;
+        var y = ((_menuItems.Count / 2 == 0) ? -1 : 1) * DistanceAway * Scale;
+        var x = ((_menuItems.Count % 2 == 0) ? -1 : 1) * DistanceAway * Scale;
 
         return new Vector2(x, y);
     }

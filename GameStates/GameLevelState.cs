@@ -18,6 +18,10 @@ public class GameLevelState : GameState
         MetaManager.LoadWalkPath("walk_path", walkPath);
         walkPath.CalculateLengths();
         LoadLevel("level_editor");
+
+        var basicOrk = new BasicOrk(null, walkPath, walkPath.GetStartNodes()[0], 24f, 100, 0.5f);
+
+        AddGameObject(basicOrk);
     }
 
     public void LoadLevel(string filename)

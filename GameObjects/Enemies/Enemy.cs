@@ -13,18 +13,18 @@ abstract public class Enemy : GameObject
 
     private WalkPath _walkPath;
 
-    public Sprite Sprite { get; }
-    public CollisionShape Shape { get; }
-    public Interact Interact { get; }
+    public Sprite Sprite { get; protected set; }
+    public CollisionShape Shape { get; protected set; }
+    public Interact Interact { get; protected set; }
 
-    // TODO Health Component
-    public int Health { get; set; }
+    public Defense Defense { get; }
+    public Health Health { get; }
 
     public float MoveSpeed { get; protected set; }
     public float MovedDistance { get; set; }
     public Node FromNode { get; set; }
 
-    public Enemy(GameObject parent, WalkPath walkPath, Node startNode, float moveSpeed, int health, float scale, Texture2D texture, Rectangle source) : base(parent)
+    public Enemy(GameObject parent, WalkPath walkPath, Node startNode, float moveSpeed, int health, float scale) : base(parent)
     {
         _walkPath = walkPath;
         FromNode = startNode;
@@ -32,18 +32,16 @@ abstract public class Enemy : GameObject
         WorldPosition = startNode.Position;
         Scale = scale;
         MoveSpeed = moveSpeed;
-        Health = health;
 
-        Sprite = new Sprite(this, texture, source);
-        Shape = new CollisionShape(this, Sprite.Size);
-        Interact = new Interact(this, Sprite, Shape);
+        Health = new Health(this, health, scale);
     }
 
-    public void TakeDamage(int damage)
+    public void TakeDamage(Damage damage)
     {
-        Health -= damage;
+        float actual = Defense.CalculateDamage(damage);
+        Health.Amount -= actual;
 
-        if (Health <= 0)
+        if (Health.Amount <= 0)
         {
             OnDie?.Invoke(this, null);
         }
