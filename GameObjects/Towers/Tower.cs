@@ -12,6 +12,8 @@ public enum ActionType { Sell };
 
 abstract class Tower : GameObject
 {
+    public event EventHandler<Projectile> OnSpawnProjectile;
+
     protected WalkPath _walkPath;
     protected List<Node> _nodesInRadius;
     protected TowerPlot _plot;
@@ -21,8 +23,9 @@ abstract class Tower : GameObject
     public CollisionShape Shape { get; set; }
     public Interact Interact { get; set; }
     public Area Area { get; set; }
+    public Damage Damage { get; set; }
 
-    public Tower(GameObject parent, TowerPlot plot, WalkPath walkPath, int detectRadius, Vector2 position, float scale) : base(parent)
+    public Tower(GameObject parent, TowerPlot plot, WalkPath walkPath, Damage damage, int detectRadius, Vector2 position, float scale) : base(parent)
     {
         plot.ZIndex = -1;
 
@@ -41,8 +44,15 @@ abstract class Tower : GameObject
         _contextMenu.AddItem(new Sprite(null, trashTexture, trashSource), ActionType.Sell);
         _contextMenu.OnSelect += HandleActionSelect;
 
+        Damage = new Damage(damage.Amount, damage.Type);
+
         WorldPosition = position;
         Scale = scale;
+    }
+
+    protected void SpawnProjectile(Projectile projectile)
+    {
+        OnSpawnProjectile?.Invoke(this, projectile);
     }
 
     private void HandleActionSelect(object sender, object action)

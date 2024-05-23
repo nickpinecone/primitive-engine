@@ -33,9 +33,6 @@ class TowerPlot : GameObject, ISaveable
         var archerSource = new Rectangle(390, 815, 65, 65);
         var archerSprite = new Sprite(null, archerTexture, archerSource);
         _contextMenu.AddItem(archerSprite, TowerType.Archer);
-        _contextMenu.AddItem(archerSprite, TowerType.Archer);
-        _contextMenu.AddItem(archerSprite, TowerType.Archer);
-        _contextMenu.AddItem(archerSprite, TowerType.Archer);
         _contextMenu.OnSelect += HandleSelectTower;
 
         WorldPosition = position;

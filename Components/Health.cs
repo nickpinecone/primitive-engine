@@ -28,17 +28,17 @@ public class Health : GameObject
         MaxAmount = maxAmount;
         _amount = maxAmount;
 
-        var backSource = new Rectangle(0, 0, 100, 20);
+        var backSource = new Rectangle(0, 0, 120, 20);
         var backTexture = DebugTexture.GenerateRectTexture(backSource.Width, backSource.Height, Color.White);
         BackSprite = new Sprite(this, backTexture, backSource)
         {
-            AccentColor = Color.SandyBrown
+            AccentColor = Color.Red
         };
 
         var texture = DebugTexture.GenerateRectTexture(backSource.Width, backSource.Height, Color.White);
         Sprite = new Sprite(this, texture, backSource)
         {
-            AccentColor = Color.Red
+            AccentColor = Color.Green
         };
     }
 

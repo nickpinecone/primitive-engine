@@ -11,7 +11,6 @@ class PathVertical : PathTile
     public PathVertical(GameObject parent, Vector2 position, float scale) : base(parent, position, scale)
     {
         Sprite.SourceRectangle = new Rectangle(430, 235, 105, 160);
-        Sprite.DefaultSource = Sprite.SourceRectangle;
         Shape.Size = Sprite.Size;
     }
 }

@@ -17,14 +17,14 @@ abstract public class Enemy : GameObject
     public CollisionShape Shape { get; protected set; }
     public Interact Interact { get; protected set; }
 
-    public Defense Defense { get; }
+    public Defense Defense { get; protected set; }
     public Health Health { get; }
 
     public float MoveSpeed { get; protected set; }
     public float MovedDistance { get; set; }
     public Node FromNode { get; set; }
 
-    public Enemy(GameObject parent, WalkPath walkPath, Node startNode, float moveSpeed, int health, float scale) : base(parent)
+    protected Enemy(GameObject parent, WalkPath walkPath, Node startNode, float moveSpeed, int health, float scale) : base(parent)
     {
         _walkPath = walkPath;
         FromNode = startNode;

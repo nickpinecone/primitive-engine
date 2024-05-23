@@ -15,6 +15,7 @@ public class BasicOrk : Enemy
 
         Sprite = new Sprite(this, texture, source);
         Shape = new CollisionShape(this, Sprite.Size);
+        Defense = new Defense(0, 0);
 
         Health.WorldPosition = new Vector2(-Shape.WorldRectangle.Width / 8f, -Shape.WorldRectangle.Height / 2f);
     }

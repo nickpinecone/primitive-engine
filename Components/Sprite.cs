@@ -26,7 +26,7 @@ public class Sprite : GameObject
         }
     }
 
-    public Rectangle DefaultSource { get; set; }
+    private Rectangle DefaultSource { get; set; }
     public Rectangle HoverSource { get; set; }
 
     public Vector2 Origin
@@ -101,7 +101,7 @@ public class Sprite : GameObject
                 DrawHighlight(spriteBatch);
             }
         }
-        else
+        else if (HoverSource != Rectangle.Empty)
         {
             SourceRectangle = DefaultSource;
         }

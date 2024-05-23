@@ -11,7 +11,6 @@ class PathTurn : PathTile
     public PathTurn(GameObject parent, Vector2 position, float scale) : base(parent, position, scale)
     {
         Sprite.SourceRectangle = new Rectangle(70, 410, 210, 160);
-        Sprite.DefaultSource = Sprite.SourceRectangle;
         Shape.Size = Sprite.Size;
     }
 }
