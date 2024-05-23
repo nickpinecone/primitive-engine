@@ -105,7 +105,7 @@ class LevelEditor : GameObject
         {
             _selectedItem.Update(gameTime);
             var position = new Vector2((mouseState.Position.X / SnapAmount) * SnapAmount, (mouseState.Position.Y / SnapAmount) * SnapAmount);
-            _selectedItem.WorldPosition = position;
+            _selectedItem.LocalPosition = position;
         }
     }
 

@@ -19,7 +19,7 @@ class ArcherTower : Tower
         Shape = new CollisionShape(this, Sprite.Size);
         Interact = new Interact(this, Sprite, Shape);
 
-        WorldPosition -= new Vector2(0, Shape.WorldRectangle.Height / 3f);
+        LocalPosition -= new Vector2(0, Shape.WorldRectangle.Height / 3f);
     }
 
     public override void Update(GameTime gameTime)
@@ -32,7 +32,7 @@ class ArcherTower : Tower
             {
                 var projectile = new ArrowProjectile(null, enemy, Damage, WorldPosition, Scale * 0.5f);
 
-                SpawnProjectile(projectile);
+                SpawnObject(projectile);
             }
 
         }

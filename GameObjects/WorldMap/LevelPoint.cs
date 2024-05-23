@@ -29,8 +29,8 @@ class LevelPoint : GameObject
 
         Interact.OnDoubleSelect += HandleSelection;
 
-        WorldPosition = position;
-        Scale = scale;
+        LocalPosition = position;
+        LocalScale = scale;
     }
 
     public void HandleSelection(object sender, EventArgs args)

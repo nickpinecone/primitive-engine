@@ -43,14 +43,8 @@ public class GameLevelState : GameState
         if (type == TowerType.Archer)
         {
             var tower = new ArcherTower(null, plot, walkPath, plot.WorldPosition, plot.Scale);
-            tower.OnSpawnProjectile += HandleSpawnProjectile;
             AddGameObject(tower);
         }
-    }
-
-    private void HandleSpawnProjectile(object sender, Projectile projectile)
-    {
-        AddGameObject(projectile);
     }
 
     public override void UnloadContent(ContentManager contentManager)

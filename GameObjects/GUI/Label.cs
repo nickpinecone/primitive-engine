@@ -20,8 +20,8 @@ class Label : GameObject
 
         font ??= AssetManager.GetAsset<SpriteFont>("GUI/MenuFont");
 
-        WorldPosition = position;
-        Scale = scale;
+        LocalPosition = position;
+        LocalScale = scale;
 
         Text = text;
         Font = font;

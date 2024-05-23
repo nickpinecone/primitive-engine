@@ -9,47 +9,36 @@ namespace TowerDefense;
 public abstract class GameObject
 {
     public event EventHandler OnQueueFree;
+    public event EventHandler<GameObject> OnSpawnObject;
 
     private List<GameObject> _children;
 
     public GameObject Parent { get; set; }
 
-    private Vector2 _worldPosition;
+    public Vector2 LocalPosition { get; set; }
     public Vector2 WorldPosition
     {
         get
         {
-            return (Parent?.WorldPosition ?? Vector2.Zero) + _worldPosition;
-        }
-        set
-        {
-            _worldPosition = value;
+            return (Parent?.WorldPosition ?? Vector2.Zero) + LocalPosition;
         }
     }
 
-    private float _scale;
+    public float LocalScale;
     public float Scale
     {
         get
         {
-            return (Parent?.Scale ?? 1f) * _scale;
-        }
-        set
-        {
-            _scale = value;
+            return (Parent?.Scale ?? 1f) * LocalScale;
         }
     }
 
-    private float _rotation;
+    public float LocalRotation;
     public float Rotation
     {
         get
         {
-            return (Parent?.Rotation ?? 0) + _rotation;
-        }
-        set
-        {
-            _rotation = value;
+            return (Parent?.Rotation ?? 0) + LocalRotation;
         }
     }
 
@@ -58,16 +47,22 @@ public abstract class GameObject
     public GameObject(GameObject parent)
     {
         _children = new();
-        _scale = 1f;
+
+        LocalScale = 1f;
         ZIndex = 0;
         Parent = parent;
 
         Parent?.AddChild(this);
     }
 
-    public void QueueFree()
+    protected void QueueFree()
     {
         OnQueueFree?.Invoke(this, null);
+    }
+
+    protected void SpawnObject(GameObject gameObject)
+    {
+        OnSpawnObject?.Invoke(this, gameObject);
     }
 
     protected void AddChild(GameObject child)

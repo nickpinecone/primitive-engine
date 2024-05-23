@@ -38,7 +38,7 @@ public class EditLevelState : GameState
         isWalkPathEdit = false;
         editInfo = new Label(null, Vector2.Zero, 0.5f, "");
         editInfo.TextColor = Color.Black;
-        editInfo.WorldPosition += editInfo.TextSize / 2f;
+        editInfo.LocalPosition += editInfo.TextSize / 2f;
 
         UpdateWalkPathInfo();
         AddGameObject(editInfo);

@@ -35,8 +35,8 @@ class TowerPlot : GameObject, ISaveable
         _contextMenu.AddItem(archerSprite, TowerType.Archer);
         _contextMenu.OnSelect += HandleSelectTower;
 
-        WorldPosition = position;
-        Scale = scale;
+        LocalPosition = position;
+        LocalScale = scale;
     }
 
     private void HandleSelectTower(object sender, object value)

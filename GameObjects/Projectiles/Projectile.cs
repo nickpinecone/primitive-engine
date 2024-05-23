@@ -20,8 +20,8 @@ abstract class Projectile : GameObject
         Speed = speed;
         Damage = damage;
 
-        WorldPosition = position;
-        Scale = scale;
+        LocalPosition = position;
+        LocalScale = scale;
     }
 
     protected void FollowTarget(GameTime gameTime)
@@ -33,9 +33,9 @@ abstract class Projectile : GameObject
 
         var velocity = direction * Speed;
 
-        WorldPosition += velocity * delta;
+        LocalPosition += velocity * delta;
 
-        Rotation = (float)Math.Atan2(velocity.Y, velocity.X) + MathHelper.ToRadians(135);
+        LocalRotation = (float)Math.Atan2(velocity.Y, velocity.X) + MathHelper.ToRadians(135);
 
         if (Target.Shape.WorldRectangle.Contains(WorldPosition))
         {

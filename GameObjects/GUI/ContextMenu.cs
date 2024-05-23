@@ -36,13 +36,13 @@ class ContextMenuItem : GameObject
 
         var wideSide = Math.Max(itemSprite.SourceRectangle.Width, itemSprite.SourceRectangle.Height);
         var scaleItem = source.Width * scale / (float)wideSide / 1.5f;
-        _itemSprite.Scale = scaleItem;
+        _itemSprite.LocalScale = scaleItem;
 
         PriceLabel = new Label(this, new Vector2(0, 18) * scale, 0.4f, "100");
         PriceLabel.TextColor = Color.Yellow;
 
-        WorldPosition = position;
-        Scale = scale;
+        LocalPosition = position;
+        LocalScale = scale;
     }
 
     private void HandleDoubleSelect(object sender, EventArgs args)
@@ -67,7 +67,7 @@ class ContextMenu : GameObject
         _menuItems = new();
 
         Hidden = true;
-        Scale = scale;
+        LocalScale = scale;
         DistanceAway = distanceAway;
     }
 

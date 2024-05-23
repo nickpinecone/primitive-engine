@@ -17,7 +17,7 @@ abstract class Decoration : GameObject, ISaveable
 
         Sprite = new Sprite(this, texture, source);
 
-        WorldPosition = position;
-        Scale = scale;
+        LocalPosition = position;
+        LocalScale = scale;
     }
 }

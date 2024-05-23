@@ -28,8 +28,8 @@ class GridItem : GameObject
 
         Interact.OnSelect += HandleSelect;
 
-        WorldPosition = position;
-        Scale = scale;
+        LocalPosition = position;
+        LocalScale = scale;
     }
 
     public void HandleSelect(object sender, EventArgs args)

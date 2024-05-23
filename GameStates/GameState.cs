@@ -74,6 +74,10 @@ public abstract class GameState
             (object sender, EventArgs _)
             => RemoveGameObject(gameObject);
 
+        gameObject.OnSpawnObject +=
+            (object sender, GameObject spawnObject)
+            => AddGameObject(spawnObject);
+
         _addQueue.Add(gameObject);
     }
 

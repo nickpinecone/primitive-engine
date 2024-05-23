@@ -21,7 +21,7 @@ abstract class PathTile : GameObject, ISaveable
         Sprite = new Sprite(this, texture, source);
         Shape = new CollisionShape(this, Sprite.Size);
 
-        WorldPosition = position;
-        Scale = scale;
+        LocalPosition = position;
+        LocalScale = scale;
     }
 }

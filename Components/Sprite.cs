@@ -59,7 +59,7 @@ public class Sprite : GameObject
         IsSelected = false;
         Hidden = false;
 
-        Scale = 1f;
+        LocalScale = 1f;
         AccentColor = Color.White;
         Texture = texture;
         SourceRectangle = source;

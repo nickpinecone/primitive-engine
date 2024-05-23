@@ -26,8 +26,8 @@ class Button : GameObject
 
         Label = new Label(this, Vector2.Zero, 1f, text);
 
-        WorldPosition = position;
-        Scale = scale;
+        LocalPosition = position;
+        LocalScale = scale;
     }
 
     // Custom button
@@ -37,8 +37,8 @@ class Button : GameObject
         Shape = new CollisionShape(this, Sprite.Size);
         Interact = new Interact(this, Sprite, Shape);
 
-        WorldPosition = position;
-        Scale = scale;
+        LocalPosition = position;
+        LocalScale = scale;
     }
 
     // Custom button with text

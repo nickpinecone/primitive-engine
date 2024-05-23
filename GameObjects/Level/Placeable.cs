@@ -24,8 +24,8 @@ public class Placeable : GameObject
         Interact = new Interact(this, Sprite, Shape);
 
         Type = type;
-        WorldPosition = position;
-        Scale = scale;
+        LocalPosition = position;
+        LocalScale = scale;
     }
 
     public override void HandleInput()
@@ -49,8 +49,8 @@ public class Placeable : GameObject
 
             if (keyState.IsKeyDown(Keys.LeftShift))
             {
-                Scale += Input.GetWheelValue() / 1000f;
-                Scale = Math.Clamp(Scale, 0.1f, 10f);
+                LocalScale += Input.GetWheelValue() / 1000f;
+                LocalScale = Math.Clamp(Scale, 0.1f, 10f);
             }
         }
 
@@ -68,7 +68,7 @@ public class Placeable : GameObject
 
         if (FollowMouse)
         {
-            WorldPosition = mouseState.Position.ToVector2();
+            LocalPosition = mouseState.Position.ToVector2();
         }
     }
 

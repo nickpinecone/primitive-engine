@@ -46,8 +46,8 @@ class PathNode : GameObject
         Interact.OnClick += (_, _) => HandleClick(this, null);
         Interact.OnRightClick += (_, _) => HandleRightClick(this, null);
 
-        WorldPosition = node.Position;
-        Scale = 1f;
+        LocalPosition = node.Position;
+        LocalScale = 1f;
 
         Sprite.AccentColor = type switch
         {
@@ -175,7 +175,7 @@ class PathNode : GameObject
 
         if (FollowMouse)
         {
-            WorldPosition = mouseState.Position.ToVector2();
+            LocalPosition = mouseState.Position.ToVector2();
         }
     }
 

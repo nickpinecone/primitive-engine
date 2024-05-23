@@ -12,8 +12,6 @@ public enum ActionType { Sell };
 
 abstract class Tower : GameObject
 {
-    public event EventHandler<Projectile> OnSpawnProjectile;
-
     protected WalkPath _walkPath;
     protected List<Node> _nodesInRadius;
     protected TowerPlot _plot;
@@ -46,13 +44,8 @@ abstract class Tower : GameObject
 
         Damage = new Damage(damage.Amount, damage.Type);
 
-        WorldPosition = position;
-        Scale = scale;
-    }
-
-    protected void SpawnProjectile(Projectile projectile)
-    {
-        OnSpawnProjectile?.Invoke(this, projectile);
+        LocalPosition = position;
+        LocalScale = scale;
     }
 
     private void HandleActionSelect(object sender, object action)

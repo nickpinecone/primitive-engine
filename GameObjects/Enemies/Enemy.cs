@@ -29,8 +29,8 @@ abstract public class Enemy : GameObject
         _walkPath = walkPath;
         FromNode = startNode;
 
-        WorldPosition = startNode.Position;
-        Scale = scale;
+        LocalPosition = startNode.Position;
+        LocalScale = scale;
         MoveSpeed = moveSpeed;
 
         Health = new Health(this, health, scale);
@@ -65,7 +65,7 @@ abstract public class Enemy : GameObject
         direction.Normalize();
         var velocity = direction * MoveSpeed * delta;
 
-        WorldPosition += velocity;
+        LocalPosition += velocity;
         MovedDistance += velocity.Length();
     }
 }
