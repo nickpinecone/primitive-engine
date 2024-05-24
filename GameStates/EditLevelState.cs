@@ -10,32 +10,36 @@ using Microsoft.Xna.Framework.Input;
 
 namespace TowerDefense;
 
+public enum EditState { WalkPath, LevelEditor, EnemyEditor };
+
 public class EditLevelState : GameState
 {
-    Label editInfo;
-    bool isWalkPathEdit;
+    public static EditState EditState = EditState.WalkPath;
 
+    Label editInfo;
     WalkPath walkPath;
     LevelEditor levelEditor;
 
     public void UpdateWalkPathInfo()
     {
-        var text = "Edit Info: " + (isWalkPathEdit ? "Walk Path" : "Level Editor");
+        var text = "Edit Info: " + EditState switch
+        {
+            EditState.WalkPath => "Walk Path",
+            EditState.LevelEditor => "Level Editor",
+            EditState.EnemyEditor => "Enemy Editor",
+            _ => ""
+        };
         editInfo.Text = text;
     }
 
     public override void LoadContent(ContentManager contentManager)
     {
-        // Level Editor Setup
         levelEditor = new LevelEditor(null);
-        levelEditor.OnOverlay += HandleOverlay;
         levelEditor.OnItemPlace += HandleItemPlace;
 
         AddGameObject(levelEditor);
 
-        // Walk Path Debug Info
         walkPath = new();
-        isWalkPathEdit = false;
         editInfo = new Label(null, Vector2.Zero, 0.5f, "");
         editInfo.TextColor = Color.Black;
         editInfo.LocalPosition += editInfo.TextSize / 2f;
@@ -49,12 +53,6 @@ public class EditLevelState : GameState
         var copy = placeable.Clone();
         copy.Interact.IsSelected = false;
         AddGameObject(copy);
-    }
-
-    private void HandleOverlay(object sender, bool isOpen)
-    {
-        PathNode.Hidden = isOpen;
-        Placeable.Disabled = isOpen;
     }
 
     public override void UnloadContent(ContentManager contentManager)
@@ -74,19 +72,23 @@ public class EditLevelState : GameState
 
         if (Input.IsKeyJustPressed(Keys.W))
         {
-            isWalkPathEdit = !isWalkPathEdit;
-            PathNode.Disabled = !isWalkPathEdit;
-            Placeable.Disabled = isWalkPathEdit;
-            levelEditor.Disabled = isWalkPathEdit;
+            EditState = (EditState)((int)(EditState + 1) % 3);
+
+            UpdateWalkPathInfo();
         }
 
-        if (isWalkPathEdit)
+        switch (EditState)
         {
-            HandleWalkPathInput(mouseState, keyState);
-        }
-        else
-        {
-            HandleLevelEditorInput();
+            case EditState.WalkPath:
+                HandleWalkPathInput(mouseState, keyState);
+                break;
+            case EditState.LevelEditor:
+                HandleLevelEditorInput();
+                break;
+            case EditState.EnemyEditor:
+                break;
+            default:
+                break;
         }
 
         base.HandleInput();
@@ -171,11 +173,5 @@ public class EditLevelState : GameState
                 dict[tuple.from].LinkPath(pathNode);
             }
         }
-    }
-
-    public override void Update(GameTime gameTime)
-    {
-        base.Update(gameTime);
-        UpdateWalkPathInfo();
     }
 }

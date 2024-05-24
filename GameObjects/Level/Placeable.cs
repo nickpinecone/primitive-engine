@@ -8,8 +8,6 @@ using TowerDefense;
 
 public class Placeable : GameObject
 {
-    public static bool Disabled = false;
-
     public Sprite Sprite { get; }
     public CollisionShape Shape { get; }
     public Interact Interact { get; }
@@ -30,7 +28,7 @@ public class Placeable : GameObject
 
     public override void HandleInput()
     {
-        if (Placeable.Disabled) return;
+        if (EditLevelState.EditState != EditState.LevelEditor) return;
 
         base.HandleInput();
 

@@ -20,7 +20,6 @@ class LevelEditor : GameObject
     private Texture2D _panel;
 
     public bool Hidden { get; set; }
-    public bool Disabled { get; set; }
     public int SnapAmount { get; set; }
 
     public LevelEditor(GameObject parent) : base(parent)
@@ -60,7 +59,7 @@ class LevelEditor : GameObject
 
     public override void HandleInput()
     {
-        if (Disabled) return;
+        if (EditLevelState.EditState != EditState.LevelEditor) return;
 
         var mouseState = Mouse.GetState();
 
@@ -95,7 +94,7 @@ class LevelEditor : GameObject
 
     public override void Update(GameTime gameTime)
     {
-        if (Disabled) return;
+        if (EditLevelState.EditState != EditState.LevelEditor) return;
 
         base.Update(gameTime);
 

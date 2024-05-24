@@ -12,8 +12,6 @@ enum PathChangeMode { Link, Delete, Shift };
 class PathNode : GameObject
 {
     private static PathNode SelectedNode = null;
-    public static bool Disabled = false;
-    public static bool Hidden = false;
 
     private List<PathNode> _nextNodes;
     private List<PathNode> _prevNodes;
@@ -139,7 +137,10 @@ class PathNode : GameObject
 
     public override void HandleInput()
     {
-        if (PathNode.Disabled) return;
+        if (
+            EditLevelState.EditState == EditState.LevelEditor
+            || (EditLevelState.EditState == EditState.EnemyEditor && Node.Type != NodeType.Start)
+        ) return;
 
         base.HandleInput();
 
@@ -181,7 +182,10 @@ class PathNode : GameObject
 
     public override void Draw(SpriteBatch spriteBatch)
     {
-        if (Hidden) return;
+        if (
+            EditLevelState.EditState == EditState.LevelEditor
+            || (EditLevelState.EditState == EditState.EnemyEditor && Node.Type != NodeType.Start)
+        ) return;
 
         base.Draw(spriteBatch);
 
