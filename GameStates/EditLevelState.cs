@@ -37,9 +37,11 @@ public class EditLevelState : GameState
     public override void LoadContent(ContentManager contentManager)
     {
         enemyEditor = new EnemyEditor(null, walkPath);
+        enemyEditor.ZIndex = 2;
 
         levelEditor = new LevelEditor(null);
         levelEditor.OnItemPlace += HandleItemPlace;
+        levelEditor.ZIndex = 2;
 
         walkPath = new();
         editInfo = new Label(null, Vector2.Zero, 0.5f, "");
