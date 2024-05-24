@@ -8,7 +8,7 @@ using TowerDefense;
 
 public class BasicOrk : Enemy
 {
-    public BasicOrk(GameObject parent, WalkPath walkPath, Node startNode, float moveSpeed, int health, float scale) : base(parent, walkPath, startNode, moveSpeed, health, scale)
+    public BasicOrk(GameObject parent, WalkPath walkPath, Node startNode, float scale) : base(parent, walkPath, startNode, 24f, 100, scale)
     {
         var texture = AssetManager.GetAsset<Texture2D>("Enemies/BasicOrk");
         var source = new Rectangle(0, 0, 331, 299);

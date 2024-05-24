@@ -4,7 +4,7 @@ namespace TowerDefense;
 
 public static class GameSettings
 {
-    public static bool CreatorMode = false;
+    public static bool CreatorMode = true;
     public static bool IsVisibleCollisions = false;
 
     public static readonly int WindowWidth = 1280;

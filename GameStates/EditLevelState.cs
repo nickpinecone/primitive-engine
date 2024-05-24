@@ -19,6 +19,7 @@ public class EditLevelState : GameState
     Label editInfo;
     WalkPath walkPath;
     LevelEditor levelEditor;
+    EnemyEditor enemyEditor;
 
     public void UpdateWalkPathInfo()
     {
@@ -30,22 +31,26 @@ public class EditLevelState : GameState
             _ => ""
         };
         editInfo.Text = text;
+        editInfo.LocalPosition = editInfo.TextSize / 2f;
     }
 
     public override void LoadContent(ContentManager contentManager)
     {
+        enemyEditor = new EnemyEditor(null, walkPath);
+
         levelEditor = new LevelEditor(null);
         levelEditor.OnItemPlace += HandleItemPlace;
-
-        AddGameObject(levelEditor);
 
         walkPath = new();
         editInfo = new Label(null, Vector2.Zero, 0.5f, "");
         editInfo.TextColor = Color.Black;
         editInfo.LocalPosition += editInfo.TextSize / 2f;
 
-        UpdateWalkPathInfo();
+        AddGameObject(enemyEditor);
+        AddGameObject(levelEditor);
         AddGameObject(editInfo);
+
+        UpdateWalkPathInfo();
     }
 
     private void HandleItemPlace(object sender, Placeable placeable)
@@ -135,6 +140,10 @@ public class EditLevelState : GameState
             }
 
             var pathNode = new PathNode(null, node, nodeType);
+            if (pathNode.Node.Type == NodeType.Start)
+            {
+                pathNode.Interact.OnDoubleSelect += (_, _) => HandleStartNodeSelect(pathNode, null);
+            }
             AddGameObject(pathNode);
         }
 
@@ -164,6 +173,10 @@ public class EditLevelState : GameState
             else
             {
                 pathNode = new PathNode(null, tuple.node, tuple.node.Type);
+                if (pathNode.Node.Type == NodeType.Start)
+                {
+                    pathNode.Interact.OnDoubleSelect += (_, _) => HandleStartNodeSelect(pathNode, null);
+                }
                 dict[tuple.node] = pathNode;
                 AddGameObject(pathNode);
             }
@@ -172,6 +185,17 @@ public class EditLevelState : GameState
             {
                 dict[tuple.from].LinkPath(pathNode);
             }
+        }
+    }
+
+    private void HandleStartNodeSelect(object sender, EventArgs args)
+    {
+        var node = (PathNode)sender;
+
+        if (EditState == EditState.EnemyEditor)
+        {
+            node.Interact.IsSelected = false;
+            enemyEditor.Show(node.Node);
         }
     }
 }

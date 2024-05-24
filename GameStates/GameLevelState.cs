@@ -19,7 +19,7 @@ public class GameLevelState : GameState
         walkPath.CalculateLengths();
         LoadLevel("level_editor");
 
-        var basicOrk = new BasicOrk(null, walkPath, walkPath.GetStartNodes()[0], 24f, 100, 0.5f);
+        var basicOrk = new BasicOrk(null, walkPath, walkPath.GetStartNodes()[0], 0.5f);
 
         AddGameObject(basicOrk);
     }

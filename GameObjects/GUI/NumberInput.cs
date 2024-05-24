@@ -10,14 +10,19 @@ using TowerDefense;
 
 class NumberInput : GameObject
 {
+    public event EventHandler<int> OnValueChange;
+
+    private bool _wasDeselected = false;
+
     private int _value;
     public int Value
     {
         get { return _value; }
-        private set
+        set
         {
             _value = value;
             Label.Text = value.ToString();
+            OnValueChange?.Invoke(this, value);
         }
     }
 
@@ -48,12 +53,21 @@ class NumberInput : GameObject
         {
             for (Keys i = Keys.D0; i <= Keys.D9; i++)
             {
-                if (Label.Text.Length < 3 && Input.IsKeyJustPressed(i))
+                if (Input.IsKeyJustPressed(i))
                 {
-                    var num = i - Keys.D0;
-                    var numStr = Label.Text + num.ToString();
+                    if (_wasDeselected)
+                    {
+                        Label.Text = "";
+                        _wasDeselected = false;
+                    }
 
-                    Value = int.Parse(numStr);
+                    if (Label.Text.Length < 3)
+                    {
+                        var num = i - Keys.D0;
+                        var numStr = Label.Text + num.ToString();
+
+                        Value = int.Parse(numStr);
+                    }
                 }
             }
 
@@ -63,6 +77,10 @@ class NumberInput : GameObject
                 numStr = numStr == "" ? "0" : numStr;
                 Value = int.Parse(numStr);
             }
+        }
+        else
+        {
+            _wasDeselected = true;
         }
     }
 }

@@ -29,7 +29,7 @@ abstract public class Enemy : GameObject
         _walkPath = walkPath;
         FromNode = startNode;
 
-        LocalPosition = startNode.Position;
+        LocalPosition = startNode?.Position ?? Vector2.Zero;
         LocalScale = scale;
         MoveSpeed = moveSpeed;
 

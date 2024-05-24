@@ -12,75 +12,30 @@ class GridEnemyItem : GameObject
     public Sprite Sprite { get; }
     public Type Type { get; set; }
 
-    // private int _orderValue;
-    // public int OrderValue
-    // {
-    //     get { return _orderValue; }
-    //     private set
-    //     {
-    //         _orderValue = value;
-    //         AdjustOrderLable();
-    //     }
-    // }
-
-    // private int _amountValue;
-    // public int AmountValue
-    // {
-    //     get { return _amountValue; }
-    //     private set
-    //     {
-    //         _amountValue = value;
-    //         AdjustAmountValue();
-    //     }
-    // }
-
-    // public Label OrderLabel { get; }
-    // public Button OrderDecrease { get; }
-    // public Button OrderIncrease { get; }
-
-    // public Label AmountLabel { get; }
-    // public Button AmountDecrease { get; }
-    // public Button AmountIncrease { get; }
+    public InputForm OrderInput { get; }
+    public InputForm AmountInput { get; }
 
     public GridEnemyItem(GameObject parent, Sprite sprite, Type type, Vector2 position, float scale) : base(parent)
     {
         Sprite = new Sprite(this, sprite.Texture, sprite.SourceRectangle, 2);
 
-        var source = new Rectangle(0, 0, 30, 30);
-        var backTexture = DebugTexture.GenerateRectTexture(source.Width, source.Height, Color.Gray);
+        OrderInput = new InputForm(this, "Order", Vector2.Zero, 1f);
+        AmountInput = new InputForm(this, "Amount", Vector2.Zero, 1f);
 
-        // OrderLabel = new Label(this, Vector2.Zero, 1f, "0");
-        // OrderDecrease = new Button(this, "-", Vector2.Zero, 1f, backTexture, source, Rectangle.Empty, null);
-        // OrderDecrease.Interact.OnClick += (_, _) => OrderValue--;
-        // OrderIncrease = new Button(this, "+", Vector2.Zero, 1f, backTexture, source, Rectangle.Empty, null);
-        // OrderIncrease.Interact.OnClick += (_, _) => OrderValue++;
+        AmountInput.LocalPosition = new Vector2(0, sprite.SourceRectangle.Height * Scale / 2f - AmountInput.Sprite.Size.Y * Scale);
+        OrderInput.LocalPosition = AmountInput.LocalPosition - new Vector2(0, OrderInput.Sprite.Size.Y * Scale);
 
-        // AmountLabel = new Label(this, Vector2.Zero, 1f, "0");
-        // AmountDecrease = new Button(this, "-", Vector2.Zero, 1f, backTexture, source, Rectangle.Empty, null);
-        // AmountDecrease.Interact.OnClick += (_, _) => AmountValue--;
-        // AmountIncrease = new Button(this, "+", Vector2.Zero, 1f, backTexture, source, Rectangle.Empty, null);
-        // AmountIncrease.Interact.OnClick += (_, _) => AmountValue++;
-
+        Type = type;
         LocalPosition = position;
         LocalScale = scale;
     }
-
-    // private void AdjustOrderLable()
-    // {
-    //     OrderLabel.Text = OrderValue.ToString();
-    // }
-
-    // private void AdjustAmountValue()
-    // {
-    //     AmountLabel.Text = AmountValue.ToString();
-    // }
 }
 
 class GridEnemy : GameObject
 {
-    public event EventHandler<Placeable> OnItemSelect;
-
     private List<GridEnemyItem> _items;
+
+    public List<GridEnemyItem> Items { get { return _items; } }
 
     public Vector2 Size { get; protected set; }
     public int ColumnAmount { get; protected set; }
@@ -116,13 +71,7 @@ class GridEnemy : GameObject
 
         var scale = SizePerItem / (float)wideSide / fraction;
         var gridItem = new GridEnemyItem(this, sprite, type, GetPosition(), scale);
-        // gridItem.OnSelect += HandleItemSelect;
 
         _items.Add(gridItem);
-    }
-
-    public void HandleItemSelect(object sender, Placeable placeable)
-    {
-        OnItemSelect?.Invoke(this, placeable);
     }
 }
