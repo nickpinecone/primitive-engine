@@ -8,7 +8,20 @@ using TowerDefense;
 
 class Label : GameObject
 {
-    public string Text { get; set; }
+    private string _text;
+    public string Text
+    {
+        get { return _text; }
+        set
+        {
+            _text = value;
+
+            TextSize = Font.MeasureString(_text);
+            TextOrigin = TextSize / 2f;
+            TextSize *= Scale;
+        }
+    }
+
     public Vector2 TextOrigin { get; protected set; }
     public SpriteFont Font { get; protected set; }
     public Vector2 TextSize { get; protected set; }
@@ -23,13 +36,10 @@ class Label : GameObject
         LocalPosition = position;
         LocalScale = scale;
 
-        Text = text;
         Font = font;
         TextColor = Color.White;
 
-        TextSize = Font.MeasureString(Text);
-        TextOrigin = TextSize / 2f;
-        TextSize *= scale;
+        Text = text;
     }
 
     public override void Draw(SpriteBatch spriteBatch)

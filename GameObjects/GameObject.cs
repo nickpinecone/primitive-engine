@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -43,6 +44,7 @@ public abstract class GameObject
     }
 
     public int ZIndex { get; set; }
+    public int DrawOrder { get; set; }
 
     public GameObject(GameObject parent)
     {
@@ -50,6 +52,7 @@ public abstract class GameObject
 
         LocalScale = 1f;
         ZIndex = 0;
+        DrawOrder = 0;
         Parent = parent;
 
         Parent?.AddChild(this);
@@ -88,7 +91,7 @@ public abstract class GameObject
 
     public virtual void Draw(SpriteBatch spriteBatch)
     {
-        foreach (var child in _children)
+        foreach (var child in _children.OrderBy((child) => child.DrawOrder))
         {
             child.Draw(spriteBatch);
         }

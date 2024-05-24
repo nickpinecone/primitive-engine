@@ -16,6 +16,10 @@ public class MainMenuState : GameState
         var playButton = new Button(null, "Play", windowMiddle - offset);
         var quitButton = new Button(null, "Quit", windowMiddle + offset);
 
+        var numInput = new InputForm(null, "Amount", new Vector2(150, 100), 1f);
+
+        AddGameObject(numInput);
+
         quitButton.Interact.OnClick += HandleQuitButton;
         playButton.Interact.OnClick += HandlePlayButton;
 
