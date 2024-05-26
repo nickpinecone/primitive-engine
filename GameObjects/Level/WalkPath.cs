@@ -134,6 +134,19 @@ public class WalkPath
         return _startNodes;
     }
 
+    public Node GetStartById(int startId)
+    {
+        foreach (var node in _startNodes)
+        {
+            if (node.StartId == startId)
+            {
+                return node;
+            }
+        }
+
+        return null;
+    }
+
     public void AddStartNode(Node node)
     {
         _startNodes.Add(node);

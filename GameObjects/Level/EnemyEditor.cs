@@ -15,8 +15,7 @@ class EnemyEditor : GameObject
     private GridEnemy _grid;
     private Texture2D _panel;
     private WalkPath _walkPath;
-
-    private Dictionary<GridEnemyItem, Dictionary<int, Dictionary<int, (int order, int amount)>>> _waves;
+    private WaveManager _waveManager;
 
     private int _prevWave = 0;
     public InputForm WaveInput { get; }
@@ -36,7 +35,7 @@ class EnemyEditor : GameObject
         _grid = new GridEnemy(this, GameSettings.WindowSize, 7, 8);
         _grid.LocalPosition += new Vector2(0, WaveInput.Sprite.Size.Y);
         _walkPath = walkPath;
-        _waves = new();
+        _waveManager = new WaveManager(_walkPath);
 
         NodeId = 0;
         Hidden = true;
@@ -46,36 +45,10 @@ class EnemyEditor : GameObject
         WaveInput.NumberInput.OnValueChange += HandleWaveChange;
     }
 
-
-    private void HandleShow()
-    {
-        foreach (var item in _grid.Items)
-        {
-            if (!_waves[item].ContainsKey(NodeId))
-            {
-                _waves[item][NodeId] = new();
-                _waves[item][NodeId][_prevWave] = (0, 0);
-            }
-
-            item.OrderInput.NumberInput.Value = _waves[item][NodeId][_prevWave].order;
-            item.AmountInput.NumberInput.Value = _waves[item][NodeId][_prevWave].amount;
-        }
-    }
-
     private void HandleWaveChange(object sender, int wave)
     {
-        foreach (var item in _grid.Items)
-        {
-            _waves[item][NodeId][_prevWave] = (item.OrderInput.NumberInput.Value, item.AmountInput.NumberInput.Value);
-
-            if (!_waves[item][NodeId].ContainsKey(wave))
-            {
-                _waves[item][NodeId][wave] = (0, 0);
-            }
-
-            item.OrderInput.NumberInput.Value = _waves[item][NodeId][wave].order;
-            item.AmountInput.NumberInput.Value = _waves[item][NodeId][wave].amount;
-        }
+        StoreToManager();
+        LoadFromManager();
 
         _prevWave = wave;
     }
@@ -85,13 +58,6 @@ class EnemyEditor : GameObject
         var basicOrk = new BasicOrk(null, _walkPath, null, 1f);
 
         _grid.AddItem(basicOrk.Sprite, basicOrk.GetType());
-
-        foreach (var item in _grid.Items)
-        {
-            _waves[item] = new();
-            _waves[item][NodeId] = new();
-            _waves[item][NodeId][_prevWave] = (0, 0);
-        }
     }
 
     public void Show(int nodeId)
@@ -102,7 +68,30 @@ class EnemyEditor : GameObject
         Hidden = false;
         NodeId = nodeId;
 
-        HandleShow();
+        LoadFromManager();
+    }
+
+    private void LoadFromManager()
+    {
+        foreach (var item in _grid.Items)
+        {
+            var info = _waveManager.GetEnemyInfo(NodeId, WaveInput.NumberInput.Value, item.Type);
+
+            item.OrderInput.NumberInput.Value = info.Order;
+            item.AmountInput.NumberInput.Value = info.Amount;
+        }
+    }
+
+    private void StoreToManager()
+    {
+        foreach (var item in _grid.Items)
+        {
+            _waveManager.StoreEnemyInfo(
+                NodeId, _prevWave, item.Type,
+                item.OrderInput.NumberInput.Value,
+                item.AmountInput.NumberInput.Value
+            );
+        }
     }
 
     public override void HandleInput()
@@ -111,6 +100,7 @@ class EnemyEditor : GameObject
 
         if (Input.IsKeyJustPressed(Keys.Z))
         {
+            HandleWaveChange(null, 0);
             Hidden = true;
         }
 
