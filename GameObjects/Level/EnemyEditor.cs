@@ -62,7 +62,7 @@ class EnemyEditor : GameObject
 
     public void Show(int nodeId)
     {
-        WaveInput.NumberInput.Value = 0;
+        WaveInput.NumberInput.Reset();
         _prevWave = 0;
 
         Hidden = false;
@@ -75,7 +75,7 @@ class EnemyEditor : GameObject
     {
         foreach (var item in _grid.Items)
         {
-            var info = _waveManager.GetEnemyInfo(NodeId, WaveInput.NumberInput.Value, item.Type);
+            var info = _waveManager.GetEnemyInfo(NodeId, WaveInput.NumberInput.Value, item.Type.FullName);
 
             item.OrderInput.NumberInput.Value = info.Order;
             item.AmountInput.NumberInput.Value = info.Amount;
@@ -87,7 +87,7 @@ class EnemyEditor : GameObject
         foreach (var item in _grid.Items)
         {
             _waveManager.StoreEnemyInfo(
-                NodeId, _prevWave, item.Type,
+                NodeId, _prevWave, item.Type.FullName,
                 item.OrderInput.NumberInput.Value,
                 item.AmountInput.NumberInput.Value
             );
@@ -102,6 +102,15 @@ class EnemyEditor : GameObject
         {
             HandleWaveChange(null, 0);
             Hidden = true;
+        }
+
+        if (Input.IsKeyJustPressed(Keys.Q))
+        {
+            _waveManager.SaveToFile("enemy_editor");
+        }
+        else if (Input.IsKeyJustPressed(Keys.R))
+        {
+            _waveManager.LoadFromFile("enemy_editor");
         }
 
         base.HandleInput();

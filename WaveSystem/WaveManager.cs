@@ -1,15 +1,18 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Text.Json;
+using TowerDefense;
 
 public class EnemyInfo
 {
-    public Type Type { get; set; }
+    public string TypeName { get; set; }
     public int Amount { get; set; }
     public int Order { get; set; }
 
-    public EnemyInfo(Type type, int order, int amount)
+    public EnemyInfo(string typeName, int order, int amount)
     {
-        Type = type;
+        TypeName = typeName;
         Order = order;
         Amount = amount;
     }
@@ -18,7 +21,7 @@ public class EnemyInfo
 public class WaveInfo
 {
     public int WaveNumber { get; set; }
-    public Dictionary<Type, EnemyInfo> Enemies { get; set; }
+    public Dictionary<string, EnemyInfo> Enemies { get; set; }
 
     public WaveInfo(int waveNumber)
     {
@@ -42,7 +45,7 @@ public class NodeWaveInfo
 public class WaveManager
 {
     private WalkPath _walkPath;
-    private Dictionary<int, NodeWaveInfo> _nodeWaves { get; }
+    private Dictionary<int, NodeWaveInfo> _nodeWaves { get; set; }
 
     public WaveManager(WalkPath walkPath)
     {
@@ -51,27 +54,17 @@ public class WaveManager
         _nodeWaves = new();
     }
 
-    public EnemyInfo GetEnemyInfo(int startId, int waveNumber, Type type)
+    public void SaveToFile(string filename)
     {
-        if (!_nodeWaves.ContainsKey(startId))
-        {
-            _nodeWaves[startId] = new(startId);
-        }
-
-        if (!_nodeWaves[startId].Waves.ContainsKey(waveNumber))
-        {
-            _nodeWaves[startId].Waves[waveNumber] = new(waveNumber);
-        }
-
-        if (!_nodeWaves[startId].Waves[waveNumber].Enemies.ContainsKey(type))
-        {
-            _nodeWaves[startId].Waves[waveNumber].Enemies[type] = new(type, 0, 0);
-        }
-
-        return _nodeWaves[startId].Waves[waveNumber].Enemies[type];
+        MetaManager.SaveToFile(_nodeWaves, filename);
     }
 
-    public void StoreEnemyInfo(int startId, int waveNumber, Type type, int order, int amount)
+    public void LoadFromFile(string filename)
+    {
+        _nodeWaves = MetaManager.ReadFromFile<Dictionary<int, NodeWaveInfo>>(filename);
+    }
+
+    public EnemyInfo GetEnemyInfo(int startId, int waveNumber, string typeName)
     {
         if (!_nodeWaves.ContainsKey(startId))
         {
@@ -83,11 +76,31 @@ public class WaveManager
             _nodeWaves[startId].Waves[waveNumber] = new(waveNumber);
         }
 
-        if (!_nodeWaves[startId].Waves[waveNumber].Enemies.ContainsKey(type))
+        if (!_nodeWaves[startId].Waves[waveNumber].Enemies.ContainsKey(typeName))
         {
-            _nodeWaves[startId].Waves[waveNumber].Enemies[type] = new(type, 0, 0);
+            _nodeWaves[startId].Waves[waveNumber].Enemies[typeName] = new(typeName, 0, 0);
         }
 
-        _nodeWaves[startId].Waves[waveNumber].Enemies[type] = new(type, order, amount);
+        return _nodeWaves[startId].Waves[waveNumber].Enemies[typeName];
+    }
+
+    public void StoreEnemyInfo(int startId, int waveNumber, string typeName, int order, int amount)
+    {
+        if (!_nodeWaves.ContainsKey(startId))
+        {
+            _nodeWaves[startId] = new(startId);
+        }
+
+        if (!_nodeWaves[startId].Waves.ContainsKey(waveNumber))
+        {
+            _nodeWaves[startId].Waves[waveNumber] = new(waveNumber);
+        }
+
+        if (!_nodeWaves[startId].Waves[waveNumber].Enemies.ContainsKey(typeName))
+        {
+            _nodeWaves[startId].Waves[waveNumber].Enemies[typeName] = new(typeName, 0, 0);
+        }
+
+        _nodeWaves[startId].Waves[waveNumber].Enemies[typeName] = new(typeName, order, amount);
     }
 }

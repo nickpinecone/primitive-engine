@@ -33,18 +33,18 @@ class NodeMetadata
 
 public static class MetaManager
 {
-    public static void SaveToFile<T>(List<T> metadata, string filename)
+    public static void SaveToFile<T>(T metadata, string filename)
     {
         var data = JsonSerializer.Serialize(metadata);
         var workDir = System.IO.Directory.GetCurrentDirectory();
         File.WriteAllText(workDir + "/Saves/" + filename + ".json", data);
     }
 
-    public static List<T> ReadFromFile<T>(string filename)
+    public static T ReadFromFile<T>(string filename)
     {
         var workDir = System.IO.Directory.GetCurrentDirectory();
         var data = File.ReadAllText(workDir + "/Saves/" + filename + ".json");
-        return JsonSerializer.Deserialize<List<T>>(data);
+        return JsonSerializer.Deserialize<T>(data);
     }
 
     public static GameObject ConstructObject(Type type, Vector2 position, float scale)
@@ -91,7 +91,7 @@ public static class MetaManager
     public static List<GameObject> LoadLevelEditor(string filename)
     {
         var gameObjects = new List<GameObject>();
-        var metadata = MetaManager.ReadFromFile<ObjectMetadata>(filename);
+        var metadata = MetaManager.ReadFromFile<List<ObjectMetadata>>(filename);
 
         foreach (var meta in metadata)
         {
@@ -141,7 +141,7 @@ public static class MetaManager
 
     public static void LoadWalkPath(string filename, WalkPath walkPath)
     {
-        var metadata = MetaManager.ReadFromFile<NodeMetadata>(filename);
+        var metadata = MetaManager.ReadFromFile<List<NodeMetadata>>(filename);
 
         // Initializing nodes
         Dictionary<int, Node> dict = new();

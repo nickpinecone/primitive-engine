@@ -45,6 +45,12 @@ class NumberInput : GameObject
         LocalScale = scale;
     }
 
+    public void Reset()
+    {
+        _value = 0;
+        Label.Text = _value.ToString();
+    }
+
     public override void HandleInput()
     {
         base.HandleInput();
