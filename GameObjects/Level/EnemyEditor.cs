@@ -16,12 +16,12 @@ class EnemyEditor : GameObject
     private Texture2D _panel;
     private WalkPath _walkPath;
 
-    private Dictionary<GridEnemyItem, Dictionary<int, (int order, int amount)>> _waves;
+    private Dictionary<GridEnemyItem, Dictionary<int, Dictionary<int, (int order, int amount)>>> _waves;
 
     private int _prevWave = 0;
     public InputForm WaveInput { get; }
 
-    public Node SelectedNode { get; private set; }
+    public int NodeId { get; private set; }
     public bool Hidden { get; private set; }
 
     public EnemyEditor(GameObject parent, WalkPath walkPath) : base(parent)
@@ -38,7 +38,7 @@ class EnemyEditor : GameObject
         _walkPath = walkPath;
         _waves = new();
 
-        SelectedNode = null;
+        NodeId = 0;
         Hidden = true;
 
         PopulateGrid();
@@ -46,19 +46,35 @@ class EnemyEditor : GameObject
         WaveInput.NumberInput.OnValueChange += HandleWaveChange;
     }
 
+
+    private void HandleShow()
+    {
+        foreach (var item in _grid.Items)
+        {
+            if (!_waves[item].ContainsKey(NodeId))
+            {
+                _waves[item][NodeId] = new();
+                _waves[item][NodeId][_prevWave] = (0, 0);
+            }
+
+            item.OrderInput.NumberInput.Value = _waves[item][NodeId][_prevWave].order;
+            item.AmountInput.NumberInput.Value = _waves[item][NodeId][_prevWave].amount;
+        }
+    }
+
     private void HandleWaveChange(object sender, int wave)
     {
         foreach (var item in _grid.Items)
         {
-            _waves[item][_prevWave] = (item.OrderInput.NumberInput.Value, item.AmountInput.NumberInput.Value);
+            _waves[item][NodeId][_prevWave] = (item.OrderInput.NumberInput.Value, item.AmountInput.NumberInput.Value);
 
-            if (!_waves[item].ContainsKey(wave))
+            if (!_waves[item][NodeId].ContainsKey(wave))
             {
-                _waves[item][wave] = (0, 0);
+                _waves[item][NodeId][wave] = (0, 0);
             }
 
-            item.OrderInput.NumberInput.Value = _waves[item][wave].order;
-            item.AmountInput.NumberInput.Value = _waves[item][wave].amount;
+            item.OrderInput.NumberInput.Value = _waves[item][NodeId][wave].order;
+            item.AmountInput.NumberInput.Value = _waves[item][NodeId][wave].amount;
         }
 
         _prevWave = wave;
@@ -66,26 +82,37 @@ class EnemyEditor : GameObject
 
     public void PopulateGrid()
     {
-        var basicOrk = new BasicOrk(null, _walkPath, SelectedNode, 1f);
+        var basicOrk = new BasicOrk(null, _walkPath, null, 1f);
 
         _grid.AddItem(basicOrk.Sprite, basicOrk.GetType());
 
         foreach (var item in _grid.Items)
         {
             _waves[item] = new();
-            _waves[item][_prevWave] = (0, 0);
+            _waves[item][NodeId] = new();
+            _waves[item][NodeId][_prevWave] = (0, 0);
         }
     }
 
-    public void Show(Node node)
+    public void Show(int nodeId)
     {
+        WaveInput.NumberInput.Value = 0;
+        _prevWave = 0;
+
         Hidden = false;
-        SelectedNode = node;
+        NodeId = nodeId;
+
+        HandleShow();
     }
 
     public override void HandleInput()
     {
         if (EditLevelState.EditState != EditState.EnemyEditor) return;
+
+        if (Input.IsKeyJustPressed(Keys.Z))
+        {
+            Hidden = true;
+        }
 
         base.HandleInput();
     }

@@ -28,6 +28,7 @@ class NodeMetadata
     public int ID { get; set; }
     public List<int> NextIDs { get; set; } = new();
     public NodeType Type { get; set; } = NodeType.Regular;
+    public int StartId { get; set; }
 }
 
 public static class MetaManager
@@ -119,6 +120,7 @@ public static class MetaManager
                     Y = tuple.node.Position.Y,
                     ID = countID,
                     Type = tuple.node.Type,
+                    StartId = tuple.node.StartId,
                 };
 
                 dict[tuple.node] = newMeta;
@@ -146,7 +148,7 @@ public static class MetaManager
         foreach (var meta in metadata)
         {
             var position = new Vector2(meta.X, meta.Y);
-            var node = new Node(position) { Type = meta.Type };
+            var node = new Node(position) { Type = meta.Type, StartId = meta.StartId };
             dict[meta.ID] = node;
 
             if (meta.Type == NodeType.Start)

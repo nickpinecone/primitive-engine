@@ -197,7 +197,7 @@ public class EditLevelState : GameState
         if (EditState == EditState.EnemyEditor)
         {
             node.Interact.IsSelected = false;
-            enemyEditor.Show(node.Node);
+            enemyEditor.Show(node.Node.StartId);
         }
     }
 }

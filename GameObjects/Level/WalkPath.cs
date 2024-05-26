@@ -15,11 +15,29 @@ public enum NodeType { Start, End, Regular };
 
 public class Node
 {
+    private static int StaticStartId = 0;
+
     private List<Node> _nextNodes;
+
+    public int StartId { get; set; }
 
     public Vector2 Position { get; set; }
     public Dictionary<Node, double> PathLengths { get; set; }
-    public NodeType Type { get; set; }
+
+    private NodeType _type = NodeType.Regular;
+    public NodeType Type
+    {
+        get { return _type; }
+        set
+        {
+            _type = value;
+            if (value == NodeType.Start)
+            {
+                StartId = StaticStartId;
+                StaticStartId += 1;
+            }
+        }
+    }
 
     public Node(Vector2 position)
     {
@@ -27,7 +45,6 @@ public class Node
 
         _nextNodes = new();
         PathLengths = new();
-        Type = NodeType.Regular;
     }
 
     public List<Node> GetNextNodes()

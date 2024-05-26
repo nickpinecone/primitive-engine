@@ -58,6 +58,8 @@ class PathNode : GameObject
 
     public void HandleClick(object sender, EventArgs args)
     {
+        if (EditLevelState.EditState == EditState.EnemyEditor) return;
+
         var nodeSender = (PathNode)sender;
         if (SelectedNode == nodeSender) return;
 
