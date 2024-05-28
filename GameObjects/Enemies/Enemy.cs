@@ -43,6 +43,7 @@ abstract public class Enemy : GameObject
 
         if (Health.Amount <= 0)
         {
+            QueueFree();
             OnDie?.Invoke(this, null);
         }
     }

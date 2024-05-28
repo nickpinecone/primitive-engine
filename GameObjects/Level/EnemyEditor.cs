@@ -35,7 +35,7 @@ class EnemyEditor : GameObject
         _grid = new GridEnemy(this, GameSettings.WindowSize, 7, 8);
         _grid.LocalPosition += new Vector2(0, WaveInput.Sprite.Size.Y);
         _walkPath = walkPath;
-        _waveManager = new WaveManager(_walkPath);
+        _waveManager = new WaveManager(this, _walkPath, true);
 
         NodeId = 0;
         Hidden = true;

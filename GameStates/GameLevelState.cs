@@ -12,16 +12,17 @@ namespace TowerDefense;
 public class GameLevelState : GameState
 {
     WalkPath walkPath = new();
+    WaveManager waveManager;
 
     public override void LoadContent(ContentManager contentManager)
     {
+        waveManager = new(null, walkPath);
+
         MetaManager.LoadWalkPath("walk_path", walkPath);
         walkPath.CalculateLengths();
         LoadLevel("level_editor");
 
-        var basicOrk = new BasicOrk(null, walkPath, walkPath.GetStartNodes()[0], 0.5f);
-
-        AddGameObject(basicOrk);
+        AddGameObject(waveManager);
     }
 
     public void LoadLevel(string filename)

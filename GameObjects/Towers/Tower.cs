@@ -17,6 +17,7 @@ abstract class Tower : GameObject
     protected TowerPlot _plot;
     protected ContextMenu _contextMenu;
 
+    public Timer AttackTimer { get; set; }
     public Sprite Sprite { get; set; }
     public CollisionShape Shape { get; set; }
     public Interact Interact { get; set; }
