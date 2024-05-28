@@ -56,6 +56,7 @@ abstract public class Enemy : GameObject
 
         if (toNode == null)
         {
+            QueueFree();
             OnReachBase?.Invoke(this, null);
             return;
         }

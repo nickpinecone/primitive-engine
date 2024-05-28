@@ -148,7 +148,8 @@ public static class MetaManager
         foreach (var meta in metadata)
         {
             var position = new Vector2(meta.X, meta.Y);
-            var node = new Node(position) { Type = meta.Type, StartId = meta.StartId };
+            var node = new Node(position) { Type = meta.Type };
+            node.StartId = meta.StartId;
             dict[meta.ID] = node;
 
             if (meta.Type == NodeType.Start)

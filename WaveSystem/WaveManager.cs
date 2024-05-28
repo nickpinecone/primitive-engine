@@ -112,11 +112,14 @@ public class WaveManager : GameObject
         foreach (var key in _nodeWaves.Keys)
         {
             var queue = _enemies[key];
-            var enemyInfo = queue.Dequeue();
+            if (queue.Count > 0)
+            {
+                var enemyInfo = queue.Dequeue();
 
-            // Create enemy
-            // Console.WriteLine(enemyInfo);
-            SpawnEnemy(enemyInfo, key);
+                // Create enemy
+                // Console.WriteLine(enemyInfo);
+                SpawnEnemy(enemyInfo, key);
+            }
         }
 
         if (_enemies.Values.All((queue) => queue.Count <= 0))
