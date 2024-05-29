@@ -113,10 +113,13 @@ public class WaveManager : GameObject
 
     private void SetMaxWave()
     {
-        MaxWave =
-            _nodeWaves.Values
-            .SelectMany((nodeWaveInfo) => nodeWaveInfo.Waves.Values)
-            .Max((waveInfo) => waveInfo.WaveNumber);
+        if (_nodeWaves.Count > 0)
+        {
+            MaxWave =
+                _nodeWaves.Values
+                .SelectMany((nodeWaveInfo) => nodeWaveInfo.Waves.Values)
+                .Max((waveInfo) => waveInfo.WaveNumber);
+        }
     }
 
     private void SpawnEnemy(EnemyInfo enemyInfo, int startId)
