@@ -22,6 +22,7 @@ class EnemyEditor : GameObject
 
     public int NodeId { get; private set; }
     public bool Hidden { get; private set; }
+    public WaveManager WaveManager { get { return _waveManager; } }
 
     public EnemyEditor(GameObject parent, WalkPath walkPath) : base(parent)
     {
@@ -35,7 +36,8 @@ class EnemyEditor : GameObject
         _grid = new GridEnemy(this, GameSettings.WindowSize, 7, 8);
         _grid.LocalPosition += new Vector2(0, WaveInput.Sprite.Size.Y);
         _walkPath = walkPath;
-        _waveManager = new WaveManager(this, _walkPath, true);
+        _waveManager = new WaveManager(this, _walkPath);
+        _waveManager.Initialize();
 
         NodeId = 0;
         Hidden = true;
@@ -102,15 +104,6 @@ class EnemyEditor : GameObject
         {
             HandleWaveChange(null, 0);
             Hidden = true;
-        }
-
-        if (Input.IsKeyJustPressed(Keys.Q))
-        {
-            _waveManager.SaveToFile("enemy_editor");
-        }
-        else if (Input.IsKeyJustPressed(Keys.R))
-        {
-            _waveManager.LoadFromFile("enemy_editor");
         }
 
         base.HandleInput();

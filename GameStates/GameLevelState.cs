@@ -11,15 +11,17 @@ namespace TowerDefense;
 
 public class GameLevelState : GameState
 {
-    WalkPath walkPath = new();
+    WalkPath walkPath;
     WaveManager waveManager;
 
     public override void LoadContent(ContentManager contentManager)
     {
+        walkPath = new();
         waveManager = new(null, walkPath);
 
-        MetaManager.LoadWalkPath("walk_path", walkPath);
-        walkPath.CalculateLengths();
+        waveManager.Initialize();
+        walkPath.Initialize();
+
         LoadLevel("level_editor");
 
         AddGameObject(waveManager);
@@ -27,6 +29,7 @@ public class GameLevelState : GameState
 
     public void LoadLevel(string filename)
     {
+        // TODO dont have to do this anymore
         foreach (var gameObject in MetaManager.LoadLevelEditor(filename))
         {
             AddGameObject(gameObject);
@@ -37,6 +40,7 @@ public class GameLevelState : GameState
         }
     }
 
+    // TODO this as well
     private void HandleTowerSelect(object sender, TowerType type)
     {
         var plot = (TowerPlot)sender;

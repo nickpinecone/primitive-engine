@@ -58,11 +58,13 @@ public class WaveManager : GameObject
     public int CurrentWave { get; private set; }
     public int CurrentOrder { get; private set; }
 
+    public Dictionary<int, NodeWaveInfo> NodeWaves { get { return _nodeWaves; } }
+
     public Timer WaveTimer { get; }
     public Timer OrderTimer { get; }
     public Timer AmountTimer { get; }
 
-    public WaveManager(GameObject parent, WalkPath walkPath, bool disabled = false) : base(parent)
+    public WaveManager(GameObject parent, WalkPath walkPath) : base(parent)
     {
         _walkPath = walkPath;
         _nodeWaves = new();
@@ -70,10 +72,6 @@ public class WaveManager : GameObject
 
         WaveTimer = new Timer(this, 10);
         WaveTimer.OnTimeout += HandleWaveTimeout;
-        if (!disabled)
-        {
-            WaveTimer.Restart();
-        }
 
         OrderTimer = new Timer(this, 5);
         OrderTimer.OnTimeout += HandleOrderTimeout;
@@ -82,12 +80,35 @@ public class WaveManager : GameObject
         AmountTimer.OnTimeout += HandleAmountTimeout;
 
         CurrentWave = -1;
+    }
 
-        if (!disabled)
+    public void Initialize()
+    {
+        _nodeWaves = MetaManager.LoadWaveManager("enemy_editor");
+
+        if (_nodeWaves == null)
         {
-            LoadFromFile("enemy_editor");
-            SetMaxWave();
+            _nodeWaves = new();
+            return;
         }
+
+        // Integriy check
+        foreach (var nodeId in _nodeWaves.Keys)
+        {
+            var node = _walkPath.GetStartById(nodeId);
+
+            if (node == null)
+            {
+                _nodeWaves.Remove(nodeId);
+            }
+        }
+
+        SetMaxWave();
+    }
+
+    public void Start()
+    {
+        WaveTimer.Restart();
     }
 
     private void SetMaxWave()
@@ -117,7 +138,6 @@ public class WaveManager : GameObject
                 var enemyInfo = queue.Dequeue();
 
                 // Create enemy
-                // Console.WriteLine(enemyInfo);
                 SpawnEnemy(enemyInfo, key);
             }
         }
@@ -175,16 +195,6 @@ public class WaveManager : GameObject
             OrderTimer.Restart();
             CurrentOrder = 0;
         }
-    }
-
-    public void SaveToFile(string filename)
-    {
-        MetaManager.SaveToFile(_nodeWaves, filename);
-    }
-
-    public void LoadFromFile(string filename)
-    {
-        _nodeWaves = MetaManager.ReadFromFile<Dictionary<int, NodeWaveInfo>>(filename);
     }
 
     public EnemyInfo GetEnemyInfo(int startId, int waveNumber, string typeName)

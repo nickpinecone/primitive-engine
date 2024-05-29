@@ -44,6 +44,12 @@ public static class MetaManager
     {
         var workDir = System.IO.Directory.GetCurrentDirectory();
         var data = File.ReadAllText(workDir + "/Saves/" + filename + ".json");
+
+        if (data == "")
+        {
+            return default(T);
+        }
+
         return JsonSerializer.Deserialize<T>(data);
     }
 
@@ -92,6 +98,11 @@ public static class MetaManager
     {
         var gameObjects = new List<GameObject>();
         var metadata = MetaManager.ReadFromFile<List<ObjectMetadata>>(filename);
+
+        if (metadata == null)
+        {
+            return gameObjects;
+        }
 
         foreach (var meta in metadata)
         {
@@ -143,6 +154,11 @@ public static class MetaManager
     {
         var metadata = MetaManager.ReadFromFile<List<NodeMetadata>>(filename);
 
+        if (metadata == null)
+        {
+            return;
+        }
+
         // Initializing nodes
         Dictionary<int, Node> dict = new();
         foreach (var meta in metadata)
@@ -168,4 +184,15 @@ public static class MetaManager
             }
         }
     }
+
+    public static void SaveWaveManager(string filename, Dictionary<int, NodeWaveInfo> data)
+    {
+        MetaManager.SaveToFile(data, filename);
+    }
+
+    public static Dictionary<int, NodeWaveInfo> LoadWaveManager(string filename)
+    {
+        return MetaManager.ReadFromFile<Dictionary<int, NodeWaveInfo>>(filename);
+    }
+
 }

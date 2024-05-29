@@ -36,9 +36,6 @@ public class EditLevelState : GameState
 
     public override void LoadContent(ContentManager contentManager)
     {
-        enemyEditor = new EnemyEditor(null, walkPath);
-        enemyEditor.ZIndex = 2;
-
         levelEditor = new LevelEditor(null);
         levelEditor.OnItemPlace += HandleItemPlace;
         levelEditor.ZIndex = 2;
@@ -48,11 +45,29 @@ public class EditLevelState : GameState
         editInfo.TextColor = Color.Black;
         editInfo.LocalPosition += editInfo.TextSize / 2f;
 
+        LoadEditors();
+
+        enemyEditor = new EnemyEditor(null, walkPath);
+        enemyEditor.ZIndex = 2;
+
         AddGameObject(enemyEditor);
         AddGameObject(levelEditor);
         AddGameObject(editInfo);
 
         UpdateWalkPathInfo();
+    }
+
+    private void LoadEditors()
+    {
+        foreach (var gameObject in MetaManager.LoadLevelEditor("level_editor"))
+        {
+            var sprite = ((ISaveable)gameObject).Sprite;
+            var placeable = new Placeable(gameObject.Parent, sprite, gameObject.GetType(), gameObject.WorldPosition, gameObject.Scale);
+            AddGameObject(placeable);
+        }
+
+        MetaManager.LoadWalkPath("walk_path", walkPath);
+        GeneratePathNodes();
     }
 
     private void HandleItemPlace(object sender, Placeable placeable)
@@ -93,12 +108,21 @@ public class EditLevelState : GameState
                 HandleLevelEditorInput();
                 break;
             case EditState.EnemyEditor:
+                HandleEnemyEditorInput();
                 break;
             default:
                 break;
         }
 
         base.HandleInput();
+    }
+
+    private void HandleEnemyEditorInput()
+    {
+        if (Input.IsKeyJustPressed(Keys.Q))
+        {
+            MetaManager.SaveWaveManager("enemy_editor", enemyEditor.WaveManager.NodeWaves);
+        }
     }
 
     public void HandleLevelEditorInput()
@@ -112,15 +136,6 @@ public class EditLevelState : GameState
                     .Select((gameObject) => (Placeable)gameObject)
                     .ToList()
             );
-        }
-        if (Input.IsKeyJustPressed(Keys.R))
-        {
-            foreach (var gameObject in MetaManager.LoadLevelEditor("level_editor"))
-            {
-                var sprite = ((ISaveable)gameObject).Sprite;
-                var placeable = new Placeable(gameObject.Parent, sprite, gameObject.GetType(), gameObject.WorldPosition, gameObject.Scale);
-                AddGameObject(placeable);
-            }
         }
     }
 
@@ -152,11 +167,6 @@ public class EditLevelState : GameState
         if (Input.IsKeyJustPressed(Keys.Q))
         {
             MetaManager.SaveWalkPath("walk_path", walkPath);
-        }
-        if (Input.IsKeyJustPressed(Keys.R))
-        {
-            MetaManager.LoadWalkPath("walk_path", walkPath);
-            GeneratePathNodes();
         }
     }
 

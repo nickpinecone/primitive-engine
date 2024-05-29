@@ -125,6 +125,11 @@ class PathNode : GameObject
             node._nextNodes.Remove(this);
         }
 
+        if (Node.Type == NodeType.Start)
+        {
+            Node.RemoveStart();
+        }
+
         SelectedNode = null;
     }
 

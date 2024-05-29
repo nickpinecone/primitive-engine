@@ -1,29 +1,4 @@
 {
-    "1": {
-        "StartId": 1,
-        "Waves": {
-            "0": {
-                "WaveNumber": 0,
-                "Enemies": {
-                    "BasicOrk": {
-                        "TypeName": "BasicOrk",
-                        "Amount": 5,
-                        "Order": 0
-                    }
-                }
-            },
-            "1": {
-                "WaveNumber": 1,
-                "Enemies": {
-                    "BasicOrk": {
-                        "TypeName": "BasicOrk",
-                        "Amount": 5,
-                        "Order": 0
-                    }
-                }
-            }
-        }
-    },
     "2": {
         "StartId": 2,
         "Waves": {
@@ -42,7 +17,32 @@
                 "Enemies": {
                     "BasicOrk": {
                         "TypeName": "BasicOrk",
-                        "Amount": 2,
+                        "Amount": 5,
+                        "Order": 0
+                    }
+                }
+            }
+        }
+    },
+    "3": {
+        "StartId": 3,
+        "Waves": {
+            "0": {
+                "WaveNumber": 0,
+                "Enemies": {
+                    "BasicOrk": {
+                        "TypeName": "BasicOrk",
+                        "Amount": 1,
+                        "Order": 0
+                    }
+                }
+            },
+            "2": {
+                "WaveNumber": 2,
+                "Enemies": {
+                    "BasicOrk": {
+                        "TypeName": "BasicOrk",
+                        "Amount": 5,
                         "Order": 0
                     }
                 }

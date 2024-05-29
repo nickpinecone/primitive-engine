@@ -15,11 +15,25 @@ public enum NodeType { Start, End, Regular };
 
 public class Node
 {
+    public event EventHandler OnStartRemove;
+
     private static int StaticStartId = 0;
 
     private List<Node> _nextNodes;
 
-    public int StartId { get; set; }
+    private int _startId;
+    public int StartId
+    {
+        get { return _startId; }
+        set
+        {
+            _startId = value;
+            if (value > StaticStartId)
+            {
+                StaticStartId = value;
+            }
+        }
+    }
 
     public Vector2 Position { get; set; }
     public Dictionary<Node, double> PathLengths { get; set; }
@@ -31,10 +45,10 @@ public class Node
         set
         {
             _type = value;
-            if (value == NodeType.Start)
+            if (value == NodeType.Start && StartId <= 0)
             {
-                StartId = StaticStartId;
                 StaticStartId += 1;
+                StartId = StaticStartId;
             }
         }
     }
@@ -75,6 +89,11 @@ public class Node
     {
         _nextNodes.Remove(node);
     }
+
+    public void RemoveStart()
+    {
+        OnStartRemove?.Invoke(this, null);
+    }
 }
 
 public class WalkPath
@@ -86,6 +105,12 @@ public class WalkPath
     {
         _enemyNodes = new();
         _startNodes = new();
+    }
+
+    public void Initialize()
+    {
+        MetaManager.LoadWalkPath("walk_path", this);
+        CalculateLengths();
     }
 
     public IEnumerable<(Node node, Node from)> Enumerate()
@@ -149,7 +174,14 @@ public class WalkPath
 
     public void AddStartNode(Node node)
     {
+        node.OnStartRemove += (obj, _) => RemoveStartNode((Node)obj);
+
         _startNodes.Add(node);
+    }
+
+    public void RemoveStartNode(Node node)
+    {
+        _startNodes.Remove(node);
     }
 
     public List<Node> GetNodesInRadius(Vector2 position, int radius)
