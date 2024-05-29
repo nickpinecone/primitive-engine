@@ -11,6 +11,9 @@ public class Timer : GameObject
 
     public double WaitTime { get; set; }
     public double CurrentTime { get; private set; }
+
+    public double TimeLeft { get { return WaitTime - CurrentTime; } }
+
     public bool OneShot { get; set; }
     public bool Paused { get; set; }
     public bool Done { get; private set; }

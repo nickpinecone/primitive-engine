@@ -14,7 +14,7 @@ public class Area : GameObject
 
     public Area(GameObject parent, int radius) : base(parent)
     {
-        var texture = DebugTexture.GenerateCircleTexture(radius);
+        var texture = DebugTexture.GenerateCircleTexture(radius, Color.White);
         var source = new Rectangle(0, 0, radius, radius);
 
         _debugSprite = new Sprite(this, texture, source)

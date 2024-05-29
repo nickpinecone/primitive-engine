@@ -50,6 +50,9 @@ public class NodeWaveInfo
 
 public class WaveManager : GameObject
 {
+    public event EventHandler OnNextWave;
+    public event EventHandler<int> OnWaveUpdate;
+
     private WalkPath _walkPath;
     private Dictionary<int, NodeWaveInfo> _nodeWaves;
     private Dictionary<int, Queue<EnemyInfo>> _enemies;
@@ -106,9 +109,14 @@ public class WaveManager : GameObject
         SetMaxWave();
     }
 
-    public void Start()
+    public void SkipWait()
     {
-        WaveTimer.Restart();
+        if (!WaveTimer.Done)
+        {
+            WaveTimer.Paused = true;
+            HandleWaveTimeout(null, null);
+            // TODO add gold based on amount of time skipped
+        }
     }
 
     private void SetMaxWave()
@@ -179,6 +187,7 @@ public class WaveManager : GameObject
         {
             // Done with current wave
             WaveTimer.Restart();
+            OnNextWave?.Invoke(this, null);
         }
         else
         {
@@ -189,6 +198,7 @@ public class WaveManager : GameObject
     private void HandleWaveTimeout(object sender, EventArgs args)
     {
         CurrentWave += 1;
+
         if (CurrentWave > MaxWave)
         {
             // Completed level
@@ -198,6 +208,8 @@ public class WaveManager : GameObject
             OrderTimer.Restart();
             CurrentOrder = 0;
         }
+
+        OnWaveUpdate?.Invoke(this, CurrentWave);
     }
 
     public EnemyInfo GetEnemyInfo(int startId, int waveNumber, string typeName)

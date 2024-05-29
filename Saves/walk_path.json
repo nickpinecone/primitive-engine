@@ -1,1 +1,100 @@
-[]
+[
+    {
+        "X": 7,
+        "Y": 330,
+        "ID": 0,
+        "NextIDs": [
+            1
+        ],
+        "Type": 0,
+        "StartId": 1
+    },
+    {
+        "X": 93,
+        "Y": 327,
+        "ID": 1,
+        "NextIDs": [
+            2
+        ],
+        "Type": 2,
+        "StartId": 0
+    },
+    {
+        "X": 199,
+        "Y": 327,
+        "ID": 2,
+        "NextIDs": [
+            3
+        ],
+        "Type": 2,
+        "StartId": 0
+    },
+    {
+        "X": 313,
+        "Y": 331,
+        "ID": 3,
+        "NextIDs": [
+            4
+        ],
+        "Type": 2,
+        "StartId": 0
+    },
+    {
+        "X": 467,
+        "Y": 328,
+        "ID": 4,
+        "NextIDs": [
+            5
+        ],
+        "Type": 2,
+        "StartId": 0
+    },
+    {
+        "X": 592,
+        "Y": 336,
+        "ID": 5,
+        "NextIDs": [
+            6
+        ],
+        "Type": 2,
+        "StartId": 0
+    },
+    {
+        "X": 742,
+        "Y": 330,
+        "ID": 6,
+        "NextIDs": [
+            7
+        ],
+        "Type": 2,
+        "StartId": 0
+    },
+    {
+        "X": 936,
+        "Y": 341,
+        "ID": 7,
+        "NextIDs": [
+            8
+        ],
+        "Type": 2,
+        "StartId": 0
+    },
+    {
+        "X": 1107,
+        "Y": 334,
+        "ID": 8,
+        "NextIDs": [
+            9
+        ],
+        "Type": 2,
+        "StartId": 0
+    },
+    {
+        "X": 1259,
+        "Y": 328,
+        "ID": 9,
+        "NextIDs": [],
+        "Type": 1,
+        "StartId": 0
+    }
+]

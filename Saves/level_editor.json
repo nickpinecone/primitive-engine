@@ -1,1 +1,68 @@
-[]
+[
+    {
+        "TypeName": "PathHorizontal",
+        "X": 60,
+        "Y": 335,
+        "Scale": 0.76
+    },
+    {
+        "TypeName": "PathHorizontal",
+        "X": 180,
+        "Y": 335,
+        "Scale": 0.76
+    },
+    {
+        "TypeName": "PathHorizontal",
+        "X": 300,
+        "Y": 335,
+        "Scale": 0.76
+    },
+    {
+        "TypeName": "PathHorizontal",
+        "X": 420,
+        "Y": 335,
+        "Scale": 0.76
+    },
+    {
+        "TypeName": "PathHorizontal",
+        "X": 540,
+        "Y": 335,
+        "Scale": 0.76
+    },
+    {
+        "TypeName": "PathHorizontal",
+        "X": 660,
+        "Y": 335,
+        "Scale": 0.76
+    },
+    {
+        "TypeName": "PathHorizontal",
+        "X": 780,
+        "Y": 335,
+        "Scale": 0.76
+    },
+    {
+        "TypeName": "PathHorizontal",
+        "X": 900,
+        "Y": 335,
+        "Scale": 0.76
+    },
+    {
+        "TypeName": "PathHorizontal",
+        "X": 1020,
+        "Y": 335,
+        "Scale": 0.76
+    },
+    {
+        "TypeName": "PathHorizontal",
+        "X": 1140,
+        "Y": 335,
+        "Scale": 0.76
+    },
+    {
+        "TypeName": "PathHorizontal",
+        "X": 1260,
+        "Y": 335,
+        "Scale": 0.76
+    }
+]

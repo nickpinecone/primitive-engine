@@ -31,7 +31,7 @@ public static class DebugTexture
         return rectTexture;
     }
 
-    static public Texture2D GenerateCircleTexture(int diameter)
+    static public Texture2D GenerateCircleTexture(int diameter, Color color)
     {
         Texture2D texture = new Texture2D(graphicsDevice.GraphicsDevice, diameter, diameter);
         Color[] colorData = new Color[diameter * diameter];
@@ -46,7 +46,7 @@ public static class DebugTexture
                 Vector2 pos = new Vector2(x - radius, y - radius);
                 if (pos.Length() <= radius)
                 {
-                    colorData[index] = Color.White;
+                    colorData[index] = color;
                 }
                 else
                 {
