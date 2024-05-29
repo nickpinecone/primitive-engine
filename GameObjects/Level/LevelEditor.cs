@@ -27,7 +27,6 @@ class LevelEditor : GameObject
         _selectedItem = null;
         _panel = DebugTexture.GenerateRectTexture((int)GameSettings.WindowSize.X, (int)GameSettings.WindowSize.Y, Color.White);
         _grid = new Grid(this, GameSettings.WindowSize, 7, 8);
-        _grid.OnItemSelect += HandleItemSelect;
 
         Hidden = true;
         SnapAmount = 5;
@@ -44,7 +43,11 @@ class LevelEditor : GameObject
             var sprite = ((ISaveable)saveable).Sprite;
             if (sprite != null)
             {
-                _grid.AddItem(sprite, type);
+                var item = new GridLevelItem(null, sprite, type, Vector2.Zero, 1f);
+
+                item.Interact.OnSelect += (_, _) => HandleItemSelect(item, item.Placeable);
+
+                _grid.AddItem(item, sprite.Size);
             }
         }
     }

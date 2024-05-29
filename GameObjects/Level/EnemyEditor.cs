@@ -12,7 +12,7 @@ using TowerDefense;
 
 class EnemyEditor : GameObject
 {
-    private GridEnemy _grid;
+    private Grid _grid;
     private Texture2D _panel;
     private WalkPath _walkPath;
     private WaveManager _waveManager;
@@ -33,7 +33,7 @@ class EnemyEditor : GameObject
         );
 
         _panel = DebugTexture.GenerateRectTexture((int)GameSettings.WindowSize.X, (int)GameSettings.WindowSize.Y, Color.White);
-        _grid = new GridEnemy(this, GameSettings.WindowSize, 7, 8);
+        _grid = new Grid(this, GameSettings.WindowSize, 7, 8);
         _grid.LocalPosition += new Vector2(0, WaveInput.Sprite.Size.Y);
         _walkPath = walkPath;
         _waveManager = new WaveManager(this, _walkPath);
@@ -59,7 +59,9 @@ class EnemyEditor : GameObject
     {
         var basicOrk = new BasicOrk(null, _walkPath, null, 1f);
 
-        _grid.AddItem(basicOrk.Sprite, basicOrk.GetType());
+        var item = new GridEnemyItem(null, basicOrk.Sprite, basicOrk.GetType(), Vector2.Zero, 1f);
+
+        _grid.AddItem(item, item.Sprite.Size);
     }
 
     public void Show(int nodeId)
@@ -75,8 +77,10 @@ class EnemyEditor : GameObject
 
     private void LoadFromManager()
     {
-        foreach (var item in _grid.Items)
+        foreach (var itemObj in _grid.Items)
         {
+            var item = (GridEnemyItem)itemObj;
+
             var info = _waveManager.GetEnemyInfo(NodeId, WaveInput.NumberInput.Value, item.Type.FullName);
 
             item.OrderInput.NumberInput.Value = info.Order;
@@ -86,8 +90,10 @@ class EnemyEditor : GameObject
 
     private void StoreToManager()
     {
-        foreach (var item in _grid.Items)
+        foreach (var itemObj in _grid.Items)
         {
+            var item = (GridEnemyItem)itemObj;
+
             _waveManager.StoreEnemyInfo(
                 NodeId, _prevWave, item.Type.FullName,
                 item.OrderInput.NumberInput.Value,

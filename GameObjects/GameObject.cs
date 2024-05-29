@@ -14,7 +14,17 @@ public abstract class GameObject
 
     private List<GameObject> _children;
 
-    public GameObject Parent { get; set; }
+    public GameObject _parent = null;
+    public GameObject Parent
+    {
+        get { return _parent; }
+        set
+        {
+            _parent?.RemoveChild(this);
+            _parent = value;
+            _parent?.AddChild(this);
+        }
+    }
 
     public Vector2 LocalPosition { get; set; }
     public Vector2 WorldPosition
@@ -54,8 +64,6 @@ public abstract class GameObject
         ZIndex = 0;
         DrawOrder = 0;
         Parent = parent;
-
-        Parent?.AddChild(this);
     }
 
     protected void QueueFree()
@@ -71,6 +79,11 @@ public abstract class GameObject
     protected void AddChild(GameObject child)
     {
         _children.Add(child);
+    }
+
+    protected void RemoveChild(GameObject child)
+    {
+        _children.Remove(child);
     }
 
     public virtual void HandleInput()

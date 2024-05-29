@@ -8,17 +8,17 @@ using Microsoft.Xna.Framework.Input;
 
 using TowerDefense;
 
-class GridItem : GameObject
+class GridLevelItem : GameObject
 {
-    public event EventHandler<Placeable> OnSelect;
-
     private Placeable _placeable;
+
+    public Placeable Placeable { get { return _placeable; } }
 
     public Sprite Sprite { get; }
     public CollisionShape Shape { get; }
     public Interact Interact { get; }
 
-    public GridItem(GameObject parent, Sprite sprite, Type type, Vector2 position, float scale) : base(parent)
+    public GridLevelItem(GameObject parent, Sprite sprite, Type type, Vector2 position, float scale) : base(parent)
     {
         _placeable = new Placeable(null, sprite, type, Vector2.Zero, 1f);
 
@@ -26,23 +26,40 @@ class GridItem : GameObject
         Shape = new CollisionShape(this, sprite.Size);
         Interact = new Interact(this, Sprite, Shape);
 
-        Interact.OnSelect += HandleSelect;
-
         LocalPosition = position;
         LocalScale = scale;
     }
+}
 
-    public void HandleSelect(object sender, EventArgs args)
+class GridEnemyItem : GameObject
+{
+    public Sprite Sprite { get; }
+    public Type Type { get; set; }
+
+    public InputForm OrderInput { get; }
+    public InputForm AmountInput { get; }
+
+    public GridEnemyItem(GameObject parent, Sprite sprite, Type type, Vector2 position, float scale) : base(parent)
     {
-        OnSelect?.Invoke(this, _placeable);
+        Sprite = new Sprite(this, sprite.Texture, sprite.SourceRectangle, 2);
+
+        OrderInput = new InputForm(this, "Order", Vector2.Zero, 1f);
+        AmountInput = new InputForm(this, "Amount", Vector2.Zero, 1f);
+
+        AmountInput.LocalPosition = new Vector2(0, sprite.SourceRectangle.Height * Scale / 2f - AmountInput.Sprite.Size.Y * Scale);
+        OrderInput.LocalPosition = AmountInput.LocalPosition - new Vector2(0, OrderInput.Sprite.Size.Y * Scale);
+
+        Type = type;
+        LocalPosition = position;
+        LocalScale = scale;
     }
 }
 
 class Grid : GameObject
 {
-    public event EventHandler<Placeable> OnItemSelect;
+    private List<GameObject> _items;
 
-    private List<GridItem> _items;
+    public List<GameObject> Items { get { return _items; } }
 
     public Vector2 Size { get; protected set; }
     public int ColumnAmount { get; protected set; }
@@ -70,21 +87,18 @@ class Grid : GameObject
         return position;
     }
 
-    public void AddItem(Sprite sprite, Type type)
+    public void AddItem(GameObject gameObject, Vector2 size)
     {
-        var wideSide = Math.Max(sprite.SourceRectangle.Width, sprite.SourceRectangle.Height);
+        var wideSide = Math.Max(size.X, size.Y);
 
         var fraction = 1 + Gap / SizePerItem;
 
         var scale = SizePerItem / (float)wideSide / fraction;
-        var gridItem = new GridItem(this, sprite, type, GetPosition(), scale);
-        gridItem.OnSelect += HandleItemSelect;
 
-        _items.Add(gridItem);
-    }
+        gameObject.Parent = this;
+        gameObject.LocalScale = scale;
+        gameObject.LocalPosition = GetPosition();
 
-    public void HandleItemSelect(object sender, Placeable placeable)
-    {
-        OnItemSelect?.Invoke(this, placeable);
+        _items.Add(gameObject);
     }
 }
