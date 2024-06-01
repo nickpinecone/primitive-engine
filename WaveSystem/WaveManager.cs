@@ -95,7 +95,11 @@ public class WaveManager : GameObject
             return;
         }
 
-        // Integriy check
+        SetMaxWave();
+    }
+
+    public void IntegrityCheck()
+    {
         foreach (var nodeId in _nodeWaves.Keys)
         {
             var node = _walkPath.GetStartById(nodeId);
@@ -105,8 +109,6 @@ public class WaveManager : GameObject
                 _nodeWaves.Remove(nodeId);
             }
         }
-
-        SetMaxWave();
     }
 
     public void SkipWait()

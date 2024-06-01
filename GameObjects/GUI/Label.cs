@@ -26,6 +26,13 @@ class Label : GameObject
     public SpriteFont Font { get; protected set; }
     public Vector2 TextSize { get; protected set; }
     public Color TextColor { get; set; }
+    public Vector2 Size
+    {
+        get
+        {
+            return Font.MeasureString(_text);
+        }
+    }
 
     public Label(GameObject parent, Vector2 position, float scale, string text, SpriteFont font = null) : base(parent)
     {

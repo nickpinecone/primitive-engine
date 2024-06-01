@@ -167,6 +167,8 @@ class PathNode : GameObject
         if (FollowMouse && Input.IsMouseJustPressed(MouseButton.Left))
         {
             FollowMouse = false;
+            Interact.IsSelected = false;
+            SelectedNode = null;
         }
 
         if (SelectedNode != null && Input.IsKeyJustPressed(Keys.X))

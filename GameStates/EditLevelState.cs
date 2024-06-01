@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
@@ -16,22 +17,24 @@ public class EditLevelState : GameState
 {
     public static EditState EditState = EditState.WalkPath;
 
-    Label editInfo;
+    Button editStateButton;
+    Button saveButton;
+
     WalkPath walkPath;
     LevelEditor levelEditor;
     EnemyEditor enemyEditor;
 
-    public void UpdateWalkPathInfo()
+    public void UpdateEditStateInfo()
     {
-        var text = "Edit Info: " + EditState switch
+        var text = "Edit: " + EditState switch
         {
-            EditState.WalkPath => "Walk Path",
-            EditState.LevelEditor => "Level Editor",
-            EditState.EnemyEditor => "Enemy Editor",
+            EditState.WalkPath => "Path",
+            EditState.LevelEditor => "Level",
+            EditState.EnemyEditor => "Enemies",
             _ => ""
         };
-        editInfo.Text = text;
-        editInfo.LocalPosition = editInfo.TextSize / 2f;
+        editStateButton.Label.Text = text;
+        Docker.DockTopLeft(editStateButton, editStateButton.Sprite.Size);
     }
 
     public override void LoadContent(ContentManager contentManager)
@@ -41,9 +44,6 @@ public class EditLevelState : GameState
         levelEditor.ZIndex = 2;
 
         walkPath = new();
-        editInfo = new Label(null, Vector2.Zero, 0.5f, "");
-        editInfo.TextColor = Color.Black;
-        editInfo.LocalPosition += editInfo.TextSize / 2f;
 
         LoadEditors();
 
@@ -52,9 +52,22 @@ public class EditLevelState : GameState
 
         AddGameObject(enemyEditor);
         AddGameObject(levelEditor);
-        AddGameObject(editInfo);
 
-        UpdateWalkPathInfo();
+        editStateButton = new Button(null, "", Vector2.Zero, 0.6f);
+        editStateButton.Interact.OnClick += (_, _) => NextEditState();
+        AddGameObject(editStateButton);
+        UpdateEditStateInfo();
+
+        saveButton = new Button(null, "Save", Vector2.Zero, editStateButton.Scale);
+        saveButton.Interact.OnClick += (_, _) => SaveEditors();
+        Docker.DockToRight(saveButton, saveButton.Sprite.Size, editStateButton, editStateButton.Sprite.Size);
+        AddGameObject(saveButton);
+    }
+
+    private void NextEditState()
+    {
+        EditState = (EditState)((int)(EditState + 1) % 3);
+        UpdateEditStateInfo();
     }
 
     private void LoadEditors()
@@ -63,11 +76,29 @@ public class EditLevelState : GameState
         {
             var sprite = ((ISaveable)gameObject).Sprite;
             var placeable = new Placeable(gameObject.Parent, sprite, gameObject.GetType(), gameObject.WorldPosition, gameObject.Scale);
+            placeable.LocalRotation = gameObject.Rotation;
             AddGameObject(placeable);
         }
 
         MetaManager.LoadWalkPath("walk_path", walkPath);
         GeneratePathNodes();
+    }
+
+    private void SaveEditors()
+    {
+        enemyEditor.WaveManager.IntegrityCheck();
+
+        MetaManager.SaveWalkPath("walk_path", walkPath);
+
+        MetaManager.SaveWaveManager("enemy_editor", enemyEditor.WaveManager.NodeWaves);
+
+        MetaManager.SaveLevelEditor(
+            "level_editor",
+            _gameObjects
+                .Where((gameObject) => gameObject is Placeable)
+                .Select((gameObject) => (Placeable)gameObject)
+                .ToList()
+        );
     }
 
     private void HandleItemPlace(object sender, Placeable placeable)
@@ -84,6 +115,15 @@ public class EditLevelState : GameState
 
     public override void HandleInput()
     {
+        if (!enemyEditor.Hidden || !levelEditor.Hidden)
+        {
+            enemyEditor.HandleInput();
+            levelEditor.HandleInput();
+            // Super dumb, but have to do that because base handle does that
+            Input.Update();
+            return;
+        }
+
         var keyState = Keyboard.GetState();
         var mouseState = Mouse.GetState();
 
@@ -92,11 +132,14 @@ public class EditLevelState : GameState
             SwitchState(new WorldMapState());
         }
 
-        if (Input.IsKeyJustPressed(Keys.W))
+        else if (Input.IsKeyJustPressed(Keys.W))
         {
-            EditState = (EditState)((int)(EditState + 1) % 3);
+            NextEditState();
+        }
 
-            UpdateWalkPathInfo();
+        else if (Input.IsKeyJustPressed(Keys.Q))
+        {
+            SaveEditors();
         }
 
         switch (EditState)
@@ -119,24 +162,10 @@ public class EditLevelState : GameState
 
     private void HandleEnemyEditorInput()
     {
-        if (Input.IsKeyJustPressed(Keys.Q))
-        {
-            MetaManager.SaveWaveManager("enemy_editor", enemyEditor.WaveManager.NodeWaves);
-        }
     }
 
     public void HandleLevelEditorInput()
     {
-        if (Input.IsKeyJustPressed(Keys.Q))
-        {
-            MetaManager.SaveLevelEditor(
-                "level_editor",
-                _gameObjects
-                    .Where((gameObject) => gameObject is Placeable)
-                    .Select((gameObject) => (Placeable)gameObject)
-                    .ToList()
-            );
-        }
     }
 
     public void HandleWalkPathInput(MouseState mouseState, KeyboardState keyState)
@@ -162,11 +191,6 @@ public class EditLevelState : GameState
                 pathNode.Interact.OnDoubleSelect += (_, _) => HandleStartNodeSelect(pathNode, null);
             }
             AddGameObject(pathNode);
-        }
-
-        if (Input.IsKeyJustPressed(Keys.Q))
-        {
-            MetaManager.SaveWalkPath("walk_path", walkPath);
         }
     }
 

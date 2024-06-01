@@ -10,9 +10,29 @@ public class WorldMapState : GameState
 {
     public override void LoadContent(ContentManager contentManager)
     {
-        var levelPoint = new LevelPoint(null, new Vector2(100, 100), 1f, null);
-        levelPoint.OnLevelSelect += HandleLevelSelect;
+        var creatorButton = new Button(
+            null,
+            "Creator: " + (GameSettings.CreatorMode ? "On" : "Off"),
+            Vector2.Zero, 0.6f
+        );
+        creatorButton.Interact.OnClick += (_, _) =>
+        {
+            GameSettings.CreatorMode = !GameSettings.CreatorMode;
+            creatorButton.Label.Text = "Creator: " + (GameSettings.CreatorMode ? "On" : "Off");
+        };
+        Docker.DockTopLeft(creatorButton, creatorButton.Sprite.Size);
+        AddGameObject(creatorButton);
 
+        var closeButton = new Button(null, "Main Menu", new Vector2(GameSettings.WindowWidth, 0), 0.6f);
+        closeButton.Interact.OnClick += (_, _) =>
+        {
+            SwitchState(new MainMenuState());
+        };
+        Docker.DockTopRight(closeButton, closeButton.Sprite.Size);
+        AddGameObject(closeButton);
+
+        var levelPoint = new LevelPoint(null, new Vector2(100, 300), 1f, null);
+        levelPoint.OnLevelSelect += HandleLevelSelect;
         AddGameObject(levelPoint);
     }
 

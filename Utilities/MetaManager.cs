@@ -19,6 +19,7 @@ class ObjectMetadata
     public float X { get; set; }
     public float Y { get; set; }
     public float Scale { get; set; }
+    public float Rotation { get; set; }
 }
 
 class NodeMetadata
@@ -45,7 +46,7 @@ public static class MetaManager
         var workDir = System.IO.Directory.GetCurrentDirectory();
         var data = File.ReadAllText(workDir + "/Saves/" + filename + ".json");
 
-        if (data == "")
+        if (data == "" || data == "[]" || data == "{}")
         {
             return default(T);
         }
@@ -86,6 +87,7 @@ public static class MetaManager
                 X = placeable.WorldPosition.X,
                 Y = placeable.WorldPosition.Y,
                 Scale = placeable.Scale,
+                Rotation = placeable.Rotation,
             };
 
             metadata.Add(meta);
@@ -110,6 +112,7 @@ public static class MetaManager
             var position = new Vector2(meta.X, meta.Y);
 
             var gameObject = MetaManager.ConstructObject(type, position, meta.Scale);
+            gameObject.LocalRotation = meta.Rotation;
             gameObjects.Add(gameObject);
         }
 

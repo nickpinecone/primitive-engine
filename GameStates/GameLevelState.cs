@@ -15,9 +15,13 @@ public class GameLevelState : GameState
     WalkPath walkPath;
     WaveManager waveManager;
     List<Button> skipButtons;
+    Label waveNumberLabel;
 
     public override void LoadContent(ContentManager contentManager)
     {
+        waveNumberLabel = new Label(null, Vector2.Zero, 1f, "Wave: ");
+        waveNumberLabel.TextColor = Color.Black;
+
         skipButtons = new();
         walkPath = new();
         waveManager = new(null, walkPath);
@@ -32,7 +36,7 @@ public class GameLevelState : GameState
         {
             var source = new Rectangle(0, 0, 60, 60);
             var texture = DebugTexture.GenerateCircleTexture(source.Width, Color.Gray);
-            var skipWaveTime = new Button(null, "0", node.Position, 1f, texture, source, Rectangle.Empty, null);
+            var skipWaveTime = new Button(null, "0", node.Position + new Vector2(source.Width / 3f, 0), 1f, texture, source, Rectangle.Empty, null);
             skipWaveTime.Interact.OnClick += HandleSkipWave;
 
             skipButtons.Add(skipWaveTime);
@@ -41,11 +45,21 @@ public class GameLevelState : GameState
 
         LoadLevel("level_editor");
 
+        AddGameObject(waveNumberLabel);
         AddGameObject(waveManager);
+        UpdateWaveLabel(0);
+    }
+
+    private void UpdateWaveLabel(int waveNumber)
+    {
+        waveNumberLabel.Text = $"Wave: {waveNumber} / {waveManager.MaxWave}";
+        Docker.DockTopLeft(waveNumberLabel, waveNumberLabel.Size);
     }
 
     private void HandleWaveUpdate(object sender, int waveNumber)
     {
+        UpdateWaveLabel(waveNumber);
+
         foreach (var button in skipButtons)
         {
             button.Sprite.Hidden = true;

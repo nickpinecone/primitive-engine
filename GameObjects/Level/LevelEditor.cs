@@ -18,6 +18,8 @@ class LevelEditor : GameObject
     private Placeable _selectedItem;
     private Grid _grid;
     private Texture2D _panel;
+    private Button _closeButton;
+    private Button _showButton;
 
     public bool Hidden { get; set; }
     public int SnapAmount { get; set; }
@@ -27,6 +29,14 @@ class LevelEditor : GameObject
         _selectedItem = null;
         _panel = DebugTexture.GenerateRectTexture((int)GameSettings.WindowSize.X, (int)GameSettings.WindowSize.Y, Color.White);
         _grid = new Grid(this, GameSettings.WindowSize, 7, 8);
+        _closeButton = new Button(this, "Close", Vector2.Zero, 0.6f);
+        _closeButton.Interact.OnClick += (_, _) => { Hidden = true; };
+        _grid.LocalPosition += new Vector2(0, _closeButton.Shape.WorldRectangle.Height);
+        Docker.DockTopRight(_closeButton, _closeButton.Sprite.Size);
+
+        _showButton = new Button(null, "Show Items", Vector2.Zero, 0.6f);
+        _showButton.Interact.OnClick += (_, _) => { Hidden = false; };
+        Docker.DockTopRight(_showButton, _showButton.Sprite.Size);
 
         Hidden = true;
         SnapAmount = 5;
@@ -79,6 +89,11 @@ class LevelEditor : GameObject
 
         if (Hidden)
         {
+            if (EditLevelState.EditState == EditState.LevelEditor)
+            {
+                _showButton.HandleInput();
+            }
+
             if (_selectedItem != null)
             {
                 _selectedItem.HandleInput();
@@ -115,6 +130,10 @@ class LevelEditor : GameObject
     {
         if (Hidden)
         {
+            if (EditLevelState.EditState == EditState.LevelEditor)
+            {
+                _showButton.Draw(spriteBatch);
+            }
             _selectedItem?.Draw(spriteBatch);
         }
         else

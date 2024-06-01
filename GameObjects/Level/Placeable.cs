@@ -50,6 +50,11 @@ public class Placeable : GameObject
                 LocalScale += Input.GetWheelValue() / 1000f;
                 LocalScale = Math.Clamp(Scale, 0.1f, 10f);
             }
+
+            if (keyState.IsKeyDown(Keys.LeftControl))
+            {
+                LocalRotation += MathHelper.ToRadians(Input.GetWheelValue() / 120f * 5);
+            }
         }
 
         if (FollowMouse && Input.IsMouseJustPressed(MouseButton.Left))
@@ -72,6 +77,8 @@ public class Placeable : GameObject
 
     public Placeable Clone()
     {
-        return new Placeable(Parent, Sprite, Type, WorldPosition, Scale);
+        var placeable = new Placeable(Parent, Sprite, Type, WorldPosition, Scale);
+        placeable.LocalRotation = LocalRotation;
+        return placeable;
     }
 }
