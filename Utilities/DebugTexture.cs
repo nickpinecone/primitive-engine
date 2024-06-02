@@ -9,7 +9,7 @@ namespace TowerDefense;
 
 public static class DebugTexture
 {
-    static GraphicsDeviceManager graphicsDevice = null;
+    static public GraphicsDeviceManager graphicsDevice = null;
 
     static public void Initialize(GraphicsDeviceManager graphicsDevice)
     {
@@ -84,35 +84,9 @@ public static class DebugTexture
         return spriteTexture;
     }
 
-    private static void DrawLine(SpriteBatch spriteBatch, Vector2 startPos, Vector2 endPos, int thickness, Color color)
+    public static void DrawLine(SpriteBatch spriteBatch, Vector2 startPos, Vector2 endPos, int thickness, Color color)
     {
-        if (startPos == endPos) return;
-
-        var distance = (int)Vector2.Distance(startPos, endPos);
-        var texture = new Texture2D(graphicsDevice.GraphicsDevice, distance, thickness);
-
-        var data = new Color[distance * thickness];
-        for (int i = 0; i < data.Length; i++)
-        {
-            data[i] = color;
-        }
-        texture.SetData(data);
-
-        var rotation = (float)Math.Atan2(endPos.Y - startPos.Y, endPos.X - startPos.X);
-        var origin = new Vector2(0, thickness / 2);
-
-        spriteBatch.Draw(texture, startPos, null, Color.White, rotation, origin, 1.0f, SpriteEffects.None, 1.0f);
-    }
-
-    public static void DrawLineBetween(SpriteBatch spriteBatch, Vector2 startPos, Vector2 endPos, int thickness, Color color)
-    {
-        DrawLine(spriteBatch, startPos, endPos, thickness, color);
-
-        // Making direction arrow
-        var direction = startPos + (endPos - startPos) / 1.1f;
-        var arrowSize = thickness * 2;
-
-        DrawLine(spriteBatch, direction + new Vector2(-arrowSize, -arrowSize), direction + new Vector2(arrowSize, arrowSize), thickness, color);
-        DrawLine(spriteBatch, direction + new Vector2(arrowSize, -arrowSize), direction + new Vector2(-arrowSize, arrowSize), thickness, color);
+        var line = new Line(null, startPos, endPos, color, thickness);
+        line.Draw(spriteBatch);
     }
 }

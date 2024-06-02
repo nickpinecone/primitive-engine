@@ -15,6 +15,7 @@ class PathNode : GameObject
     private static PathNode SelectedNode = null;
 
     private List<PathNode> _nextNodes;
+    private Dictionary<PathNode, Line> _lines;
     private List<PathNode> _prevNodes;
 
     public Sprite Sprite { get; }
@@ -36,6 +37,7 @@ class PathNode : GameObject
         var source = new Rectangle(0, 0, Size, Size);
 
         _nextNodes = new();
+        _lines = new();
         _prevNodes = new();
 
         Sprite = new Sprite(this, texture, source, 2);
@@ -111,6 +113,9 @@ class PathNode : GameObject
 
         _nextNodes.Add(other);
         other._prevNodes.Add(this);
+
+        var line = new Line(this, WorldPosition, other.WorldPosition, Sprite.AccentColor, 2);
+        _lines[other] = line;
     }
 
     public void RemoveNode()
@@ -124,6 +129,13 @@ class PathNode : GameObject
         {
             node.Node.UnlinkNode(Node);
             node._nextNodes.Remove(this);
+            node.RemoveChild(node._lines[this]);
+            node._lines.Remove(this);
+        }
+
+        foreach (var line in _lines.Values)
+        {
+            RemoveChild(line);
         }
 
         if (Node.Type == NodeType.Start)
@@ -132,6 +144,8 @@ class PathNode : GameObject
         }
 
         SelectedNode = null;
+
+        QueueFree();
     }
 
     public void UnlinkNode(PathNode other)
@@ -139,6 +153,9 @@ class PathNode : GameObject
         other._prevNodes.Remove(this);
         _nextNodes.Remove(other);
         Node.UnlinkNode(other.Node);
+
+        RemoveChild(_lines[other]);
+        _lines.Remove(other);
 
         SelectedNode = null;
     }
@@ -187,6 +204,18 @@ class PathNode : GameObject
         if (FollowMouse)
         {
             LocalPosition = mouseState.Position.ToVector2();
+
+            foreach (var node in _prevNodes)
+            {
+                node._lines[this].EndPosition = WorldPosition;
+                node._lines[this].Recalculate();
+            }
+
+            foreach (var line in _lines.Values)
+            {
+                line.StartPosition = WorldPosition;
+                line.Recalculate();
+            }
         }
     }
 
@@ -202,12 +231,7 @@ class PathNode : GameObject
         if (SelectedNode == this)
         {
             var mouseState = Mouse.GetState();
-            DebugTexture.DrawLineBetween(spriteBatch, SelectedNode.WorldPosition, mouseState.Position.ToVector2(), Size / 5, Sprite.AccentColor);
-        }
-
-        foreach (var node in _nextNodes)
-        {
-            DebugTexture.DrawLineBetween(spriteBatch, WorldPosition, node.WorldPosition, Size / 5, Sprite.AccentColor);
+            DebugTexture.DrawLine(spriteBatch, SelectedNode.WorldPosition, mouseState.Position.ToVector2(), 2, Sprite.AccentColor);
         }
     }
 
