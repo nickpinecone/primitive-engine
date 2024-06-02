@@ -10,6 +10,7 @@ public class Line : GameObject
     private float _lineRotation;
     private Vector2 _lineOrigin;
     private Texture2D _texture;
+    private Sprite _lineDirection;
 
     public int Thickness { get; set; }
 
@@ -46,7 +47,7 @@ public class Line : GameObject
         Recalculate();
     }
 
-    public void Recalculate()
+    public void Recalculate(bool primary = true)
     {
         if (StartPosition == EndPosition) return;
 
@@ -62,6 +63,12 @@ public class Line : GameObject
 
         _lineRotation = (float)Math.Atan2(EndPosition.Y - StartPosition.Y, EndPosition.X - StartPosition.X);
         _lineOrigin = new Vector2(0, Thickness / 2);
+
+        var source = new Rectangle(0, 0, 10, 10);
+        var texture = DebugTexture.GenerateCircleTexture(source.Width, LineColor);
+        _lineDirection = new Sprite(null, texture, source);
+        var direction = (EndPosition - StartPosition);
+        _lineDirection.LocalPosition = StartPosition + direction / 1.3f;
     }
 
     public override void Draw(SpriteBatch spriteBatch)
@@ -70,6 +77,7 @@ public class Line : GameObject
 
         if (_texture != null)
         {
+            _lineDirection.Draw(spriteBatch);
             spriteBatch.Draw(_texture, StartPosition, null, Color.White, _lineRotation, _lineOrigin, 1.0f, SpriteEffects.None, 1.0f);
         }
     }

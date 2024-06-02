@@ -41,6 +41,7 @@ class WalkPathEditor : GameObject
         _endNode.Sprite.AccentColor = endNode.Sprite.AccentColor;
 
         Docker.DockTopRight(_endNode, _endNode.Shape.Size);
+        _endNode.LocalPosition += new Vector2(-15, 15);
         Docker.DockToLeft(_regularNode, _regularNode.Shape.Size, _endNode, _endNode.Shape.Size);
         Docker.DockToLeft(_startNode, _startNode.Shape.Size, _regularNode, _regularNode.Shape.Size);
 
