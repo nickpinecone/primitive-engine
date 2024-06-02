@@ -208,13 +208,11 @@ class PathNode : GameObject
             foreach (var node in _prevNodes)
             {
                 node._lines[this].EndPosition = WorldPosition;
-                node._lines[this].Recalculate();
             }
 
             foreach (var line in _lines.Values)
             {
                 line.StartPosition = WorldPosition;
-                line.Recalculate();
             }
         }
     }
