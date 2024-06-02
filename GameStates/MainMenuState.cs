@@ -11,16 +11,17 @@ public class MainMenuState : GameState
     public override void LoadContent(ContentManager contentManager)
     {
         var windowMiddle = GameSettings.WindowSize / 2f;
-        var offset = new Vector2(0, 120);
 
-        var playButton = new Button(null, "Play", windowMiddle - offset);
-        var quitButton = new Button(null, "Quit", windowMiddle + offset);
-
+        var playButton = new Button(null, "Play", Vector2.Zero);
+        var quitButton = new Button(null, "Quit", Vector2.Zero);
         quitButton.Interact.OnClick += HandleQuitButton;
         playButton.Interact.OnClick += HandlePlayButton;
 
-        AddGameObject(quitButton);
-        AddGameObject(playButton);
+        var vstack = new Stack(null, windowMiddle, StackDirection.Vertical);
+        vstack.AddItem(playButton, playButton.Sprite.Size);
+        vstack.AddItem(quitButton, quitButton.Sprite.Size);
+
+        AddGameObject(vstack);
     }
 
     private void HandleQuitButton(object sender, EventArgs args)
