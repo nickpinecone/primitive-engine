@@ -88,7 +88,7 @@ public class Placeable : GameObject
 
     private void HandleSelect(object sender, EventArgs args)
     {
-        if (Selected != null && (Selected.DoRotate || Selected.DoScale)) return;
+        if (Selected != null && (Selected.DoRotate || Selected.DoScale || Selected.FollowMouse)) return;
 
         var placeable = (Placeable)sender;
         Selected = placeable;

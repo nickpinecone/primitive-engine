@@ -99,6 +99,7 @@ class PathNode : GameObject
     public void HandleClick(object sender, EventArgs args)
     {
         if (EditLevelState.EditState == EditState.EnemyEditor) return;
+        if (SelectedNode != null && SelectedNode.FollowMouse) return;
 
         var nodeSender = (PathNode)sender;
         Docker.DockToBottomWorld(Actions, Actions.Size, nodeSender, nodeSender.Sprite.Size);
