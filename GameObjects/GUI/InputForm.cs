@@ -20,13 +20,10 @@ class InputForm : GameObject
 
         var source = new Rectangle(
             0, 0,
-            (int)(Label.TextSize.X + NumberInput.BackSprite.Size.X),
+            (int)(Label.Size.X + NumberInput.BackSprite.Size.X) + 20,
             (int)(NumberInput.BackSprite.Size.Y)
         );
         var texture = DebugTexture.GenerateRectTexture(source.Width, source.Height, Color.LightGray);
-
-        NumberInput.LocalPosition = new Vector2(source.Width / 2f - NumberInput.BackSprite.Size.X / 2f, 0);
-        Label.LocalPosition = new Vector2(-source.Width / 2f + Label.TextSize.X / 2f, 0);
 
         Sprite = new Sprite(this, texture, source)
         {
@@ -35,5 +32,11 @@ class InputForm : GameObject
 
         LocalPosition = position;
         LocalScale = scale;
+    }
+
+    public override void Update(GameTime gameTime)
+    {
+        NumberInput.LocalPosition = new Vector2(Sprite.Size.X * Scale / 2f - NumberInput.BackSprite.Size.X * NumberInput.Scale / 2f, 0);
+        Label.LocalPosition = new Vector2(-(Sprite.Size.X - 10) * Scale / 2f + Label.Size.X * Scale / 2f, 0);
     }
 }

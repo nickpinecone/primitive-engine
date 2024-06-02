@@ -32,4 +32,10 @@ static class Docker
         gameObject.LocalPosition = other.WorldPosition + new Vector2(otherSize.X, 0) * other.Scale / 2f;
         gameObject.LocalPosition += new Vector2(size.X, 0) * gameObject.Scale / 2f;
     }
+
+    static public void DockToLeft(GameObject gameObject, Vector2 size, GameObject other, Vector2 otherSize)
+    {
+        gameObject.LocalPosition = other.WorldPosition - new Vector2(otherSize.X, 0) * other.Scale / 2f;
+        gameObject.LocalPosition -= new Vector2(size.X, 0) * gameObject.Scale / 2f;
+    }
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection.Metadata;
 using Microsoft.Xna.Framework;
@@ -208,5 +209,10 @@ class PathNode : GameObject
         {
             DebugTexture.DrawLineBetween(spriteBatch, WorldPosition, node.WorldPosition, Size / 5, Sprite.AccentColor);
         }
+    }
+
+    public PathNode Clone()
+    {
+        return new PathNode(null, new Node(Node.Position), Node.Type);
     }
 }

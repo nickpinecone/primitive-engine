@@ -12,7 +12,6 @@ using TowerDefense;
 
 class LevelEditor : GameObject
 {
-    public event EventHandler<bool> OnOverlay;
     public EventHandler<Placeable> OnItemPlace;
 
     private Placeable _selectedItem;
@@ -79,7 +78,6 @@ class LevelEditor : GameObject
         if (Input.IsKeyJustPressed(Keys.Z))
         {
             Hidden = !Hidden;
-            OnOverlay?.Invoke(this, !Hidden);
         }
 
         if (Input.IsKeyJustPressed(Keys.X))

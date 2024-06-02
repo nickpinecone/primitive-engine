@@ -171,6 +171,8 @@ public class WaveManager : GameObject
     {
         foreach (var (key, value) in _nodeWaves)
         {
+            if (!_nodeWaves[key].Waves.ContainsKey(CurrentWave)) continue;
+
             foreach (var enemyInfo in _nodeWaves[key].Waves[CurrentWave].GetByOrder(CurrentOrder))
             {
                 if (!_enemies.ContainsKey(key))

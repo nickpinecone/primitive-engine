@@ -21,6 +21,7 @@ public class EditLevelState : GameState
     Button saveButton;
 
     WalkPath walkPath;
+    WalkPathEditor walkPathEditor;
     LevelEditor levelEditor;
     EnemyEditor enemyEditor;
 
@@ -45,11 +46,15 @@ public class EditLevelState : GameState
 
         walkPath = new();
 
+        walkPathEditor = new WalkPathEditor(null, walkPath);
+        walkPathEditor.OnItemPlace += HandleItemPlace;
+
         LoadEditors();
 
         enemyEditor = new EnemyEditor(null, walkPath);
         enemyEditor.ZIndex = 2;
 
+        AddGameObject(walkPathEditor);
         AddGameObject(enemyEditor);
         AddGameObject(levelEditor);
 
@@ -81,7 +86,8 @@ public class EditLevelState : GameState
         }
 
         MetaManager.LoadWalkPath("walk_path", walkPath);
-        GeneratePathNodes();
+
+        walkPathEditor.GeneratePathNodes();
     }
 
     private void SaveEditors()
@@ -99,6 +105,16 @@ public class EditLevelState : GameState
                 .Select((gameObject) => (Placeable)gameObject)
                 .ToList()
         );
+    }
+
+    private void HandleItemPlace(object sender, PathNode node)
+    {
+        if (node.Node.Type == NodeType.Start)
+        {
+            walkPath.AddStartNode(node.Node);
+            node.Interact.OnDoubleSelect += (_, _) => HandleStartNodeSelect(node, null);
+        }
+        AddGameObject(node);
     }
 
     private void HandleItemPlace(object sender, Placeable placeable)
@@ -170,58 +186,6 @@ public class EditLevelState : GameState
 
     public void HandleWalkPathInput(MouseState mouseState, KeyboardState keyState)
     {
-        if (Input.IsMouseJustPressed(MouseButton.Middle))
-        {
-            var node = new Node(mouseState.Position.ToVector2());
-            var nodeType = NodeType.Regular;
-
-            if (keyState.IsKeyDown(Keys.S))
-            {
-                nodeType = NodeType.Start;
-                walkPath.AddStartNode(node);
-            }
-            else if (keyState.IsKeyDown(Keys.E))
-            {
-                nodeType = NodeType.End;
-            }
-
-            var pathNode = new PathNode(null, node, nodeType);
-            if (pathNode.Node.Type == NodeType.Start)
-            {
-                pathNode.Interact.OnDoubleSelect += (_, _) => HandleStartNodeSelect(pathNode, null);
-            }
-            AddGameObject(pathNode);
-        }
-    }
-
-    public void GeneratePathNodes()
-    {
-        Dictionary<Node, PathNode> dict = new();
-
-        foreach (var tuple in walkPath.Enumerate())
-        {
-            PathNode pathNode;
-
-            if (dict.ContainsKey(tuple.node))
-            {
-                pathNode = dict[tuple.node];
-            }
-            else
-            {
-                pathNode = new PathNode(null, tuple.node, tuple.node.Type);
-                if (pathNode.Node.Type == NodeType.Start)
-                {
-                    pathNode.Interact.OnDoubleSelect += (_, _) => HandleStartNodeSelect(pathNode, null);
-                }
-                dict[tuple.node] = pathNode;
-                AddGameObject(pathNode);
-            }
-
-            if (tuple.from != null)
-            {
-                dict[tuple.from].LinkPath(pathNode);
-            }
-        }
     }
 
     private void HandleStartNodeSelect(object sender, EventArgs args)

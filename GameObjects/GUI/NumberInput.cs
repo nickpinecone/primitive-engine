@@ -33,7 +33,7 @@ class NumberInput : GameObject
 
     public NumberInput(GameObject parent, Vector2 position, float scale) : base(parent)
     {
-        var source = new Rectangle(0, 0, 90, 30);
+        var source = new Rectangle(0, 0, 90, 30 + 20);
         var backTexture = DebugTexture.GenerateRectTexture(source.Width, source.Height, Color.Gray);
 
         BackSprite = new Sprite(this, backTexture, source, 1);

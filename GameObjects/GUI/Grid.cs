@@ -46,8 +46,8 @@ class GridEnemyItem : GameObject
         OrderInput = new InputForm(this, "Order", Vector2.Zero, 1f);
         AmountInput = new InputForm(this, "Amount", Vector2.Zero, 1f);
 
-        AmountInput.LocalPosition = new Vector2(0, sprite.SourceRectangle.Height * Scale / 2f - AmountInput.Sprite.Size.Y * Scale);
-        OrderInput.LocalPosition = AmountInput.LocalPosition - new Vector2(0, OrderInput.Sprite.Size.Y * Scale);
+        OrderInput.LocalPosition = new Vector2(0, -OrderInput.Sprite.Size.Y * OrderInput.Scale);
+        AmountInput.LocalPosition = new Vector2(0, +AmountInput.Sprite.Size.Y * AmountInput.Scale);
 
         Type = type;
         LocalPosition = position;

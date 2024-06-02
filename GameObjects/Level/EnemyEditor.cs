@@ -27,14 +27,10 @@ class EnemyEditor : GameObject
     public EnemyEditor(GameObject parent, WalkPath walkPath) : base(parent)
     {
         WaveInput = new InputForm(this, "Wave", Vector2.Zero, 1f);
-        WaveInput.LocalPosition += new Vector2(
-            GameSettings.WindowWidth - WaveInput.Sprite.Size.X / 2f,
-            WaveInput.Sprite.Size.Y / 2f
-        );
+        Docker.DockTopLeft(WaveInput, WaveInput.Sprite.Size);
 
         _panel = DebugTexture.GenerateRectTexture((int)GameSettings.WindowSize.X, (int)GameSettings.WindowSize.Y, Color.White);
         _grid = new Grid(this, GameSettings.WindowSize, 7, 8);
-        _grid.LocalPosition += new Vector2(0, WaveInput.Sprite.Size.Y);
         _walkPath = walkPath;
         _waveManager = new WaveManager(this, _walkPath);
         _waveManager.Initialize();
@@ -45,6 +41,16 @@ class EnemyEditor : GameObject
         PopulateGrid();
 
         WaveInput.NumberInput.OnValueChange += HandleWaveChange;
+
+        var _closeButton = new Button(this, "Close", Vector2.Zero, 0.6f);
+        Docker.DockTopRight(_closeButton, _closeButton.Sprite.Size);
+        _closeButton.Interact.OnClick += (_, _) =>
+        {
+            HandleWaveChange(null, 0);
+            Hidden = true;
+        };
+
+        _grid.LocalPosition += new Vector2(0, _closeButton.Shape.WorldRectangle.Height);
     }
 
     private void HandleWaveChange(object sender, int wave)
