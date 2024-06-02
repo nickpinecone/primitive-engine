@@ -7,6 +7,8 @@ namespace TowerDefense;
 
 public class Interact : GameObject
 {
+    public event EventHandler OnDeselect;
+
     public event EventHandler OnClick;
     public event EventHandler OnRightClick;
 
@@ -107,6 +109,7 @@ public class Interact : GameObject
             if (Input.IsMouseJustPressed(MouseButton.Left) || Input.IsMouseJustPressed(MouseButton.Right))
             {
                 IsSelected = false;
+                OnDeselect?.Invoke(this, null);
             }
         }
     }

@@ -12,7 +12,8 @@ enum PathChangeMode { Link, Delete, Shift };
 
 class PathNode : GameObject
 {
-    private static PathNode SelectedNode = null;
+    private static PathNode SelectedNode;
+    private static Stack Actions;
 
     private List<PathNode> _nextNodes;
     private Dictionary<PathNode, Line> _lines;
@@ -25,6 +26,42 @@ class PathNode : GameObject
     public bool FollowMouse { get; set; }
     public Node Node { get; protected set; }
     public int Size { get; protected set; }
+    public bool LinkMode { get; set; }
+
+    static PathNode()
+    {
+        SelectedNode = null;
+
+        var buttonsTexture = AssetManager.GetAsset<Texture2D>("GUI/Buttons");
+        var trashSource = new Rectangle(1115, 1420, 175, 175);
+        var moveSource = new Rectangle(1115, 3420, 175, 175);
+        var scaleSource = new Rectangle(1115, 3620, 175, 175);
+
+        Actions = new Stack(null, Vector2.Zero, StackDirection.Horizontal);
+
+        var trashButton = new Button(null, Vector2.Zero, 0.4f, buttonsTexture, trashSource, Rectangle.Empty);
+        var moveButton = new Button(null, Vector2.Zero, 0.4f, buttonsTexture, moveSource, Rectangle.Empty);
+        var scaleButton = new Button(null, Vector2.Zero, 0.4f, buttonsTexture, scaleSource, Rectangle.Empty);
+
+        Actions.AddItem(trashButton, trashButton.Shape.Size);
+        Actions.AddItem(moveButton, moveButton.Shape.Size);
+        Actions.AddItem(scaleButton, scaleButton.Shape.Size);
+
+        trashButton.Interact.OnClick += (_, _) =>
+        {
+            SelectedNode.RemoveNode();
+        };
+
+        moveButton.Interact.OnClick += (_, _) =>
+        {
+            SelectedNode.FollowMouse = true;
+        };
+
+        scaleButton.Interact.OnClick += (_, _) =>
+        {
+            SelectedNode.LinkMode = true;
+        };
+    }
 
     public PathNode(GameObject parent, Node node, NodeType type) : base(parent)
     {
@@ -64,13 +101,14 @@ class PathNode : GameObject
         if (EditLevelState.EditState == EditState.EnemyEditor) return;
 
         var nodeSender = (PathNode)sender;
+        Docker.DockToBottomWorld(Actions, Actions.Size, nodeSender, nodeSender.Sprite.Size);
         if (SelectedNode == nodeSender) return;
 
         if (SelectedNode == null)
         {
             SelectedNode = nodeSender;
         }
-        else
+        else if (SelectedNode.LinkMode)
         {
             SelectedNode.LinkNode(nodeSender);
         }
@@ -96,7 +134,10 @@ class PathNode : GameObject
         this.Node.LinkNode(other.Node);
         LinkPath(other);
 
+        SelectedNode.LinkMode = false;
         SelectedNode = null;
+        SelectedNode = other;
+        other.LinkMode = true;
     }
 
     public void LinkPath(PathNode other)
@@ -185,12 +226,21 @@ class PathNode : GameObject
         if (FollowMouse && Input.IsMouseJustPressed(MouseButton.Left))
         {
             FollowMouse = false;
-            Interact.IsSelected = false;
+        }
+
+        if (SelectedNode != null && !SelectedNode.LinkMode)
+        {
+            Actions.HandleInput();
+        }
+
+        if (SelectedNode != null && !SelectedNode.LinkMode && !SelectedNode.Interact.IsSelected)
+        {
             SelectedNode = null;
         }
 
         if (SelectedNode != null && Input.IsKeyJustPressed(Keys.X))
         {
+            SelectedNode.LinkMode = false;
             SelectedNode = null;
         }
     }
@@ -228,8 +278,15 @@ class PathNode : GameObject
 
         if (SelectedNode == this)
         {
-            var mouseState = Mouse.GetState();
-            DebugTexture.DrawLine(spriteBatch, SelectedNode.WorldPosition, mouseState.Position.ToVector2(), 2, Sprite.AccentColor);
+            if (!SelectedNode.LinkMode)
+            {
+                Actions.Draw(spriteBatch);
+            }
+            else
+            {
+                var mouseState = Mouse.GetState();
+                DebugTexture.DrawLine(spriteBatch, SelectedNode.WorldPosition, mouseState.Position.ToVector2(), 2, Sprite.AccentColor);
+            }
         }
     }
 

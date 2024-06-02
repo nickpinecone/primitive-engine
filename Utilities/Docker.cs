@@ -45,6 +45,12 @@ static class Docker
         gameObject.LocalPosition += new Vector2(0, size.Y) * gameObject.Scale / 2f;
     }
 
+    static public void DockToBottomWorld(GameObject gameObject, Vector2 size, GameObject other, Vector2 otherSize)
+    {
+        gameObject.LocalPosition = other.WorldPosition + new Vector2(0, otherSize.Y) * other.Scale / 2f;
+        gameObject.LocalPosition += new Vector2(0, size.Y) * gameObject.Scale / 2f;
+    }
+
     static public void DockToTop(GameObject gameObject, Vector2 size, GameObject other, Vector2 otherSize)
     {
         gameObject.LocalPosition = other.LocalPosition - new Vector2(0, otherSize.Y) * other.Scale / 2f;
