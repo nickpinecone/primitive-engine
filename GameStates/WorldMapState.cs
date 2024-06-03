@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -8,8 +10,11 @@ namespace TowerDefense;
 
 public class WorldMapState : GameState
 {
+    List<bool> levelStates;
+
     public override void LoadContent(ContentManager contentManager)
     {
+        this.levelStates = new();
         LevelPoint.LevelCount = 0;
 
         var creatorButton = new Button(
@@ -33,6 +38,11 @@ public class WorldMapState : GameState
         Docker.DockBottomRight(closeButton, closeButton.Sprite.Size);
         AddGameObject(closeButton);
 
+        LoadWorldMap();
+    }
+
+    private void LoadWorldMap()
+    {
         var positions = new Vector2[] {
             new Vector2(200, 500),
             new Vector2(400, 350),
@@ -41,11 +51,31 @@ public class WorldMapState : GameState
             new Vector2(1000, 100),
         };
 
-        foreach (var position in positions)
+        var states = MetaManager.LoadWorldMap("worldmap") ?? (new bool[positions.Length]).ToList();
+        var firstUncomplete = true;
+        for (int i = 0; i < positions.Length; i++)
         {
-            var levelPoint = new LevelPoint(null, position, 1f);
+            var levelPoint = new LevelPoint(null, positions[i], 1f);
+            levelPoint.Completed = states[i];
+            levelStates.Add(states[i]);
+
             PlaceLevelPoint(levelPoint);
+
+            if (!levelPoint.Completed && firstUncomplete)
+            {
+                firstUncomplete = false;
+            }
+            else
+            {
+                levelPoint.Interact.Disabled = true;
+                levelPoint.Sprite.Hidden = true;
+            }
         }
+    }
+
+    private void SaveWorldMap()
+    {
+        MetaManager.SaveWorldMap("worldmap", levelStates);
     }
 
     private void PlaceLevelPoint(LevelPoint levelPoint)

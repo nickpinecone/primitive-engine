@@ -201,4 +201,13 @@ public static class MetaManager
         return MetaManager.ReadFromFile<Dictionary<int, NodeWaveInfo>>(filename);
     }
 
+    public static void SaveWorldMap(string filename, List<bool> states)
+    {
+        MetaManager.SaveToFile(states, filename);
+    }
+
+    public static List<bool> LoadWorldMap(string filename)
+    {
+        return MetaManager.ReadFromFile<List<bool>>(filename);
+    }
 }

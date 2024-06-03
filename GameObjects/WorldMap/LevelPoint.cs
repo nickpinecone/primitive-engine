@@ -31,9 +31,13 @@ class LevelPoint : GameObject
     public CollisionShape Shape { get; }
     public Interact Interact { get; }
 
+    public int LevelNumber { get; set; }
+    public bool Completed { get; set; }
+
     public LevelPoint(GameObject parent, Vector2 position, float scale) : base(parent)
     {
         LevelInfo = new LevelInfo(LevelCount);
+        LevelNumber = LevelCount;
 
         var texture = AssetManager.GetAsset<Texture2D>("Sprites/LevelSheet");
         var source = new Rectangle(1120, 675, 75, 150);
@@ -46,13 +50,6 @@ class LevelPoint : GameObject
 
         LocalPosition = position;
         LocalScale = scale;
-    }
-
-    protected override void QueueFree()
-    {
-        // TODO Delete associated files
-
-        base.QueueFree();
     }
 
     public void HandleSelection(object sender, EventArgs args)

@@ -25,7 +25,7 @@ public class GameLevelState : GameState
 
     public override void LoadContent(ContentManager contentManager)
     {
-        waveNumberLabel = new Label(null, Vector2.Zero, 1f, "Wave: ");
+        waveNumberLabel = new Label(null, Vector2.Zero, 0.8f, "Wave: ");
         waveNumberLabel.TextColor = Color.Black;
 
         skipButtons = new();
