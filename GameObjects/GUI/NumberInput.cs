@@ -20,6 +20,8 @@ class NumberInput : GameObject
         get { return _value; }
         set
         {
+            if (value < 0) return;
+
             _value = value;
             Label.Text = value.ToString();
             OnValueChange?.Invoke(this, value);
