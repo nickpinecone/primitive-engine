@@ -106,7 +106,7 @@ public class Interact : GameObject
         {
             IsHovered = false;
 
-            if (Input.IsMouseJustPressed(MouseButton.Left) || Input.IsMouseJustPressed(MouseButton.Right))
+            if (IsSelected && (Input.IsMouseJustPressed(MouseButton.Left) || Input.IsMouseJustPressed(MouseButton.Right)))
             {
                 IsSelected = false;
                 OnDeselect?.Invoke(this, null);

@@ -30,7 +30,7 @@ class EnemyEditor : GameObject
         Docker.DockTopLeft(WaveInput, WaveInput.Sprite.Size);
 
         _panel = DebugTexture.GenerateRectTexture((int)GameSettings.WindowSize.X, (int)GameSettings.WindowSize.Y, Color.White);
-        _grid = new Grid(this, GameSettings.WindowSize, 7, 8);
+        _grid = new Grid(this, GameSettings.WindowSize, 8, 8);
         _walkPath = walkPath;
         _waveManager = new WaveManager(this, _walkPath);
         _waveManager.Initialize();
@@ -42,7 +42,7 @@ class EnemyEditor : GameObject
 
         WaveInput.NumberInput.OnValueChange += HandleWaveChange;
 
-        var _closeButton = new Button(this, "Close", Vector2.Zero, 0.6f);
+        var _closeButton = new Button(this, "Close", Vector2.Zero, 0.5f);
         Docker.DockTopRight(_closeButton, _closeButton.Sprite.Size);
         _closeButton.Interact.OnClick += (_, _) =>
         {

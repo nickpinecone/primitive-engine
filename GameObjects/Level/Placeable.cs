@@ -9,7 +9,7 @@ using TowerDefense;
 public class Placeable : GameObject
 {
     static public Stack Actions { get; }
-    static public Placeable Selected { get; private set; }
+    static public Placeable Selected { get; set; }
 
     public Sprite Sprite { get; }
     public CollisionShape Shape { get; }
@@ -45,6 +45,7 @@ public class Placeable : GameObject
         trashButton.Interact.OnClick += (_, _) =>
         {
             Selected.QueueFree();
+            Selected = null;
         };
 
         moveButton.Interact.OnClick += (_, _) =>
@@ -109,6 +110,7 @@ public class Placeable : GameObject
             if (Input.IsKeyJustPressed(Keys.D))
             {
                 QueueFree();
+                Selected = null;
             }
             if (Input.IsKeyJustPressed(Keys.F))
             {

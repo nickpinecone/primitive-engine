@@ -15,7 +15,6 @@ class WalkPathEditor : GameObject
     private Sprite _selectedItem;
     private NodeType _selectedType;
 
-    // TODO Needs hstack
     private Button _startNode;
     private Button _regularNode;
     private Button _endNode;

@@ -27,13 +27,13 @@ class LevelEditor : GameObject
     {
         _selectedItem = null;
         _panel = DebugTexture.GenerateRectTexture((int)GameSettings.WindowSize.X, (int)GameSettings.WindowSize.Y, Color.White);
-        _grid = new Grid(this, GameSettings.WindowSize, 7, 8);
-        _closeButton = new Button(this, "Close", Vector2.Zero, 0.6f);
+        _grid = new Grid(this, GameSettings.WindowSize, 8, 8);
+        _closeButton = new Button(this, "Close", Vector2.Zero, 0.5f);
         _closeButton.Interact.OnClick += (_, _) => { Hidden = true; };
         _grid.LocalPosition += new Vector2(0, _closeButton.Shape.WorldRectangle.Height);
         Docker.DockTopRight(_closeButton, _closeButton.Sprite.Size);
 
-        _showButton = new Button(null, "Show Items", Vector2.Zero, 0.6f);
+        _showButton = new Button(null, "Show Items", Vector2.Zero, _closeButton.Scale);
         _showButton.Interact.OnClick += (_, _) => { Hidden = false; };
         Docker.DockTopRight(_showButton, _showButton.Sprite.Size);
 
@@ -67,6 +67,7 @@ class LevelEditor : GameObject
         _selectedItem = copy;
         _selectedItem.Sprite.AccentColor = Color.White * 0.5f;
         _selectedItem.Interact.IsSelected = true;
+        _selectedItem.LocalScale = 0.64f;
     }
 
     public override void HandleInput()

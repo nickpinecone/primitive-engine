@@ -13,22 +13,22 @@ public class WorldMapState : GameState
         var creatorButton = new Button(
             null,
             "Creator: " + (GameSettings.CreatorMode ? "On" : "Off"),
-            Vector2.Zero, 0.6f
+            Vector2.Zero, 0.5f
         );
         creatorButton.Interact.OnClick += (_, _) =>
         {
             GameSettings.CreatorMode = !GameSettings.CreatorMode;
             creatorButton.Label.Text = "Creator: " + (GameSettings.CreatorMode ? "On" : "Off");
         };
-        Docker.DockTopLeft(creatorButton, creatorButton.Sprite.Size);
+        Docker.DockBottomLeft(creatorButton, creatorButton.Sprite.Size);
         AddGameObject(creatorButton);
 
-        var closeButton = new Button(null, "Main Menu", new Vector2(GameSettings.WindowWidth, 0), 0.6f);
+        var closeButton = new Button(null, "Main Menu", new Vector2(GameSettings.WindowWidth, 0), creatorButton.Scale);
         closeButton.Interact.OnClick += (_, _) =>
         {
             SwitchState(new MainMenuState());
         };
-        Docker.DockTopRight(closeButton, closeButton.Sprite.Size);
+        Docker.DockBottomRight(closeButton, closeButton.Sprite.Size);
         AddGameObject(closeButton);
 
         var levelPoint = new LevelPoint(null, new Vector2(100, 300), 1f, null);

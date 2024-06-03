@@ -58,7 +58,7 @@ public class EditLevelState : GameState
         AddGameObject(enemyEditor);
         AddGameObject(levelEditor);
 
-        editStateButton = new Button(null, "", Vector2.Zero, 0.6f);
+        editStateButton = new Button(null, "", Vector2.Zero, 0.5f);
         editStateButton.Interact.OnClick += (_, _) => NextEditState();
         AddGameObject(editStateButton);
         UpdateEditStateInfo();
@@ -67,6 +67,14 @@ public class EditLevelState : GameState
         saveButton.Interact.OnClick += (_, _) => SaveEditors();
         Docker.DockToRight(saveButton, saveButton.Sprite.Size, editStateButton, editStateButton.Sprite.Size);
         AddGameObject(saveButton);
+
+        var worldButton = new Button(null, "World Map", Vector2.Zero, saveButton.Scale);
+        worldButton.Interact.OnClick += (_, _) =>
+        {
+            SwitchState(new WorldMapState());
+        };
+        Docker.DockBottomRight(worldButton, worldButton.Shape.Size);
+        AddGameObject(worldButton);
     }
 
     private void NextEditState()
@@ -121,6 +129,7 @@ public class EditLevelState : GameState
     {
         var copy = placeable.Clone();
         copy.Interact.IsSelected = false;
+        Placeable.Selected = null;
         AddGameObject(copy);
     }
 
