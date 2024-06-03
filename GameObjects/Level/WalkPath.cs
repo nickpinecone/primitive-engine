@@ -107,9 +107,9 @@ public class WalkPath
         _startNodes = new();
     }
 
-    public void Initialize()
+    public void Initialize(string filename)
     {
-        MetaManager.LoadWalkPath("walk_path", this);
+        MetaManager.LoadWalkPath(filename, this);
         CalculateLengths();
     }
 

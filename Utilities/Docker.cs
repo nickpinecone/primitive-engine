@@ -4,6 +4,12 @@ namespace TowerDefense;
 
 static class Docker
 {
+    static public void DockBottomMiddle(GameObject gameObject, Vector2 size)
+    {
+        gameObject.LocalPosition = new Vector2(GameSettings.WindowWidth / 2f, GameSettings.WindowHeight);
+        gameObject.LocalPosition -= new Vector2(0, size.Y * gameObject.Scale / 2f);
+    }
+
     static public void DockTopLeft(GameObject gameObject, Vector2 size)
     {
         gameObject.LocalPosition = size * gameObject.Scale / 2f;

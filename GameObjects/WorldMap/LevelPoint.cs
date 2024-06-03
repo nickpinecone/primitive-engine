@@ -6,19 +6,34 @@ using Microsoft.Xna.Framework.Input;
 
 using TowerDefense;
 
+public class LevelInfo
+{
+    public string EnemySave { get; private set; }
+    public string LevelSave { get; private set; }
+    public string WalkPathSave { get; private set; }
+
+    public LevelInfo(int count)
+    {
+        EnemySave = $"enemy{count}";
+        LevelSave = $"level{count}";
+        WalkPathSave = $"walkpath{count}";
+    }
+}
+
 class LevelPoint : GameObject
 {
-    public event EventHandler<GameState> OnLevelSelect;
+    static public int LevelCount = 0;
 
-    private GameState _level;
+    public event EventHandler OnLevelSelect;
 
+    public LevelInfo LevelInfo { get; }
     public Sprite Sprite { get; }
     public CollisionShape Shape { get; }
     public Interact Interact { get; }
 
-    public LevelPoint(GameObject parent, Vector2 position, float scale, GameState level) : base(parent)
+    public LevelPoint(GameObject parent, Vector2 position, float scale) : base(parent)
     {
-        _level = level;
+        LevelInfo = new LevelInfo(LevelCount);
 
         var texture = AssetManager.GetAsset<Texture2D>("Sprites/LevelSheet");
         var source = new Rectangle(1120, 675, 75, 150);
@@ -33,8 +48,15 @@ class LevelPoint : GameObject
         LocalScale = scale;
     }
 
+    protected override void QueueFree()
+    {
+        // TODO Delete associated files
+
+        base.QueueFree();
+    }
+
     public void HandleSelection(object sender, EventArgs args)
     {
-        OnLevelSelect?.Invoke(this, _level);
+        OnLevelSelect?.Invoke(this, null);
     }
 }

@@ -24,7 +24,7 @@ class EnemyEditor : GameObject
     public bool Hidden { get; private set; }
     public WaveManager WaveManager { get { return _waveManager; } }
 
-    public EnemyEditor(GameObject parent, WalkPath walkPath) : base(parent)
+    public EnemyEditor(GameObject parent, WalkPath walkPath, string filename) : base(parent)
     {
         WaveInput = new InputForm(this, "Wave", Vector2.Zero, 1f);
         Docker.DockTopLeft(WaveInput, WaveInput.Sprite.Size);
@@ -33,7 +33,7 @@ class EnemyEditor : GameObject
         _grid = new Grid(this, GameSettings.WindowSize, 8, 8);
         _walkPath = walkPath;
         _waveManager = new WaveManager(this, _walkPath);
-        _waveManager.Initialize();
+        _waveManager.Initialize(filename);
 
         NodeId = 0;
         Hidden = true;

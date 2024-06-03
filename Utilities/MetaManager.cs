@@ -44,7 +44,10 @@ public static class MetaManager
     public static T ReadFromFile<T>(string filename)
     {
         var workDir = System.IO.Directory.GetCurrentDirectory();
-        var data = File.ReadAllText(workDir + "/Saves/" + filename + ".json");
+        var path = workDir + "/Saves/" + filename + ".json";
+        if (!File.Exists(path)) return default(T);
+
+        var data = File.ReadAllText(path);
 
         if (data == "" || data == "[]" || data == "{}")
         {

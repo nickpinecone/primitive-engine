@@ -20,10 +20,16 @@ public class EditLevelState : GameState
     Button editStateButton;
     Button saveButton;
 
+    LevelInfo levelInfo;
     WalkPath walkPath;
     WalkPathEditor walkPathEditor;
     LevelEditor levelEditor;
     EnemyEditor enemyEditor;
+
+    public EditLevelState(LevelInfo levelInfo)
+    {
+        this.levelInfo = levelInfo;
+    }
 
     public void UpdateEditStateInfo()
     {
@@ -51,7 +57,7 @@ public class EditLevelState : GameState
 
         LoadEditors();
 
-        enemyEditor = new EnemyEditor(null, walkPath);
+        enemyEditor = new EnemyEditor(null, walkPath, levelInfo.EnemySave);
         enemyEditor.ZIndex = 2;
 
         AddGameObject(walkPathEditor);
@@ -85,7 +91,7 @@ public class EditLevelState : GameState
 
     private void LoadEditors()
     {
-        foreach (var gameObject in MetaManager.LoadLevelEditor("level_editor"))
+        foreach (var gameObject in MetaManager.LoadLevelEditor(levelInfo.LevelSave))
         {
             var sprite = ((ISaveable)gameObject).Sprite;
             var placeable = new Placeable(gameObject.Parent, sprite, gameObject.GetType(), gameObject.WorldPosition, gameObject.Scale);
@@ -93,7 +99,7 @@ public class EditLevelState : GameState
             AddGameObject(placeable);
         }
 
-        MetaManager.LoadWalkPath("walk_path", walkPath);
+        MetaManager.LoadWalkPath(levelInfo.WalkPathSave, walkPath);
 
         walkPathEditor.GeneratePathNodes();
     }
@@ -102,12 +108,12 @@ public class EditLevelState : GameState
     {
         enemyEditor.WaveManager.IntegrityCheck();
 
-        MetaManager.SaveWalkPath("walk_path", walkPath);
+        MetaManager.SaveWalkPath(levelInfo.WalkPathSave, walkPath);
 
-        MetaManager.SaveWaveManager("enemy_editor", enemyEditor.WaveManager.NodeWaves);
+        MetaManager.SaveWaveManager(levelInfo.EnemySave, enemyEditor.WaveManager.NodeWaves);
 
         MetaManager.SaveLevelEditor(
-            "level_editor",
+            levelInfo.LevelSave,
             _gameObjects
                 .Where((gameObject) => gameObject is Placeable)
                 .Select((gameObject) => (Placeable)gameObject)

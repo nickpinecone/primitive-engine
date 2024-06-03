@@ -66,7 +66,7 @@ public abstract class GameObject
         Parent = parent;
     }
 
-    protected void QueueFree()
+    protected virtual void QueueFree()
     {
         OnQueueFree?.Invoke(this, null);
     }

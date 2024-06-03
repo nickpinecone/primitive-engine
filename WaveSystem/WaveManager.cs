@@ -85,9 +85,9 @@ public class WaveManager : GameObject
         CurrentWave = -1;
     }
 
-    public void Initialize()
+    public void Initialize(string filename)
     {
-        _nodeWaves = MetaManager.LoadWaveManager("enemy_editor");
+        _nodeWaves = MetaManager.LoadWaveManager(filename);
 
         if (_nodeWaves == null)
         {
@@ -136,7 +136,7 @@ public class WaveManager : GameObject
     {
         var node = _walkPath.GetStartById(startId);
 
-        var basicOrk = new BasicOrk(null, _walkPath, node, 0.5f);
+        var basicOrk = new BasicOrk(null, _walkPath, node, 0.4f);
 
         SpawnObject(basicOrk);
     }

@@ -12,10 +12,16 @@ namespace TowerDefense;
 
 public class GameLevelState : GameState
 {
+    LevelInfo levelInfo;
     WalkPath walkPath;
     WaveManager waveManager;
     List<Button> skipButtons;
     Label waveNumberLabel;
+
+    public GameLevelState(LevelInfo levelInfo)
+    {
+        this.levelInfo = levelInfo;
+    }
 
     public override void LoadContent(ContentManager contentManager)
     {
@@ -29,21 +35,21 @@ public class GameLevelState : GameState
         waveManager.OnNextWave += HandleNextWave;
         waveManager.OnWaveUpdate += HandleWaveUpdate;
 
-        walkPath.Initialize();
-        waveManager.Initialize();
+        walkPath.Initialize(levelInfo.WalkPathSave);
+        waveManager.Initialize(levelInfo.EnemySave);
 
         foreach (var node in walkPath.GetStartNodes())
         {
-            var source = new Rectangle(0, 0, 60, 60);
-            var texture = DebugTexture.GenerateCircleTexture(source.Width, Color.Gray);
-            var skipWaveTime = new Button(null, "0", node.Position + new Vector2(source.Width / 3f, 0), 1f, texture, source, Rectangle.Empty, null);
+            var source = new Rectangle(455, 400, 175, 175);
+            var texture = AssetManager.GetAsset<Texture2D>("GUI/Buttons");
+            var skipWaveTime = new Button(null, "0", node.Position + new Vector2(source.Width / 4f, 0), 0.4f, texture, source, Rectangle.Empty, null);
             skipWaveTime.Interact.OnClick += HandleSkipWave;
 
             skipButtons.Add(skipWaveTime);
             AddGameObject(skipWaveTime);
         }
 
-        LoadLevel("level_editor");
+        LoadLevel(levelInfo.LevelSave);
 
         AddGameObject(waveNumberLabel);
         AddGameObject(waveManager);

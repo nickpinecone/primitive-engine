@@ -10,6 +10,8 @@ public class WorldMapState : GameState
 {
     public override void LoadContent(ContentManager contentManager)
     {
+        LevelPoint.LevelCount = 0;
+
         var creatorButton = new Button(
             null,
             "Creator: " + (GameSettings.CreatorMode ? "On" : "Off"),
@@ -31,9 +33,26 @@ public class WorldMapState : GameState
         Docker.DockBottomRight(closeButton, closeButton.Sprite.Size);
         AddGameObject(closeButton);
 
-        var levelPoint = new LevelPoint(null, new Vector2(100, 300), 1f, null);
+        var positions = new Vector2[] {
+            new Vector2(200, 500),
+            new Vector2(400, 350),
+            new Vector2(600, 200),
+            new Vector2(800, 200),
+            new Vector2(1000, 100),
+        };
+
+        foreach (var position in positions)
+        {
+            var levelPoint = new LevelPoint(null, position, 1f);
+            PlaceLevelPoint(levelPoint);
+        }
+    }
+
+    private void PlaceLevelPoint(LevelPoint levelPoint)
+    {
         levelPoint.OnLevelSelect += HandleLevelSelect;
         AddGameObject(levelPoint);
+        LevelPoint.LevelCount += 1;
     }
 
     public override void UnloadContent(ContentManager contentManager)
@@ -41,15 +60,17 @@ public class WorldMapState : GameState
         AssetManager.UnloadAssets();
     }
 
-    public void HandleLevelSelect(object sender, GameState level)
+    public void HandleLevelSelect(object sender, EventArgs args)
     {
+        var levelPoint = (LevelPoint)sender;
+
         if (GameSettings.CreatorMode)
         {
-            SwitchState(new EditLevelState());
+            SwitchState(new EditLevelState(levelPoint.LevelInfo));
         }
         else
         {
-            SwitchState(new GameLevelState());
+            SwitchState(new GameLevelState(levelPoint.LevelInfo));
         }
     }
 
