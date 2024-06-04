@@ -36,7 +36,7 @@ class TowerPlot : GameObject, ISaveable
         _contextMenu.OnSelect += HandleSelectTower;
 
         var fireballTexture = AssetManager.GetAsset<Texture2D>("Towers/Fireball");
-        var fireballSource = new Rectangle(0, 0, 41, 94);
+        var fireballSource = new Rectangle(0, 0, 95, 95);
         var fireballSprite = new Sprite(null, fireballTexture, fireballSource);
         _contextMenu.AddItem(fireballSprite, TowerType.Magic, Tower.TowerCosts[TowerType.Magic]);
 

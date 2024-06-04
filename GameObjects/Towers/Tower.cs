@@ -51,7 +51,7 @@ abstract class Tower : GameObject
 
     protected void AddActions()
     {
-        _contextMenu = new ContextMenu(this, 1 / Scale, Sprite.SourceRectangle.Width * Scale);
+        _contextMenu = new ContextMenu(this, 1 / Scale, (Sprite.SourceRectangle.Width + Sprite.SourceRectangle.Height) / 4f * Scale);
 
         var trashTexture = AssetManager.GetAsset<Texture2D>("GUI/Buttons");
         var trashSource = new Rectangle(1115, 1420, 175, 175);

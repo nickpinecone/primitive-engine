@@ -12,7 +12,7 @@ class FireballProjectile : Projectile
         : base(parent, target, damage, 72f, position, scale)
     {
         var texture = AssetManager.GetAsset<Texture2D>("Towers/Fireball");
-        var source = new Rectangle(0, 0, 41, 94);
+        var source = new Rectangle(0, 0, 95, 95);
 
         Sprite = new Sprite(this, texture, source);
     }

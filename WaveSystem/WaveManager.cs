@@ -73,13 +73,13 @@ public class WaveManager : GameObject
         _nodeWaves = new();
         _enemies = new();
 
-        WaveTimer = new Timer(this, 10);
+        WaveTimer = new Timer(this, 15);
         WaveTimer.OnTimeout += HandleWaveTimeout;
 
         OrderTimer = new Timer(this, 5);
         OrderTimer.OnTimeout += HandleOrderTimeout;
 
-        AmountTimer = new Timer(this, 2.5);
+        AmountTimer = new Timer(this, 3);
         AmountTimer.OnTimeout += HandleAmountTimeout;
 
         CurrentWave = -1;
@@ -147,14 +147,27 @@ public class WaveManager : GameObject
     private void SpawnEnemy(EnemyInfo enemyInfo, int startId)
     {
         var node = _walkPath.GetStartById(startId);
+        Enemy enemy;
 
-        var basicOrk = new BasicOrk(null, _walkPath, node, 0.4f);
+        if (enemyInfo.TypeName == typeof(BasicOrk).FullName)
+        {
+            enemy = new BasicOrk(null, _walkPath, node, 0.4f);
+        }
+        else if (enemyInfo.TypeName == typeof(Ogre).FullName)
+        {
+            enemy = new Ogre(null, _walkPath, node, 0.4f);
+        }
+        else
+        {
+            enemy = new Demon(null, _walkPath, node, 0.4f);
+        }
 
-        SpawnObject(basicOrk);
+        SpawnObject(enemy);
     }
 
     private void HandleAmountTimeout(object sender, EventArgs args)
     {
+        var ogreTime = false;
         foreach (var key in _nodeWaves.Keys)
         {
             var queue = _enemies[key];
@@ -164,6 +177,16 @@ public class WaveManager : GameObject
 
                 // Create enemy
                 SpawnEnemy(enemyInfo, key);
+
+                if (enemyInfo.TypeName == typeof(Ogre).FullName)
+                {
+                    AmountTimer.WaitTime = 8;
+                    ogreTime = true;
+                }
+                else if (!ogreTime)
+                {
+                    AmountTimer.WaitTime = 3;
+                }
             }
         }
 

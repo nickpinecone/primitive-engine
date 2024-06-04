@@ -64,10 +64,16 @@ class EnemyEditor : GameObject
     public void PopulateGrid()
     {
         var basicOrk = new BasicOrk(null, _walkPath, null, 1f);
-
         var item = new GridEnemyItem(null, basicOrk.Sprite, basicOrk.GetType(), Vector2.Zero, 1f);
-
         _grid.AddItem(item, item.Sprite.Size);
+
+        var ogre = new Ogre(null, _walkPath, null, 1f);
+        var item2 = new GridEnemyItem(null, ogre.Sprite, ogre.GetType(), Vector2.Zero, 1f);
+        _grid.AddItem(item2, item2.Sprite.Size);
+
+        var demon = new Demon(null, _walkPath, null, 1f);
+        var item3 = new GridEnemyItem(null, demon.Sprite, demon.GetType(), Vector2.Zero, 1f);
+        _grid.AddItem(item2, item2.Sprite.Size);
     }
 
     public void Show(int nodeId)

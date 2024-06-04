@@ -6,21 +6,21 @@ using Microsoft.Xna.Framework.Input;
 
 using TowerDefense;
 
-public class BasicOrk : Enemy
+public class Ogre : Enemy
 {
-    public BasicOrk(GameObject parent, WalkPath walkPath, Node startNode, float scale)
-        : base(parent, walkPath, startNode, 24f, 100, scale)
+    public Ogre(GameObject parent, WalkPath walkPath, Node startNode, float scale)
+        : base(parent, walkPath, startNode, 12f, 300, scale)
     {
-        var texture = AssetManager.GetAsset<Texture2D>("Enemies/BasicOrk");
-        var source = new Rectangle(0, 0, 331, 299);
+        var texture = AssetManager.GetAsset<Texture2D>("Enemies/Ogre");
+        var source = new Rectangle(0, 0, 445, 420);
 
         Sprite = new Sprite(this, texture, source);
         Shape = new CollisionShape(this, new Vector2(Sprite.Size.X / 2f, Sprite.Size.Y / 1.5f));
         Shape.LocalPosition += new Vector2(-20, 0);
-        Defense = new Defense(5, 5);
+        Defense = new Defense(15, 5);
 
-        HeartsOff = 1;
-        KillMoney = 10;
+        HeartsOff = 3;
+        KillMoney = 40;
 
         Health.LocalPosition += new Vector2(-Shape.WorldRectangle.Width / 8f, -Shape.WorldRectangle.Height / 2f);
     }
