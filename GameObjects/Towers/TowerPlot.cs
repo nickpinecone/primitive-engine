@@ -32,8 +32,13 @@ class TowerPlot : GameObject, ISaveable
         var archerTexture = AssetManager.GetAsset<Texture2D>("Towers/ArcherTower");
         var archerSource = new Rectangle(390, 815, 65, 65);
         var archerSprite = new Sprite(null, archerTexture, archerSource);
-        _contextMenu.AddItem(archerSprite, TowerType.Archer);
+        _contextMenu.AddItem(archerSprite, TowerType.Archer, Tower.TowerCosts[TowerType.Archer]);
         _contextMenu.OnSelect += HandleSelectTower;
+
+        var fireballTexture = AssetManager.GetAsset<Texture2D>("Towers/Fireball");
+        var fireballSource = new Rectangle(0, 0, 41, 94);
+        var fireballSprite = new Sprite(null, fireballTexture, fireballSource);
+        _contextMenu.AddItem(fireballSprite, TowerType.Magic, Tower.TowerCosts[TowerType.Magic]);
 
         LocalPosition = position;
         LocalScale = scale;

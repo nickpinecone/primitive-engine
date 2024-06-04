@@ -6,13 +6,13 @@ using Microsoft.Xna.Framework.Input;
 
 using TowerDefense;
 
-class ArrowProjectile : Projectile
+class FireballProjectile : Projectile
 {
-    public ArrowProjectile(GameObject parent, Enemy target, Damage damage, Vector2 position, float scale)
-        : base(parent, target, damage, 96f, position, scale)
+    public FireballProjectile(GameObject parent, Enemy target, Damage damage, Vector2 position, float scale)
+        : base(parent, target, damage, 72f, position, scale)
     {
-        var texture = AssetManager.GetAsset<Texture2D>("Towers/ArcherTower");
-        var source = new Rectangle(390, 815, 65, 65);
+        var texture = AssetManager.GetAsset<Texture2D>("Towers/Fireball");
+        var source = new Rectangle(0, 0, 41, 94);
 
         Sprite = new Sprite(this, texture, source);
     }

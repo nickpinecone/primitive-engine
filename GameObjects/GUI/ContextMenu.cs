@@ -20,7 +20,7 @@ class ContextMenuItem : GameObject
 
     public Label PriceLabel { get; set; }
 
-    public ContextMenuItem(GameObject parent, Sprite itemSprite, object value, Vector2 position, float scale) : base(parent)
+    public ContextMenuItem(GameObject parent, Sprite itemSprite, object value, Vector2 position, float scale, int cost) : base(parent)
     {
         var texture = AssetManager.GetAsset<Texture2D>("Towers/ArcherTower");
         var source = new Rectangle(75, 735, 65, 55);
@@ -38,7 +38,7 @@ class ContextMenuItem : GameObject
         var scaleItem = source.Width * scale / (float)wideSide / 1.5f;
         _itemSprite.LocalScale = scaleItem;
 
-        PriceLabel = new Label(this, new Vector2(0, 14) * scale, 0.4f, "100");
+        PriceLabel = new Label(this, new Vector2(0, 14) * scale, 0.4f, cost.ToString());
         PriceLabel.TextColor = Color.Yellow;
 
         LocalPosition = position;
@@ -86,9 +86,9 @@ class ContextMenu : GameObject
         return new Vector2(x, y);
     }
 
-    public void AddItem(Sprite sprite, object value)
+    public void AddItem(Sprite sprite, object value, int cost)
     {
-        var gridItem = new ContextMenuItem(this, sprite, value, GetPosition(), Scale);
+        var gridItem = new ContextMenuItem(this, sprite, value, GetPosition(), Scale, cost);
         gridItem.OnSelect += HandleItemSelect;
 
         _menuItems.Add(gridItem);

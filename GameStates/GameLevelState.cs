@@ -172,6 +172,11 @@ public class GameLevelState : GameState
             var tower = new ArcherTower(null, plot, walkPath, plot.WorldPosition, plot.Scale);
             AddGameObject(tower);
         }
+        else if (type == TowerType.Magic)
+        {
+            var tower = new MagicTower(null, plot, walkPath, plot.WorldPosition, plot.Scale);
+            AddGameObject(tower);
+        }
     }
 
     public override void UnloadContent(ContentManager contentManager)

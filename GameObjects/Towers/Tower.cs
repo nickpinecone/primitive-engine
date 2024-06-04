@@ -7,13 +7,14 @@ using Microsoft.Xna.Framework.Input;
 
 using TowerDefense;
 
-public enum TowerType { Archer };
+public enum TowerType { Archer, Magic };
 public enum ActionType { Sell };
 
 abstract class Tower : GameObject
 {
     static public Dictionary<TowerType, int> TowerCosts = new() {
-        {TowerType.Archer, 100},
+        {TowerType.Archer, 70},
+        {TowerType.Magic, 100}
     };
 
     protected WalkPath _walkPath;
@@ -39,13 +40,6 @@ abstract class Tower : GameObject
         _plot.Disabled = true;
 
         _walkPath = walkPath;
-        _contextMenu = new ContextMenu(this, 1f, plot.Shape.Size.Y * 1.8f);
-
-        var trashTexture = AssetManager.GetAsset<Texture2D>("GUI/Buttons");
-        var trashSource = new Rectangle(1115, 1420, 175, 175);
-
-        _contextMenu.AddItem(new Sprite(null, trashTexture, trashSource), ActionType.Sell);
-        _contextMenu.OnSelect += HandleActionSelect;
 
         Damage = new Damage(damage.Amount, damage.Type);
 
@@ -53,6 +47,17 @@ abstract class Tower : GameObject
         LocalScale = scale;
 
         _nodesInRadius = _walkPath.GetNodesInRadius(WorldPosition, detectRadius);
+    }
+
+    protected void AddActions()
+    {
+        _contextMenu = new ContextMenu(this, 1 / Scale, Sprite.SourceRectangle.Width * Scale);
+
+        var trashTexture = AssetManager.GetAsset<Texture2D>("GUI/Buttons");
+        var trashSource = new Rectangle(1115, 1420, 175, 175);
+
+        _contextMenu.AddItem(new Sprite(null, trashTexture, trashSource), ActionType.Sell, Tower.TowerCosts[TowerType] / 2);
+        _contextMenu.OnSelect += HandleActionSelect;
     }
 
     private void HandleActionSelect(object sender, object action)
