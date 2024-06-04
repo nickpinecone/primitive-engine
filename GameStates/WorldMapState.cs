@@ -10,11 +10,10 @@ namespace TowerDefense;
 
 public class WorldMapState : GameState
 {
-    List<bool> levelStates;
+    public static List<bool> LevelStates = new();
 
     public override void LoadContent(ContentManager contentManager)
     {
-        this.levelStates = new();
         LevelPoint.LevelCount = 0;
 
         var creatorButton = new Button(
@@ -51,13 +50,14 @@ public class WorldMapState : GameState
             new Vector2(1000, 100),
         };
 
+        LevelStates.Clear();
         var states = MetaManager.LoadWorldMap("worldmap") ?? (new bool[positions.Length]).ToList();
         var firstUncomplete = true;
         for (int i = 0; i < positions.Length; i++)
         {
             var levelPoint = new LevelPoint(null, positions[i], 1f);
             levelPoint.Completed = states[i];
-            levelStates.Add(states[i]);
+            LevelStates.Add(states[i]);
 
             PlaceLevelPoint(levelPoint);
 
@@ -65,7 +65,7 @@ public class WorldMapState : GameState
             {
                 firstUncomplete = false;
             }
-            else
+            else if (!levelPoint.Completed)
             {
                 levelPoint.Interact.Disabled = true;
                 levelPoint.Sprite.Hidden = true;
@@ -73,9 +73,9 @@ public class WorldMapState : GameState
         }
     }
 
-    private void SaveWorldMap()
+    public static void SaveWorldMap()
     {
-        MetaManager.SaveWorldMap("worldmap", levelStates);
+        MetaManager.SaveWorldMap("worldmap", LevelStates);
     }
 
     private void PlaceLevelPoint(LevelPoint levelPoint)
@@ -100,7 +100,7 @@ public class WorldMapState : GameState
         }
         else
         {
-            SwitchState(new GameLevelState(levelPoint.LevelInfo));
+            SwitchState(new GameLevelState(levelPoint.LevelInfo, levelPoint.LevelNumber));
         }
     }
 

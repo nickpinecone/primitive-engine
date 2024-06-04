@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -32,7 +33,6 @@ public class GameLevelState : GameState
             _hearts = value;
             if (_hearts <= 0)
             {
-                // TODO lost level
             }
         }
     }
@@ -46,8 +46,12 @@ public class GameLevelState : GameState
     Label goldLabel;
     Label heartsLabel;
 
-    public GameLevelState(LevelInfo levelInfo)
+    int LevelId = 0;
+    bool FinalWave = false;
+
+    public GameLevelState(LevelInfo levelInfo, int levelId)
     {
+        this.LevelId = levelId;
         this.levelInfo = levelInfo;
     }
 
@@ -97,6 +101,14 @@ public class GameLevelState : GameState
 
         AddGameObject(waveManager);
         UpdateWaveLabel(0);
+
+        var worldButton = new Button(null, "World Map", Vector2.Zero, 0.5f);
+        worldButton.Interact.OnClick += (_, _) =>
+        {
+            SwitchState(new WorldMapState());
+        };
+        Docker.DockBottomRight(worldButton, worldButton.Shape.Size);
+        AddGameObject(worldButton);
     }
 
     private void UpdateWaveLabel(int waveNumber)
@@ -108,6 +120,11 @@ public class GameLevelState : GameState
     private void HandleWaveUpdate(object sender, int waveNumber)
     {
         UpdateWaveLabel(waveNumber);
+
+        if (waveNumber > waveManager.MaxWave)
+        {
+            FinalWave = true;
+        }
 
         foreach (var button in skipButtons)
         {
@@ -180,6 +197,21 @@ public class GameLevelState : GameState
 
         goldLabel.Text = "Gold: " + Gold;
         heartsLabel.Text = "Hearts: " + Hearts;
+
+        if (Hearts <= 0)
+        {
+            SwitchState(new WorldMapState());
+        }
+
+        if (FinalWave)
+        {
+            if (_gameObjects.Where((gameObject) => gameObject is Enemy).Count() <= 0)
+            {
+                WorldMapState.LevelStates[LevelId] = true;
+                WorldMapState.SaveWorldMap();
+                SwitchState(new WorldMapState());
+            }
+        }
 
         foreach (var button in skipButtons)
         {
