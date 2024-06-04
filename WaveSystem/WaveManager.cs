@@ -108,6 +108,18 @@ public class WaveManager : GameObject
             {
                 _nodeWaves.Remove(nodeId);
             }
+            else
+            {
+                foreach (var waveId in _nodeWaves[nodeId].Waves.Keys)
+                {
+                    var wave = _nodeWaves[nodeId].Waves[waveId];
+
+                    if (wave.Enemies.Where((enemy) => enemy.Value.Amount > 0).Count() <= 0)
+                    {
+                        _nodeWaves[nodeId].Waves.Remove(waveId);
+                    }
+                }
+            }
         }
     }
 
