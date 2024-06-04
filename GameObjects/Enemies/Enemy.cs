@@ -20,6 +20,10 @@ abstract public class Enemy : GameObject
     public Defense Defense { get; protected set; }
     public Health Health { get; }
 
+    public int HeartsOff { get; set; }
+    public int KillMoney { get; set; }
+    public bool Dead { get; set; }
+
     public float MoveSpeed { get; protected set; }
     public float MovedDistance { get; set; }
     public Node FromNode { get; set; }
@@ -44,7 +48,12 @@ abstract public class Enemy : GameObject
         if (Health.Amount <= 0)
         {
             QueueFree();
-            OnDie?.Invoke(this, null);
+            if (!Dead)
+            {
+                Dead = true;
+                GameLevelState.Gold += KillMoney;
+                OnDie?.Invoke(this, null);
+            }
         }
     }
 
@@ -57,6 +66,7 @@ abstract public class Enemy : GameObject
         if (toNode == null)
         {
             QueueFree();
+            GameLevelState.Hearts -= HeartsOff;
             OnReachBase?.Invoke(this, null);
             return;
         }

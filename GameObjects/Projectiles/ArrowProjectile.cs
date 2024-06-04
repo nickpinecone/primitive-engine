@@ -8,7 +8,7 @@ using TowerDefense;
 
 class ArrowProjectile : Projectile
 {
-    public ArrowProjectile(GameObject parent, Enemy target, Damage damage, Vector2 position, float scale) : base(parent, target, damage, 36f, position, scale)
+    public ArrowProjectile(GameObject parent, Enemy target, Damage damage, Vector2 position, float scale) : base(parent, target, damage, 72f, position, scale)
     {
         var texture = AssetManager.GetAsset<Texture2D>("Towers/ArcherTower");
         var source = new Rectangle(390, 815, 65, 65);

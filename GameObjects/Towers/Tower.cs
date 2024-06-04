@@ -12,6 +12,10 @@ public enum ActionType { Sell };
 
 abstract class Tower : GameObject
 {
+    static public Dictionary<TowerType, int> TowerCosts = new() {
+        {TowerType.Archer, 100},
+    };
+
     protected WalkPath _walkPath;
     protected List<Node> _nodesInRadius;
     protected TowerPlot _plot;
@@ -23,6 +27,7 @@ abstract class Tower : GameObject
     public Interact Interact { get; set; }
     public Area Area { get; set; }
     public Damage Damage { get; set; }
+    public TowerType TowerType { get; set; }
 
     public Tower(GameObject parent, TowerPlot plot, WalkPath walkPath, Damage damage, int detectRadius, Vector2 position, float scale) : base(parent)
     {
@@ -34,8 +39,7 @@ abstract class Tower : GameObject
         _plot.Disabled = true;
 
         _walkPath = walkPath;
-        _nodesInRadius = _walkPath.GetNodesInRadius(WorldPosition, detectRadius);
-        _contextMenu = new ContextMenu(this, scale, plot.Shape.Size.Y * 2f);
+        _contextMenu = new ContextMenu(this, 1f, plot.Shape.Size.Y * 1.8f);
 
         var trashTexture = AssetManager.GetAsset<Texture2D>("GUI/Buttons");
         var trashSource = new Rectangle(1115, 1420, 175, 175);
@@ -47,6 +51,8 @@ abstract class Tower : GameObject
 
         LocalPosition = position;
         LocalScale = scale;
+
+        _nodesInRadius = _walkPath.GetNodesInRadius(WorldPosition, detectRadius);
     }
 
     private void HandleActionSelect(object sender, object action)
@@ -54,6 +60,7 @@ abstract class Tower : GameObject
         var actionType = (ActionType)action;
         if (actionType == ActionType.Sell)
         {
+            GameLevelState.Gold += Tower.TowerCosts[TowerType] / 2;
             _plot.Disabled = false;
             QueueFree();
         }

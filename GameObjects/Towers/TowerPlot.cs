@@ -42,6 +42,10 @@ class TowerPlot : GameObject, ISaveable
     private void HandleSelectTower(object sender, object value)
     {
         var towerType = (TowerType)value;
+
+        if (Tower.TowerCosts[towerType] > GameLevelState.Gold) return;
+
+        GameLevelState.Gold -= Tower.TowerCosts[towerType];
         OnTowerSelect?.Invoke(this, towerType);
     }
 

@@ -38,7 +38,7 @@ class ContextMenuItem : GameObject
         var scaleItem = source.Width * scale / (float)wideSide / 1.5f;
         _itemSprite.LocalScale = scaleItem;
 
-        PriceLabel = new Label(this, new Vector2(0, 18) * scale, 0.4f, "100");
+        PriceLabel = new Label(this, new Vector2(0, 14) * scale, 0.4f, "100");
         PriceLabel.TextColor = Color.Yellow;
 
         LocalPosition = position;

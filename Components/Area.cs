@@ -14,12 +14,13 @@ public class Area : GameObject
 
     public Area(GameObject parent, int radius) : base(parent)
     {
-        var texture = DebugTexture.GenerateCircleTexture(radius, Color.White);
-        var source = new Rectangle(0, 0, radius, radius);
+        var texture = DebugTexture.GenerateCircleTexture(radius * 2, Color.White);
+        var source = new Rectangle(0, 0, radius * 2, radius * 2);
 
         _debugSprite = new Sprite(this, texture, source)
         {
-            AccentColor = Color.LightGray * 0.5f
+            AccentColor = Color.LightGray * 0.5f,
+            IgnoreScale = true,
         };
 
         Radius = radius;
@@ -27,7 +28,7 @@ public class Area : GameObject
 
     public bool InRadius(GameObject gameObject)
     {
-        var distance = WorldPosition - gameObject.WorldPosition;
+        var distance = Parent.WorldPosition - gameObject.WorldPosition;
         return distance.Length() <= Radius;
     }
 

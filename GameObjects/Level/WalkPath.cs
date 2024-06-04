@@ -205,7 +205,11 @@ public class WalkPath
 
         foreach (var (enemy, node) in _enemyNodes)
         {
-            if (points.Contains(node))
+            if (enemy.Dead)
+            {
+                _enemyNodes.Remove(enemy);
+            }
+            else if (points.Contains(node))
             {
                 enemies.Add(enemy);
             }

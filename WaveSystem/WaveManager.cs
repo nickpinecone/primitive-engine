@@ -115,9 +115,9 @@ public class WaveManager : GameObject
     {
         if (!WaveTimer.Done)
         {
+            GameLevelState.Gold += (int)WaveTimer.TimeLeft;
             WaveTimer.Paused = true;
             HandleWaveTimeout(null, null);
-            // TODO add gold based on amount of time skipped
         }
     }
 

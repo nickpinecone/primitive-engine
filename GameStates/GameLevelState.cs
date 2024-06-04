@@ -12,11 +12,39 @@ namespace TowerDefense;
 
 public class GameLevelState : GameState
 {
+    public static int _gold;
+    public static int _hearts;
+
+    public static int Gold
+    {
+        get { return _gold; }
+        set
+        {
+            _gold = Math.Max(value, 0);
+        }
+    }
+
+    public static int Hearts
+    {
+        get { return _hearts; }
+        set
+        {
+            _hearts = value;
+            if (_hearts <= 0)
+            {
+                // TODO lost level
+            }
+        }
+    }
+
     LevelInfo levelInfo;
     WalkPath walkPath;
     WaveManager waveManager;
     List<Button> skipButtons;
+
     Label waveNumberLabel;
+    Label goldLabel;
+    Label heartsLabel;
 
     public GameLevelState(LevelInfo levelInfo)
     {
@@ -25,8 +53,24 @@ public class GameLevelState : GameState
 
     public override void LoadContent(ContentManager contentManager)
     {
-        waveNumberLabel = new Label(null, Vector2.Zero, 0.8f, "Wave: ");
+        Gold = 200;
+        Hearts = 20;
+
+        waveNumberLabel = new Label(null, Vector2.Zero, 0.8f, "Wave: " + 0);
         waveNumberLabel.TextColor = Color.Black;
+        AddGameObject(waveNumberLabel);
+
+        goldLabel = new Label(null, Vector2.Zero, 0.8f, "Gold: " + Gold);
+        goldLabel.TextColor = Color.Gold;
+        AddGameObject(goldLabel);
+
+        heartsLabel = new Label(null, Vector2.Zero, 0.8f, "Hearts: " + Hearts);
+        heartsLabel.TextColor = Color.DarkRed;
+        AddGameObject(heartsLabel);
+
+        Docker.DockTopRight(heartsLabel, heartsLabel.Size);
+        Docker.DockToLeft(goldLabel, goldLabel.Size, heartsLabel, heartsLabel.Size);
+        goldLabel.LocalPosition -= new Vector2(16, 0);
 
         skipButtons = new();
         walkPath = new();
@@ -51,7 +95,6 @@ public class GameLevelState : GameState
 
         LoadLevel(levelInfo.LevelSave);
 
-        AddGameObject(waveNumberLabel);
         AddGameObject(waveManager);
         UpdateWaveLabel(0);
     }
@@ -134,6 +177,9 @@ public class GameLevelState : GameState
     public override void Update(GameTime gameTime)
     {
         base.Update(gameTime);
+
+        goldLabel.Text = "Gold: " + Gold;
+        heartsLabel.Text = "Hearts: " + Hearts;
 
         foreach (var button in skipButtons)
         {

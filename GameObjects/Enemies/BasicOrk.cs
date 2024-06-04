@@ -18,6 +18,9 @@ public class BasicOrk : Enemy
         Shape.LocalPosition += new Vector2(-20, 0);
         Defense = new Defense(0, 0);
 
+        HeartsOff = 1;
+        KillMoney = 10;
+
         Health.LocalPosition += new Vector2(-Shape.WorldRectangle.Width / 8f, -Shape.WorldRectangle.Height / 2f);
     }
 }

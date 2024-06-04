@@ -11,6 +11,7 @@ public class Sprite : GameObject
 
     public Texture2D Texture { get; protected set; }
     public Color AccentColor { get; set; }
+    public bool IgnoreScale { get; set; }
 
     private Rectangle? _sourceRectangle = null;
     public Rectangle SourceRectangle
@@ -85,7 +86,7 @@ public class Sprite : GameObject
             AccentColor,
             Rotation,
             Origin,
-            Scale,
+            (IgnoreScale ? 1f : Scale),
             SpriteEffects.None,
             0
         );
