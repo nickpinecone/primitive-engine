@@ -9,25 +9,45 @@ public static class AssetManager
 {
     private static ContentManager _content = null;
     private static Dictionary<string, object> _assets = new();
+    private static Dictionary<string, object> _staticAssets = new();
 
     public static void Initialize(ContentManager contentManager)
     {
         _content = contentManager;
     }
 
-    public static T GetAsset<T>(string name)
+    public static T GetAsset<T>(string name, bool isStatic = false)
     {
-        if (!_assets.ContainsKey(name))
+        if (isStatic)
         {
-            _assets[name] = _content.Load<T>(name);
-        }
+            if (!_staticAssets.ContainsKey(name))
+            {
+                _staticAssets[name] = _content.Load<T>(name);
+            }
 
-        return (T)_assets[name];
+            return (T)_staticAssets[name];
+        }
+        else
+        {
+            if (!_assets.ContainsKey(name))
+            {
+                _assets[name] = _content.Load<T>(name);
+            }
+
+            return (T)_assets[name];
+        }
     }
 
     public static void UnloadAssets()
     {
-        _content.Unload();
+        foreach (var asset in _assets)
+        {
+            if (!_staticAssets.ContainsKey(asset.Key))
+            {
+                _content.UnloadAsset(asset.Key);
+            }
+        }
+
         _assets.Clear();
     }
 }

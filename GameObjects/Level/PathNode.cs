@@ -32,7 +32,7 @@ class PathNode : GameObject
     {
         SelectedNode = null;
 
-        var buttonsTexture = AssetManager.GetAsset<Texture2D>("GUI/Buttons");
+        var buttonsTexture = AssetManager.GetAsset<Texture2D>("GUI/Buttons", true);
         var trashSource = new Rectangle(1115, 1420, 175, 175);
         var moveSource = new Rectangle(1115, 3420, 175, 175);
         var scaleSource = new Rectangle(1115, 3620, 175, 175);
