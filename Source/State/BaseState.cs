@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Primitive.Entity;
 using Primitive.UI;
@@ -22,6 +23,11 @@ public abstract class BaseState
         OnStateSwitch?.Invoke(this, state);
     }
 
+    public void AddControl(BaseControl control)
+    {
+        _controls.Add(control);
+    }
+
     public void AddEntity(BaseEntity entity)
     {
         _addQueue.Add(entity);
@@ -32,16 +38,16 @@ public abstract class BaseState
         _removeQueue.Add(entity);
     }
 
-    public virtual void Initialize()
+    public virtual void Initialize(ContentManager content)
     {
         foreach (var entity in _entities)
         {
-            entity.Initialize();
+            entity.Initialize(content);
         }
 
         foreach (var control in _controls)
         {
-            control.Initialize();
+            control.Initialize(content);
         }
     }
 
@@ -67,7 +73,9 @@ public abstract class BaseState
 
     public virtual void HandleInput()
     {
-        foreach (var control in _controls.OrderBy((control) => control.ZIndex).ThenBy((control) => control.Position))
+        foreach (var control in _controls.Where((control) => !control.Disabled)
+                     .OrderBy((control) => control.ZIndex)
+                     .ThenBy((control) => control.Position))
         {
             bool captured = control.HandleInput();
 
@@ -85,7 +93,8 @@ public abstract class BaseState
             entity.Draw(spriteBatch);
         }
 
-        foreach (var control in _controls.OrderByDescending((control) => control.ZIndex)
+        foreach (var control in _controls.Where((control) => !control.Hidden)
+                     .OrderByDescending((control) => control.ZIndex)
                      .ThenByDescending((control) => control.Position))
         {
             control.Draw(spriteBatch);

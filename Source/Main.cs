@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Primitive.State;
+using Primitive.UI;
 
 namespace Primitive;
 
@@ -22,12 +23,14 @@ public class Main : Game
         _state = state;
 
         _state.OnStateSwitch += (_, state) => SwitchState(state);
-        _state.Initialize();
+        _state.Initialize(Content);
     }
 
     protected override void LoadContent()
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
+
+        Label.LoadFont(Content);
     }
 
     protected override void Initialize()
