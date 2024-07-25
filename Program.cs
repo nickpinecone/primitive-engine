@@ -1,3 +1,2 @@
-﻿
-using var game = new primitive_engine.Game1();
+﻿using var game = new Primitive.Main();
 game.Run();
