@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Primitive.Entity;
 using Primitive.UI;
@@ -38,16 +37,16 @@ public abstract class BaseState
         _removeQueue.Add(entity);
     }
 
-    public virtual void Initialize(ContentManager content)
+    public virtual void Initialize()
     {
         foreach (var entity in _entities)
         {
-            entity.Initialize(content);
+            entity.Initialize();
         }
 
         foreach (var control in _controls)
         {
-            control.Initialize(content);
+            control.Initialize();
         }
     }
 

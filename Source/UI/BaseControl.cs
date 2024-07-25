@@ -1,6 +1,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Content;
+using Primitive.State;
+using System.Collections.Generic;
 
 namespace Primitive.UI;
 
@@ -44,7 +45,20 @@ public abstract class BaseControl
         }
     }
 
-    public BaseControl Parent { get; set; } = null;
+    public List<BaseControl> Children { get; private set; } = new();
+    public BaseControl _parent = null;
+    public BaseControl Parent
+    {
+        get {
+            return _parent;
+        }
+        set {
+            _parent?.Children.Remove(this);
+            _parent = value;
+            _parent?.Children.Add(this);
+        }
+    }
+
     public float GlobalRotation
     {
         get {
@@ -64,7 +78,13 @@ public abstract class BaseControl
         }
     }
 
-    public abstract void Initialize(ContentManager content);
+    public BaseControl(BaseState state, BaseControl parent)
+    {
+        state.AddControl(this);
+        Parent = parent;
+    }
+
+    public abstract void Initialize();
     public abstract bool HandleInput();
     public abstract void Draw(SpriteBatch spriteBatch);
 }

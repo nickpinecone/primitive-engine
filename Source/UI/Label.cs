@@ -1,12 +1,18 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Primitive.State;
 
 namespace Primitive.UI;
 
 public class Label : BaseControl
 {
     public static SpriteFont Font { get; private set; } = null;
+
+    public static void LoadFont(ContentManager content)
+    {
+        Font = content.Load<SpriteFont>("UI/Font");
+    }
 
     public Color Color { get; set; } = Color.White;
 
@@ -26,18 +32,13 @@ public class Label : BaseControl
         }
     }
 
-    public Label(string text, Color? color = null)
+    public Label(BaseState state, BaseControl parent, string text, Color? color = null) : base(state, parent)
     {
         Color = color ?? Color;
         Text = text;
     }
 
-    public static void LoadFont(ContentManager content)
-    {
-        Font = content.Load<SpriteFont>("UI/Font");
-    }
-
-    public override void Initialize(ContentManager content)
+    public override void Initialize()
     {
     }
 

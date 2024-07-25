@@ -18,19 +18,19 @@ public class Main : Game
         IsMouseVisible = true;
     }
 
-    public void SwitchState(BaseState state)
-    {
-        _state = state;
-
-        _state.OnStateSwitch += (_, state) => SwitchState(state);
-        _state.Initialize(Content);
-    }
-
     protected override void LoadContent()
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
 
         Label.LoadFont(Content);
+    }
+
+    public void SwitchState(BaseState state)
+    {
+        _state = state;
+
+        _state.OnStateSwitch += (_, state) => SwitchState(state);
+        _state.Initialize();
     }
 
     protected override void Initialize()
@@ -45,6 +45,7 @@ public class Main : Game
         base.Update(gameTime);
 
         _state.Update(gameTime);
+        _state.HandleInput();
     }
 
     protected override void Draw(GameTime gameTime)
