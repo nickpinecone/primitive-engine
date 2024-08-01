@@ -11,7 +11,7 @@ public class Label : BaseControl
 
     public static void LoadFont(ContentManager content)
     {
-        Font = content.Load<SpriteFont>("UI/Font");
+        Font = content.Load<SpriteFont>("Font");
     }
 
     public Color Color { get; set; } = Color.White;

@@ -13,10 +13,10 @@
 
 #---------------------------------- Content ---------------------------------#
 
-#begin UI/Font.spritefont
+#begin Font.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
 /processorParam:PremultiplyAlpha=True
 /processorParam:TextureFormat=Compressed
-/build:UI/Font.spritefont
+/build:Font.spritefont
 
