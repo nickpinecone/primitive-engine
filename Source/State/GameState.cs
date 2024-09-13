@@ -7,8 +7,12 @@ public class GameState : BaseState
 {
     public override void Initialize()
     {
-        var shape = new ShapeEntity(this, new Vector2(120, 40));
-        shape.AttachScript("shape.lua");
+        var pad = new ShapeEntity(this, "pad", new Vector2(120, 40));
+        pad.Position += new Vector2(0, 360);
+        pad.AttachScript();
+
+        var pong = new ShapeEntity(this, "pong", new Vector2(20, 20));
+        pong.AttachScript();
 
         base.Initialize();
     }

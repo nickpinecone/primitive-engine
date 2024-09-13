@@ -1,5 +1,6 @@
 using Microsoft.Xna.Framework;
 using NLua;
+using Primitive.Utils;
 
 public class Script
 {
@@ -8,16 +9,15 @@ public class Script
 
     public Lua State
     {
-        get
-        {
+        get {
             return _state;
         }
     }
 
-    public Script(string filename)
+    public Script(string name)
     {
         _state = new Lua();
-        _filename = Directory.GetCurrentDirectory() + "/Source/Script/" + filename;
+        _filename = Directory.GetCurrentDirectory() + "/Source/Script/" + name + ".lua";
 
         _state.LoadCLRPackage();
         _state.DoString("import('MonoGame.Framework', 'Microsoft.Xna.Framework')");
@@ -25,6 +25,9 @@ public class Script
 
     public void Initialize()
     {
+        var print = typeof(Logger).GetMethod("Print");
+        _state.RegisterFunction("print", print);
+
         _state.DoFile(_filename);
     }
 

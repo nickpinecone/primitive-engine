@@ -9,7 +9,7 @@ public class ShapeEntity : BaseEntity
 {
     public Texture2D Texture { get; private set; } = null;
 
-    public ShapeEntity(BaseState state, Vector2 size) : base(state)
+    public ShapeEntity(BaseState state, string name, Vector2 size) : base(state, name)
     {
         Size = size;
     }

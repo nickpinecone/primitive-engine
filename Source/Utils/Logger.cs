@@ -5,6 +5,14 @@ namespace Primitive.Utils;
 
 public static class Logger
 {
+    static public void Print(params object[] others)
+    {
+        foreach (object obj in others)
+        {
+            Console.WriteLine(obj.ToString());
+        }
+    }
+
     public static void Log(string text, [CallerFilePath] string file = "", [CallerMemberName] string member = "",
                            [CallerLineNumber] int line = 0)
     {
