@@ -9,7 +9,8 @@ public class Script
 
     public Lua State
     {
-        get {
+        get
+        {
             return _state;
         }
     }
@@ -21,11 +22,12 @@ public class Script
 
         _state.LoadCLRPackage();
         _state.DoString("import('MonoGame.Framework', 'Microsoft.Xna.Framework')");
+        _state.DoString("import('MonoGame.Framework', 'Microsoft.Xna.Framework.Input')");
     }
 
     public void Initialize()
     {
-        _state["screen"] = new Vector2(Screen.Width, Screen.Height);
+        _state["screen"] = new Screen();
 
         var print = typeof(Logger).GetMethod("Print");
         _state.RegisterFunction("print", print);

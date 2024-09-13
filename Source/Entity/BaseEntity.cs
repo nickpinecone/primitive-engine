@@ -1,6 +1,7 @@
 using System.Reflection;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using Primitive.State;
 
 namespace Primitive.Entity;
@@ -17,7 +18,8 @@ public abstract class BaseEntity
 
     public Rectangle Rect
     {
-        get {
+        get
+        {
             return new Rectangle((int)Position.X, (int)Position.Y, (int)Size.X, (int)Size.Y);
         }
     }
@@ -43,6 +45,7 @@ public abstract class BaseEntity
     public virtual void Initialize()
     {
         _script.State["position"] = Position;
+        _script.State["size"] = Size;
         _script.State["root"] = _state;
         _script.State["this"] = this;
 
@@ -51,9 +54,12 @@ public abstract class BaseEntity
 
     public virtual void Update(GameTime gameTime)
     {
+        _script.State["keyboard"] = Keyboard.GetState();
+
         _script.Update(gameTime);
 
         Position = (Vector2)_script.State["position"];
+        Size = (Vector2)_script.State["size"];
     }
 
     public abstract void Draw(SpriteBatch spriteBatch);
