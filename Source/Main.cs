@@ -37,6 +37,10 @@ public class Main : Game
     {
         base.Initialize();
 
+        _graphics.PreferredBackBufferWidth = Screen.Width;
+        _graphics.PreferredBackBufferHeight = Screen.Height;
+        _graphics.ApplyChanges();
+
         SwitchState(new GameState());
     }
 

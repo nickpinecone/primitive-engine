@@ -25,6 +25,8 @@ public class Script
 
     public void Initialize()
     {
+        _state["screen"] = new Vector2(Screen.Width, Screen.Height);
+
         var print = typeof(Logger).GetMethod("Print");
         _state.RegisterFunction("print", print);
 
