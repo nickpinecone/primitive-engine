@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Primitive.State;
-using Primitive.UI;
+using Primitive.Utils;
 
 namespace Primitive;
 
@@ -18,13 +18,6 @@ public class Main : Game
         IsMouseVisible = true;
     }
 
-    protected override void LoadContent()
-    {
-        _spriteBatch = new SpriteBatch(GraphicsDevice);
-
-        Label.LoadFont(Content);
-    }
-
     public void SwitchState(BaseState state)
     {
         _state = state;
@@ -33,11 +26,19 @@ public class Main : Game
         _state.Initialize();
     }
 
+    protected override void LoadContent()
+    {
+        base.LoadContent();
+
+        _spriteBatch = new SpriteBatch(GraphicsDevice);
+        TextureHelper.SetGraphics(_graphics);
+    }
+
     protected override void Initialize()
     {
         base.Initialize();
 
-        SwitchState(new MenuState());
+        SwitchState(new GameState());
     }
 
     protected override void Update(GameTime gameTime)
@@ -45,7 +46,6 @@ public class Main : Game
         base.Update(gameTime);
 
         _state.Update(gameTime);
-        _state.HandleInput();
     }
 
     protected override void Draw(GameTime gameTime)
