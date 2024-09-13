@@ -1,1 +1,2 @@
-﻿Console.WriteLine("Hello, World!");
+﻿using var game = new Primitive.Main();
+game.Run();
